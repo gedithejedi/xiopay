@@ -13,7 +13,7 @@ env:
   HUSKY: 0
 
 jobs:
-  prettier:
+  frontend-prettier:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -30,5 +30,6 @@ jobs:
         with:
           version: ${{ env.PNPM_VERSION }}
 
+      - run: cd frontend
       - run: pnpm install
       - run: pnpm format:check
