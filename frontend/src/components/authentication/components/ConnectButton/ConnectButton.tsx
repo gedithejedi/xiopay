@@ -26,7 +26,7 @@ const ConnectButton = ({
 
   return (
     <button className={className} disabled={disabled} onClick={handleConnect}>
-      {children || 'Login or register'}
+      {children || 'Log-in'}
     </button>
   )
 }
