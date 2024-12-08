@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-between min-h-screen font-[family-name:var(--font-geist-sans)]">
       <header className="flex w-full p-3">
-        <span className="text-3xl font-bold">XionPay</span>
+        <span className="text-3xl font-bold">XioPay</span>
       </header>
 
       <main className="flex flex-col gap-8 items-center">
@@ -38,7 +38,7 @@ export default function Home() {
         )}
       </main>
       <footer className="flex gap-2 flex-wrap items-center justify-center pb-6 flex-col">
-        <p>Built with 💚 for Xion Believathon</p>
+        <p>Built with 💚 for Neo Hackathon</p>
       </footer>
     </div>
   )
