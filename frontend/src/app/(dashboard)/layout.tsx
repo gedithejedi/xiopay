@@ -4,6 +4,7 @@ import { HiOutlineHome } from 'react-icons/hi'
 import { HiOutlineCollection } from 'react-icons/hi'
 import Link from 'next/link'
 import { useState } from 'react'
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
 
 interface MenuConfig {
   title: string
@@ -17,6 +18,9 @@ export default function StudioLayout({
   children: React.ReactNode
 }>) {
   const [selectedConfig, setSelectedConfig] = useState('Home')
+
+  const { handleLogOut } = useDynamicContext()
+
   const menuConfig: MenuConfig[] = [
     {
       title: 'Home',
@@ -96,9 +100,7 @@ export default function StudioLayout({
 
               <button
                 className="btn btn-sm btn-secondary"
-                onClick={() => {
-                  console.log(true) //TOOD: replace with the normal button
-                }}
+                onClick={() => handleLogOut()}
               >
                 Logout
               </button>
