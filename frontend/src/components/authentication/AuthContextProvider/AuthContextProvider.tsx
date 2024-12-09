@@ -5,6 +5,7 @@ import {
   DynamicContextProvider,
   mergeNetworks,
   OnAuthSuccess,
+  getAuthToken,
 } from '@dynamic-labs/sdk-react-core'
 import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector'
 
@@ -14,6 +15,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
+import { getCsrfToken, getSession } from 'next-auth/react'
 
 import { AuthContextProviderProps } from './AuthContextProvider.type'
 
@@ -43,12 +45,40 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const onAuthSuccess: OnAuthSuccess = async ({ isAuthenticated }) => {
     setIsLoading(true)
 
-    if (isAuthenticated) {
-      toast.success('Successfully logged in')
-      router.push('/dashboard')
+    const authToken = getAuthToken()
+    if (!authToken) {
+      console.error('No auth token found')
+      return
     }
 
-    setIsLoading(false)
+    const csrfToken = await getCsrfToken()
+
+    fetch('/api/auth/callback/credentials', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `csrfToken=${encodeURIComponent(
+        csrfToken
+      )}&token=${encodeURIComponent(authToken)}`,
+    })
+      .then((res) => {
+        if (res.ok && isAuthenticated) {
+          getSession()
+          toast.success('Successfully logged in')
+          router.push('/dashboard')
+        } else {
+          toast.error('Something went wrong, please try again!')
+          console.error('Failed to log in')
+        }
+      })
+      .catch((error) => {
+        // Handle any exceptions
+        console.error('Error logging in', error)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
   }
 
   const onLogout = () => {
