@@ -1,18 +1,14 @@
 'use client'
 
-import ConnectButton from '@/components/authentication/components/ConnectButton'
 import { useAccount } from 'wagmi'
+import Link from 'next/link'
 
 export default function Home() {
   const { address, isConnected } = useAccount()
 
   return (
-    <div className="flex flex-col items-center justify-between min-h-screen font-[family-name:var(--font-geist-sans)]">
-      <header className="flex w-full p-3">
-        <span className="text-3xl font-bold">XioPay</span>
-      </header>
-
-      <main className="flex flex-col gap-8 items-center">
+    <div className="flex flex-col h-full">
+      <main className="flex flex-col flex-1 gap-8 items-center justify-center">
         <div className="flex flex-col gap-4">
           <h1 className="text-8xl font-bold tracking-tighter text-center">
             Fund your work
@@ -24,9 +20,12 @@ export default function Home() {
           </p>
         </div>
 
-        <ConnectButton className="btn btn-lg btn-accent text-2xl">
+        <Link
+          href={isConnected ? '/dashboard' : '/login'}
+          className="btn btn-lg btn-accent text-2xl"
+        >
           Create my campaign
-        </ConnectButton>
+        </Link>
 
         {isConnected && (
           <div className="border-2 border-primary rounded-md p-4 flex flex-row gap-4">
@@ -37,9 +36,6 @@ export default function Home() {
           </div>
         )}
       </main>
-      <footer className="flex gap-2 flex-wrap items-center justify-center pb-6 flex-col">
-        <p>Built with 💚 for Neo Hackathon</p>
-      </footer>
     </div>
   )
 }

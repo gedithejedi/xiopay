@@ -3,6 +3,7 @@ import localFont from 'next/font/local'
 import './globals.css'
 import dynamic from 'next/dynamic'
 import { Toaster } from 'react-hot-toast'
+import PageGuard from '@/components/authentication/PageGuard'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -44,7 +45,9 @@ export default function RootLayout({
             style: { maxWidth: 425, zIndex: 9999 },
           }}
         />
-        <DynamicContextProvider>{children}</DynamicContextProvider>
+        <DynamicContextProvider>
+          <PageGuard>{children}</PageGuard>
+        </DynamicContextProvider>
       </body>
     </html>
   )

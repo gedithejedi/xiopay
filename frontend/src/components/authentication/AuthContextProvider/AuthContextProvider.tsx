@@ -4,6 +4,7 @@ import { EthereumWalletConnectors } from '@dynamic-labs/ethereum'
 import {
   DynamicContextProvider,
   mergeNetworks,
+  OnAuthSuccess,
 } from '@dynamic-labs/sdk-react-core'
 import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector'
 
@@ -18,6 +19,8 @@ import { AuthContextProviderProps } from './AuthContextProvider.type'
 
 import { wagmiProviderConfig } from '@/lib/chains'
 import { useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
 
 const queryConfig: DefaultOptions = {
   queries: {
@@ -34,43 +37,31 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(false)
 
-  // const router = useRouter()
+  const router = useRouter()
+  const pathname = usePathname()
 
-  // const onAuthSuccess: OnAuthSuccess = async (args) => {
-  //   const dynamicUserId = args.user.userId
+  const onAuthSuccess: OnAuthSuccess = async ({ isAuthenticated }) => {
+    setIsLoading(true)
 
-  //   setIsLoading(true)
+    if (isAuthenticated) {
+      toast.success('Successfully logged in')
+      router.push('/dashboard')
+    }
 
-  //   if (dynamicUserId) {
-  //     const data = await getUser({ dynamicUserId })
+    setIsLoading(false)
+  }
 
-  //     if (data.status === 404) {
-  //       try {
-  //         await postUser({ dynamicUserId })
-  //         await queryClient.invalidateQueries({ queryKey: ['user'] })
-  //       } catch (err) {
-  //         toast.error('Something went wrong')
-  //         await args.handleLogOut()
-  //       }
-  //     }
-  //   }
+  const onLogout = () => {
+    setIsLoading(true)
 
-  //   setIsLoading(false)
-  // }
+    const isDashboard = pathname.startsWith('/dashboard')
 
-  // const onLogout = async () => {
-  //   setIsLoading(true)
+    if (isDashboard) {
+      router.replace('/')
+    }
 
-  //   const isPublic = unaunthenticatedRoutes.some((route) =>
-  //     new RegExp(`^${route}(?:#.*)?$`).test(router.asPath)
-  //   )
-
-  //   if (!isPublic) {
-  //     await router.push(Routes.root)
-  //   }
-
-  //   setIsLoading(false)
-  // }
+    setIsLoading(false)
+  }
 
   const evmNetworks = [
     {
@@ -105,8 +96,8 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
           },
         },
         eventsCallbacks: {
-          // onAuthSuccess,
-          // onLogout,
+          onAuthSuccess,
+          onLogout,
         },
       }}
     >
