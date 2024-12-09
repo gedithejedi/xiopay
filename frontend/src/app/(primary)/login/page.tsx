@@ -32,7 +32,7 @@ export default function Login() {
           <PageTitle>Get started!</PageTitle>
           <Card className="py-12">
             <ConnectButton className="btn btn-accent">
-              Connect to Xio Pay
+              Connect to XioPay
             </ConnectButton>
           </Card>
         </div>

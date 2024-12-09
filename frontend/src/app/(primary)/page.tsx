@@ -26,7 +26,6 @@ export default function Home() {
         >
           Create my campaign
         </Link>
-
         {isConnected && (
           <div className="border-2 border-primary rounded-md p-4 flex flex-row gap-4">
             <div className="flex flex-row gap-6">
