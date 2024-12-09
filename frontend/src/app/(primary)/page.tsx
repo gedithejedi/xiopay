@@ -2,9 +2,11 @@
 
 import { useAccount } from 'wagmi'
 import Link from 'next/link'
+import { useSession, signOut } from 'next-auth/react'
 
 export default function Home() {
   const { address, isConnected } = useAccount()
+  const { data: session, status } = useSession()
 
   return (
     <div className="flex flex-col h-full">
@@ -26,6 +28,7 @@ export default function Home() {
         >
           Create your campaign
         </Link>
+        {status === 'loading' ? <div>Loading...</div> : session?.user?.id}
         {isConnected && (
           <div className="border-2 border-primary rounded-md p-4 flex flex-row gap-4">
             <div className="flex flex-row gap-6">

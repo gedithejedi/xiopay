@@ -2,7 +2,7 @@ import NextAuth from 'next-auth'
 
 import type { NextAuthConfig } from 'next-auth'
 
-import Credentials from '@auth/core/providers/credentials'
+import Credentials from 'next-auth/providers/credentials'
 import { validateJWT } from './lib/authHelpers'
 
 type User = {
@@ -30,12 +30,13 @@ export const config = {
         if (typeof token !== 'string' || !token) {
           throw new Error('Token is required')
         }
+
         const jwtPayload = await validateJWT(token)
 
         if (jwtPayload) {
           // Transform the JWT payload into your user object
           const user: User = {
-            id: jwtPayload.sub, // Assuming 'sub' is the user ID
+            id: jwtPayload.sub || '', // Assuming 'sub' is the user ID
             name: jwtPayload.name || '', // Replace with actual field from JWT payload
             email: jwtPayload.email || '', // Replace with actual field from JWT payload
             // Map other fields as needed
@@ -50,7 +51,7 @@ export const config = {
   callbacks: {
     authorized({ request, auth }) {
       const { pathname } = request.nextUrl
-      if (pathname === '/dashboard') return !!auth
+      if (pathname === '/middleware-example') return !!auth
       return true
     },
   },
