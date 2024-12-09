@@ -1,23 +1,32 @@
-import { Chain, fallback, http } from 'viem'
-import { mainnet, sepolia } from 'viem/chains'
+import { Chain, defineChain, fallback, http } from 'viem'
+import { sepolia } from 'viem/chains'
 import { createConfig } from 'wagmi'
 
-export const chains: readonly [Chain, ...Chain[]] = [sepolia, mainnet]
+export const neoXTestnet = /*#__PURE__*/ defineChain({
+  id: 12227332,
+  name: 'NeoX T4',
+  nativeCurrency: { name: 'GAS', symbol: 'GAS', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['testnet.rpc.banelabs.org'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Blockscout',
+      url: 'xt4scan.ngd.network',
+      // apiUrl: 'https://api-sepolia.etherscan.io/api',
+    },
+  },
+  testnet: true,
+})
+
+export const chains: readonly [Chain, ...Chain[]] = [sepolia, neoXTestnet]
 
 export const wagmiProviderConfig = createConfig({
   chains,
   transports: {
-    [mainnet.id]: fallback([
-      http(
-        `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
-      ),
-      http(),
-    ]),
-    [sepolia.id]: fallback([
-      http(
-        `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
-      ),
-      http(),
-    ]),
+    [sepolia.id]: fallback([http()]),
+    [neoXTestnet.id]: fallback([http()]),
   },
 })

@@ -4,7 +4,6 @@ import { HiOutlineHome } from 'react-icons/hi'
 import { HiOutlineCollection } from 'react-icons/hi'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useAccount } from 'wagmi'
 
 interface MenuConfig {
   title: string
@@ -17,7 +16,6 @@ export default function StudioLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const { address } = useAccount()
   const [selectedConfig, setSelectedConfig] = useState('Home')
   const menuConfig: MenuConfig[] = [
     {

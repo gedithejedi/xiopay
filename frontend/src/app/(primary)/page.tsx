@@ -24,7 +24,7 @@ export default function Home() {
           href={isConnected ? '/dashboard' : '/login'}
           className="btn btn-lg btn-accent text-2xl"
         >
-          Create my campaign
+          Create your campaign
         </Link>
         {isConnected && (
           <div className="border-2 border-primary rounded-md p-4 flex flex-row gap-4">

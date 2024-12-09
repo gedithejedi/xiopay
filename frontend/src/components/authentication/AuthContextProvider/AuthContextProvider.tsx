@@ -69,7 +69,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       chainId: '12227332',
       chainName: 'Neo X Testnet T4',
       iconUrls: ['https://neo-web.azureedge.net/images/logo%20files-dark.svg'],
-      name: 'Neo X Testnet T4',
+      name: 'NeoX T4',
       nativeCurrency: {
         decimals: 18,
         name: 'GAS',
@@ -77,7 +77,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       },
       networkId: '12227332',
       rpcUrls: ['testnet.rpc.banelabs.org'],
-      vanityName: 'Taiko',
+      vanityName: 'NeoX T4',
       shortName: 'GAS',
       chain: 'GAS',
     },
