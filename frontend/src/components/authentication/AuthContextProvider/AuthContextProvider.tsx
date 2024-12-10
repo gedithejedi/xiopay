@@ -5,6 +5,7 @@ import {
   DynamicContextProvider,
   mergeNetworks,
   OnAuthSuccess,
+  getAuthToken,
 } from '@dynamic-labs/sdk-react-core'
 import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector'
 
@@ -14,12 +15,13 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
+import { getCsrfToken, signOut } from 'next-auth/react'
 
 import { AuthContextProviderProps } from './AuthContextProvider.type'
 
 import { wagmiProviderConfig } from '@/lib/chains'
 import { useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
 const queryConfig: DefaultOptions = {
@@ -38,27 +40,50 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const router = useRouter()
-  const pathname = usePathname()
 
   const onAuthSuccess: OnAuthSuccess = async ({ isAuthenticated }) => {
     setIsLoading(true)
 
-    if (isAuthenticated) {
-      toast.success('Successfully logged in')
-      router.push('/dashboard')
+    const authToken = getAuthToken()
+    if (!authToken) {
+      console.error('No auth token found')
+      return
     }
 
-    setIsLoading(false)
+    const csrfToken = await getCsrfToken()
+
+    fetch('/api/auth/callback/credentials', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `csrfToken=${encodeURIComponent(
+        csrfToken
+      )}&token=${encodeURIComponent(authToken)}`,
+    })
+      .then((res) => {
+        if (res.ok && isAuthenticated) {
+          toast.success('Successfully logged in')
+          router.push('/dashboard')
+        } else {
+          toast.error('Something went wrong, please try again!')
+          console.error('Failed to log in')
+        }
+      })
+      .catch((error) => {
+        // Handle any exceptions
+        console.error('Error logging in', error)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
   }
 
-  const onLogout = () => {
+  const onLogout = async () => {
     setIsLoading(true)
 
-    const isDashboard = pathname.startsWith('/dashboard')
-
-    if (isDashboard) {
-      router.replace('/')
-    }
+    await signOut({ callbackUrl: 'http://localhost:3000' })
+    toast.success('Successfully logged out')
 
     setIsLoading(false)
   }

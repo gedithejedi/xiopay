@@ -3,7 +3,8 @@ import localFont from 'next/font/local'
 import './globals.css'
 import dynamic from 'next/dynamic'
 import { Toaster } from 'react-hot-toast'
-import PageGuard from '@/components/authentication/PageGuard'
+import { auth } from '@/auth'
+import { SessionProvider } from 'next-auth/react'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -29,11 +30,21 @@ const DynamicContextProvider = dynamic(
   { ssr: true }
 )
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const session = await auth()
+  if (session?.user) {
+    // filter out sensitive data before passing to client.
+    session.user = {
+      name: session.user.name,
+      email: session.user.email,
+      image: session.user.image,
+    }
+  }
+
   return (
     <html lang="en">
       <body
@@ -46,7 +57,7 @@ export default function RootLayout({
           }}
         />
         <DynamicContextProvider>
-          <PageGuard>{children}</PageGuard>
+          <SessionProvider session={session}>{children}</SessionProvider>
         </DynamicContextProvider>
       </body>
     </html>

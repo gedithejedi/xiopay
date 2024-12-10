@@ -1,33 +1,15 @@
 'use client'
 
-import {
-  DynamicWidget,
-  useDynamicContext,
-  useIsLoggedIn,
-} from '@dynamic-labs/sdk-react-core'
+import { DynamicWidget } from '@dynamic-labs/sdk-react-core'
 
 import { ConnectButtonProps } from './ConnectButton.type'
 
-const ConnectButton = ({
-  children,
-  className,
-  disabled,
-}: ConnectButtonProps) => {
-  const isAuthenticated = useIsLoggedIn()
-  const { setShowAuthFlow } = useDynamicContext()
-
-  const isFullyConnected = useIsLoggedIn()
-
-  const handleConnect = () => {
-    setShowAuthFlow(true)
-  }
-
-  if (isAuthenticated || isFullyConnected) return <DynamicWidget />
-
+const ConnectButton = ({ children, className }: ConnectButtonProps) => {
   return (
-    <button className={className} disabled={disabled} onClick={handleConnect}>
-      {children || 'Log-in'}
-    </button>
+    <DynamicWidget
+      buttonClassName={className}
+      innerButtonComponent={children}
+    />
   )
 }
 
