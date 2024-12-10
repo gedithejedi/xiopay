@@ -3,7 +3,6 @@ import localFont from 'next/font/local'
 import './globals.css'
 import dynamic from 'next/dynamic'
 import { Toaster } from 'react-hot-toast'
-import PageGuard from '@/components/authentication/PageGuard'
 import { auth } from '@/auth'
 import { SessionProvider } from 'next-auth/react'
 
@@ -58,9 +57,7 @@ export default async function RootLayout({
           }}
         />
         <DynamicContextProvider>
-          <SessionProvider session={session}>
-            <PageGuard>{children}</PageGuard>
-          </SessionProvider>
+          <SessionProvider session={session}>{children}</SessionProvider>
         </DynamicContextProvider>
       </body>
     </html>

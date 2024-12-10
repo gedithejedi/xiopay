@@ -15,13 +15,13 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
-import { getCsrfToken, getSession } from 'next-auth/react'
+import { getCsrfToken, signOut } from 'next-auth/react'
 
 import { AuthContextProviderProps } from './AuthContextProvider.type'
 
 import { wagmiProviderConfig } from '@/lib/chains'
 import { useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
 const queryConfig: DefaultOptions = {
@@ -40,7 +40,6 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const router = useRouter()
-  const pathname = usePathname()
 
   const onAuthSuccess: OnAuthSuccess = async ({ isAuthenticated }) => {
     setIsLoading(true)
@@ -64,7 +63,6 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     })
       .then((res) => {
         if (res.ok && isAuthenticated) {
-          getSession()
           toast.success('Successfully logged in')
           router.push('/dashboard')
         } else {
@@ -81,14 +79,11 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       })
   }
 
-  const onLogout = () => {
+  const onLogout = async () => {
     setIsLoading(true)
 
-    const isDashboard = pathname.startsWith('/dashboard')
-
-    if (isDashboard) {
-      router.replace('/')
-    }
+    await signOut({ callbackUrl: 'http://localhost:3000' })
+    toast.success('Successfully logged out')
 
     setIsLoading(false)
   }
