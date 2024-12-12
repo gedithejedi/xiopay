@@ -1,1 +1,1 @@
-cd frontend && pnpm format:check
+cd app && pnpm format:check

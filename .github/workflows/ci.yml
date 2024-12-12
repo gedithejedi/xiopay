@@ -30,6 +30,6 @@ jobs:
         with:
           version: ${{ env.PNPM_VERSION }}
 
-      - run: cd frontend
+      - run: cd app
       - run: pnpm install
       - run: pnpm format:check
