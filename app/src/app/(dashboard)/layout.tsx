@@ -4,7 +4,7 @@ import { HiOutlineHome } from 'react-icons/hi'
 import { HiOutlineCollection } from 'react-icons/hi'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
+import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core'
 
 interface MenuConfig {
   title: string
@@ -36,7 +36,7 @@ export default function StudioLayout({
 
   return (
     <main>
-      <div className="h-screen">
+      <div>
         <div className="lg:hidden py-2 px-4 sticky top-0 z-30 h-16 bg-opacity-90 flex gap-4 items-center bg-white">
           <label htmlFor="my-drawer" className="btn drawer-button">
             <svg
@@ -61,6 +61,9 @@ export default function StudioLayout({
         <div className="drawer lg:drawer-open w-full h-full">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
           <div className="py-4 px-4 flex items-center flex-col w-full h-full drawer-content bg-base-200">
+            <div className="w-full flex sticky justify-end p-2">
+              <DynamicWidget />
+            </div>
             <div className="py-8 flex-1 max-w-3xl w-full">{children}</div>
             <footer className="text-center">
               <p>Built with 💚 for Neo Hackathon</p>

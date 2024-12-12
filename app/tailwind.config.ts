@@ -14,6 +14,7 @@ export default {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
         brand: '#ffdd04',
+        'accent-200': 'rgb(255 234 100)',
       },
     },
   },

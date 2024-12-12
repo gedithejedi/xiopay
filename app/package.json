@@ -17,6 +17,7 @@
     "@dynamic-labs/wagmi-connector": "^3.9.0",
     "@tanstack/react-query": "^5.62.3",
     "classnames": "^2.5.1",
+    "dayjs": "^1.11.13",
     "jsonwebtoken": "^9.0.2",
     "next": "15.0.3",
     "next-auth": "5.0.0-beta.25",
