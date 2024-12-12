@@ -1,4 +1,5 @@
 import Card from '@/components/atoms/Card'
+import PageTitle from '@/components/atoms/PageTitle'
 import Table from '@/components/organisms/Table'
 import { TableColumn } from '@/components/organisms/Table/Table.types'
 import Image from 'next/image'
@@ -99,7 +100,7 @@ export default function Dashboard() {
       </Card>
 
       <Card className="flex flex-col gap-2">
-        <h3 className="text-lg font-semibold">Payout history</h3>
+        <PageTitle>Payout history</PageTitle>
         <Table
           data={transactions}
           columns={columns}

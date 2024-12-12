@@ -2,11 +2,15 @@
 
 import { useAccount } from 'wagmi'
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
+import { useEffect, useState } from 'react'
 
 export default function Home() {
-  const { address, isConnected } = useAccount()
-  const { data: session, status } = useSession()
+  const { isConnected } = useAccount()
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  useEffect(() => {
+    if (!isHydrated) setIsHydrated(true)
+  }, [])
 
   return (
     <div className="flex flex-col h-full">
@@ -26,18 +30,10 @@ export default function Home() {
           href={isConnected ? '/dashboard' : '/login'}
           className="btn btn-lg btn-accent text-2xl"
         >
-          Create your campaign
+          {isHydrated && isConnected
+            ? 'Go to dashboard'
+            : 'Create your campaign'}
         </Link>
-        {status}
-        {status === 'loading' ? <div>Loading...</div> : session?.user?.id}
-        {isConnected && (
-          <div className="border-2 border-primary rounded-md p-4 flex flex-row gap-4">
-            <div className="flex flex-row gap-6">
-              <div>address</div>
-              <div>{address}</div>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   )

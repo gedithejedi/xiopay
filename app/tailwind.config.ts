@@ -25,6 +25,8 @@ export default {
           ...daysyThemes['light'],
           accent: '#ffdd04',
           secondary: '#222222',
+          success: '#00dd42',
+          warning: '#ffe749',
         },
       },
     ],
