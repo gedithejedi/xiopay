@@ -1,16 +1,8 @@
-'use client'
-
-import { useAccount } from 'wagmi'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { auth } from '@/auth'
 
-export default function Home() {
-  const { isConnected } = useAccount()
-  const [isHydrated, setIsHydrated] = useState(false)
-
-  useEffect(() => {
-    if (!isHydrated) setIsHydrated(true)
-  }, [])
+export default async function Home() {
+  const session = await auth()
 
   return (
     <div className="flex flex-col h-full">
@@ -27,12 +19,10 @@ export default function Home() {
         </div>
 
         <Link
-          href={isConnected ? '/dashboard' : '/login'}
+          href={session ? '/dashboard' : '/login'}
           className="btn btn-lg btn-accent text-2xl"
         >
-          {isHydrated && isConnected
-            ? 'Go to dashboard'
-            : 'Create your campaign'}
+          {session ? 'Go to dashboard' : 'Create your campaign'}
         </Link>
       </main>
     </div>
