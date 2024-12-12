@@ -24,7 +24,8 @@ $ forge build
 ### Test
 
 ```shell
-$ forge test
+$ forge test -vvv --fork-url neo_x_test
+$ forge test -vvv --fork-url neo_x
 ```
 
 ### Format
@@ -33,34 +34,20 @@ $ forge test
 $ forge fmt
 ```
 
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
 ### Deploy
 
 ```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+$ forge script script/Counter.s.sol:CounterScript --fork-url neo_x_test
 ```
 
-### Cast
-
+#### Deploy with broadcast
 ```shell
-$ cast <subcommand>
+$ forge script script/Counter.s.sol:CounterScript --rpc-url $TESTNET_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --verifier blockscout --verifier-url $TESTNET_BLOCK_SCOUT_API_KEY
 ```
 
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+### Environment variable
+- `PRIVATE_KEY`: Deployer wallet private key
+- `TESTNET_RPC_URL`
+- `MAINNET_RPC_URL`
+- `TESTNET_BLOCK_SCOUT_API_KEY`
+- `MAINNET_BLOCK_SCOUT_API_KEY`
