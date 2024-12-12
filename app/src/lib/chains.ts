@@ -15,7 +15,6 @@ export const neoXTestnet = /*#__PURE__*/ defineChain({
     default: {
       name: 'Blockscout',
       url: 'xt4scan.ngd.network',
-      // apiUrl: 'https://api-sepolia.etherscan.io/api',
     },
   },
   testnet: true,

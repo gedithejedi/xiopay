@@ -101,7 +101,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         symbol: 'GAS',
       },
       networkId: '12227332',
-      rpcUrls: ['testnet.rpc.banelabs.org'],
+      rpcUrls: ['https://testnet.rpc.banelabs.org'],
       vanityName: 'NeoX T4',
       shortName: 'GAS',
       chain: 'GAS',
