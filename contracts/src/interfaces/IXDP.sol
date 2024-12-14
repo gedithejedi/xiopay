@@ -1,4 +1,3 @@
-
 // SPDX-License-Identifier: GNU AGPLv3
 pragma solidity ^0.8.13;
 
@@ -27,14 +26,8 @@ interface IXDP {
 
     function donate(bytes32 _campaignId) external payable;
 
-    function donateWithPermit(
-        bytes32 _campaignId,
-        uint256 amount,
-        uint256 deadline,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external;
+    function donateWithPermit(bytes32 _campaignId, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s)
+        external;
 
     function withdraw(bytes32 _campaignId, uint256 _amount, address receiver) external;
 

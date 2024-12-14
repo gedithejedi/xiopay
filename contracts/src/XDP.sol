@@ -14,6 +14,7 @@ contract XDP {
         uint256 balance;
         uint8 status; // 0: disabled, 1: active
     }
+
     mapping(bytes32 => mapping(address => uint8)) private permissions;
 
     address public owner;
@@ -59,8 +60,8 @@ contract XDP {
         }
 
         campaigns[uid] = Campaign({
-            uid: uid, 
-            name: _name, 
+            uid: uid,
+            name: _name,
             status: 1, // Activate campaign
             balance: 0
         });
@@ -93,12 +94,14 @@ contract XDP {
         emit Donate(_campaignUid, msg.sender, msg.value);
     }
 
-    function donateWithPermit(bytes32 _campaignUid, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external {
+    function donateWithPermit(bytes32 _campaignUid, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s)
+        external
+    {
         require(amount > 0, "XDP: Amount must be greater than zero");
 
         // Call permit to allow this contract to spend user's tokens
         IERC20Permit(usdx).permit(msg.sender, address(this), amount, deadline, v, r, s);
-        
+
         // Transfer tokens to contract
         bool success = IERC20(usdx).transferFrom(msg.sender, address(this), amount);
         require(success, "XDP: Token transfer failed");
@@ -138,7 +141,7 @@ contract XDP {
     function _withdraw(bytes32 _campaignUid, uint256 _amount, address receiver) private {
         require(campaigns[_campaignUid].balance >= _amount, "XDP: Insufficient balance");
         require(permissions[_campaignUid][receiver] == 2, "XDP: Receiver not an admin");
-        
+
         // Decrease balance and transfer funds to receiver
         campaigns[_campaignUid].balance -= _amount;
         bool success = IERC20(usdx).transfer(receiver, _amount);
@@ -148,6 +151,7 @@ contract XDP {
     }
 
     function _updateMemberPermission(bytes32 _campaignUid, address _member, uint8 permissionLevel) private {
+        require(_member != address(0), "XDP: Invalid member address");
         permissions[_campaignUid][_member] = permissionLevel;
         emit MemberAdded(_campaignUid, _member, msg.sender);
     }
