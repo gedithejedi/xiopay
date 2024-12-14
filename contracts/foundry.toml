@@ -8,7 +8,9 @@ gasPrice = 20000000000 # 20 gwei
 [profile.networks]
 neo_x = { rpc_url = "${MAINNET_RPC_URL}", chain_id = 47763 }
 neo_x_test = { rpc_url = "${TESTNET_RPC_URL}", chain_id = 12227332 }
+sepolia = { rpc_url = "${SEPOLIA_RPC_URL}", chain_id = 11155111 }
 
 [profile.default.rpc_endpoints]
 neo_x = "${MAINNET_RPC_URL}"
 neo_x_test = "${TESTNET_RPC_URL}"
+sepolia = "${SEPOLIA_RPC_URL}"
