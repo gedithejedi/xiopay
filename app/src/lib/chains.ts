@@ -1,6 +1,6 @@
 import { Chain, defineChain, fallback, http } from 'viem'
-import { sepolia } from 'viem/chains'
 import { createConfig } from 'wagmi'
+import { sepolia } from 'viem/chains'
 
 export const neoXTestnet = /*#__PURE__*/ defineChain({
   id: 12227332,
@@ -8,7 +8,7 @@ export const neoXTestnet = /*#__PURE__*/ defineChain({
   nativeCurrency: { name: 'GAS', symbol: 'GAS', decimals: 18 },
   rpcUrls: {
     default: {
-      http: ['testnet.rpc.banelabs.org'],
+      http: ['https://testnet.rpc.banelabs.org'],
     },
   },
   blockExplorers: {
@@ -37,7 +37,11 @@ export const neoXMainnet = /*#__PURE__*/ defineChain({
   },
 })
 
-export const chains: readonly [Chain, ...Chain[]] = [neoXTestnet, neoXMainnet]
+export const chains: readonly [Chain, ...Chain[]] = [
+  neoXTestnet,
+  neoXMainnet,
+  sepolia,
+]
 
 export const wagmiProviderConfig = createConfig({
   chains,
