@@ -20,12 +20,29 @@ export const neoXTestnet = /*#__PURE__*/ defineChain({
   testnet: true,
 })
 
-export const chains: readonly [Chain, ...Chain[]] = [sepolia, neoXTestnet]
+export const neoXMainnet = /*#__PURE__*/ defineChain({
+  id: 47763,
+  name: 'NeoX',
+  nativeCurrency: { name: 'GAS', symbol: 'GAS', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['https://mainnet-2.rpc.banelabs.org'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Blockscout',
+      url: 'https://xexplorer.neo.org/',
+    },
+  },
+})
+
+export const chains: readonly [Chain, ...Chain[]] = [neoXTestnet, neoXMainnet]
 
 export const wagmiProviderConfig = createConfig({
   chains,
   transports: {
-    [sepolia.id]: fallback([http()]),
     [neoXTestnet.id]: fallback([http()]),
+    [neoXMainnet.id]: fallback([http()]),
   },
 })
