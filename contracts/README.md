@@ -41,8 +41,14 @@ $ forge script script/Deploy.s.sol:DeployScript --fork-url neo_x_test
 ```
 
 #### Deploy with broadcast
+
+- Deploy on neo x testnet
 ```shell
 $ forge script script/Deploy.s.sol:DeployScript --rpc-url $TESTNET_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --verifier blockscout --verifier-url $TESTNET_BLOCK_SCOUT_API_KEY
+```
+- Deploy on sepolia
+```shell
+$ forge script script/Deploy.s.sol:DeployScript --rpc-url $SEPOLIA_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --verifier blockscout --verifier-url $SEPOLIA_BLOCK_SCOUT_API_KEY
 ```
 
 ### Environment variable
