@@ -19,10 +19,12 @@ import { getCsrfToken, signOut } from 'next-auth/react'
 
 import { AuthContextProviderProps } from './AuthContextProvider.type'
 
-import { wagmiProviderConfig } from '@/lib/chains'
+import { neoXMainnet, neoXTestnet, wagmiProviderConfig } from '@/lib/chains'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
+import { getUser } from '@/utils/user/getUser'
+import { postUser } from '@/utils/user/postUser'
 
 const queryConfig: DefaultOptions = {
   queries: {
@@ -41,7 +43,9 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const router = useRouter()
 
-  const onAuthSuccess: OnAuthSuccess = async ({ isAuthenticated }) => {
+  const onAuthSuccess: OnAuthSuccess = async (args) => {
+    const dynamicUserId = args.user.userId
+    const isAuthenticated = args.isAuthenticated
     setIsLoading(true)
 
     const authToken = getAuthToken()
@@ -61,9 +65,25 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         csrfToken
       )}&token=${encodeURIComponent(authToken)}`,
     })
-      .then((res) => {
+      .then(async (res) => {
         if (res.ok && isAuthenticated) {
           toast.success('Successfully logged in')
+
+          //Dynamic user get/ create from the database
+          // if (dynamicUserId) {
+          //   const data = await getUser({ dynamicUserId })
+
+          //   if (data.status === 404) {
+          //     try {
+          //       await postUser({ dynamicUserId })
+          //       await queryClient.invalidateQueries({ queryKey: ['user'] })
+          //     } catch (err) {
+          //       toast.error('Something went wrong')
+          //       await args.handleLogOut()
+          //     }
+          //   }
+          // }
+
           router.push('/dashboard')
         } else {
           toast.error('Something went wrong, please try again!')
@@ -90,21 +110,38 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const evmNetworks = [
     {
-      blockExplorerUrls: ['xt4scan.ngd.network'],
-      chainId: '12227332',
-      chainName: 'Neo X Testnet T4',
+      blockExplorerUrls: [neoXMainnet.blockExplorers.default.url],
+      chainId: neoXMainnet.id,
+      chainName: neoXMainnet.name,
       iconUrls: ['https://neo-web.azureedge.net/images/logo%20files-dark.svg'],
-      name: 'NeoX T4',
+      name: neoXMainnet.name,
       nativeCurrency: {
-        decimals: 18,
-        name: 'GAS',
-        symbol: 'GAS',
+        decimals: neoXMainnet.nativeCurrency.decimals,
+        name: neoXMainnet.nativeCurrency.symbol,
+        symbol: neoXMainnet.nativeCurrency.symbol,
       },
-      networkId: '12227332',
-      rpcUrls: ['https://testnet.rpc.banelabs.org'],
-      vanityName: 'NeoX T4',
-      shortName: 'GAS',
-      chain: 'GAS',
+      networkId: neoXMainnet.id,
+      rpcUrls: [neoXMainnet.rpcUrls.default.http[0]],
+      vanityName: neoXMainnet.name,
+      shortName: neoXMainnet.nativeCurrency.symbol,
+      chain: neoXMainnet.nativeCurrency.symbol,
+    },
+    {
+      blockExplorerUrls: [neoXTestnet.blockExplorers.default.url],
+      chainId: neoXTestnet.id,
+      chainName: neoXTestnet.name,
+      iconUrls: ['https://neo-web.azureedge.net/images/logo%20files-dark.svg'],
+      name: neoXTestnet.name,
+      nativeCurrency: {
+        decimals: neoXTestnet.nativeCurrency.decimals,
+        name: neoXTestnet.nativeCurrency.symbol,
+        symbol: neoXTestnet.nativeCurrency.symbol,
+      },
+      networkId: neoXTestnet.id,
+      rpcUrls: [neoXTestnet.rpcUrls.default.http[0]],
+      vanityName: neoXTestnet.name,
+      shortName: neoXTestnet.nativeCurrency.symbol,
+      chain: neoXTestnet.nativeCurrency.symbol,
     },
   ]
 

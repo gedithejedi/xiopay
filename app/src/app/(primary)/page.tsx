@@ -5,7 +5,7 @@ export default async function Home() {
   const session = await auth()
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col min-h-full">
       <main className="flex flex-col flex-1 gap-8 items-center justify-center">
         <div className="flex flex-col gap-4">
           <h1 className="text-8xl font-bold tracking-tighter text-center">

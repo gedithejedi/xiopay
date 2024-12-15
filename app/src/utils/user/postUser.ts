@@ -8,11 +8,10 @@ export const postUser = async ({
   try {
     if (!dynamicUserId) throw new Error('No id provided.')
 
-    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/user`
-    const data = { dynamicUserId }
+    const apiUrl = `/api/user/${dynamicUserId}`
     const headers = { 'Content-Type': 'application/json' }
 
-    const response = await axios.post(apiUrl, data, { headers })
+    const response = await axios.post(apiUrl, { headers })
 
     return response
   } catch (error: any) {

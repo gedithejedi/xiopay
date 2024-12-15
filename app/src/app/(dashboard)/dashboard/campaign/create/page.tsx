@@ -3,34 +3,64 @@
 import Card from '@/components/atoms/Card'
 import PageTitle from '@/components/atoms/PageTitle'
 import DonationWidget from '@/components/organisms/DonationWidget'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { createCampaign } from '@/utils/transactions'
+import { useMutation } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import { useAccount } from 'wagmi'
+import campaignAbi from '@/constants/abi/campaign.json'
+import { Abi } from 'viem'
+import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
 
-interface CreateWidgetProps {
+interface CreateWidgetFormData {
   title: string
-  recipient: string
+  // recipient: string
 }
 
 export default function Home() {
-  const { address } = useAccount()
+  const { chain } = useAccount()
+  const chainId = chain?.id || ''
 
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<CreateWidgetProps>({
+  } = useForm<CreateWidgetFormData>({
     defaultValues: {
       title: 'My new campaign',
-      recipient: address,
     },
   })
 
   const campaignTitle = watch('title')
 
-  const onSubmit: SubmitHandler<CreateWidgetProps> = (data) => {
-    console.log(data)
-  }
+  const { mutate: onCreate, isPending: isCreating } = useMutation({
+    mutationFn: async (data: CreateWidgetFormData) => {
+      if (!chainId) {
+        return toast.error('Something went wrong while processing.')
+      }
+      if (!data.title) {
+        return toast.error('Title is required')
+      }
+
+      const contractAddress = getCampaignDeploymentAddress(chainId)
+
+      try {
+        const receipt = await createCampaign({
+          contractAddress,
+          name: data.title,
+          abi: campaignAbi as Abi,
+        })
+
+        console.log(receipt)
+        return
+      } catch (error) {
+        toast.error('Something went wrong while unwrapping.')
+        console.error(error)
+        return
+      }
+    },
+  })
 
   return (
     <div>
@@ -42,7 +72,7 @@ export default function Home() {
           <Card>
             <div className="flex gap-6 w-full flex-col">
               <div className="flex-1 pb-4">
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit((data) => onCreate(data))}>
                   <div className="flex flex-col gap-3">
                     <div>
                       <label className="input input-bordered flex items-center gap-2">
@@ -60,7 +90,7 @@ export default function Home() {
                       )}
                     </div>
 
-                    <div>
+                    {/* <div>
                       <label className="input input-bordered flex items-center gap-2">
                         <input
                           disabled
@@ -70,9 +100,11 @@ export default function Home() {
                           placeholder="Recipient wallet address"
                         />
                       </label>
-                    </div>
+                    </div> */}
 
-                    <button className="btn btn-accent">Create widget</button>
+                    <button className="btn btn-accent">
+                      {isCreating ? 'Creating...' : 'Create widget'}
+                    </button>
                   </div>
                 </form>
               </div>
@@ -83,7 +115,11 @@ export default function Home() {
         <div>
           <span className="text-lg">Preview:</span>
           <Card>
-            <DonationWidget isInCreate={true} title={campaignTitle} />
+            <DonationWidget
+              isInCreate={true}
+              title={campaignTitle}
+              campaignId={'ID'}
+            />
           </Card>
         </div>
       </div>

@@ -1,16 +1,27 @@
 'use client'
 
-import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import toast from 'react-hot-toast'
-import { DonateFormProps } from './DonationWidget.types'
+import { DonateFormData } from './DonationWidget.types'
+import { useMutation } from '@tanstack/react-query'
+import { useAccount } from 'wagmi'
+import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
+import { donateToCampaign } from '@/utils/transactions'
+import { Abi, parseEther } from 'viem'
+import campaignAbi from '@/constants/abi/campaign.json'
 
 function DonationWidget({
   isInCreate = false,
   title,
+  campaignId, // TODO: remove the default once done testing
 }: {
   isInCreate?: boolean
   title: string
+  campaignId: string
 }) {
+  const { address, chain } = useAccount()
+  const chainId = chain?.id || ''
+
   const {
     register,
     handleSubmit,
@@ -18,21 +29,68 @@ function DonationWidget({
     setValue,
     watch,
     formState: { errors },
-  } = useForm<DonateFormProps>({
+  } = useForm<DonateFormData>({
     defaultValues: {
       amount: 0,
       name: '',
       description: '',
     },
   })
-  const onSubmit: SubmitHandler<DonateFormProps> = (data) => {
-    if (data.amount <= 0)
-      return toast.error('Please enter an amount higher than 0.')
 
-    if (isInCreate) return toast.success('Kaching! you have a new donation.')
+  const { mutate: onDonate, isPending: isDonating } = useMutation({
+    mutationFn: async (data: DonateFormData) => {
+      if (!chainId) {
+        return toast.error('Something went wrong while processing.')
+      }
 
-    console.log(data)
-  }
+      if (data.amount <= 0)
+        return toast.error('Please enter an amount higher than 0.')
+
+      const rawAmount = data.amount
+
+      if (!rawAmount) return toast.error('Please enter an amount to donate.')
+
+      const contractAddress = getCampaignDeploymentAddress(chainId)
+      const amount = parseEther(rawAmount.toString())
+
+      console.log({
+        contractAddress,
+        amount,
+        campaignId,
+        permit: {
+          v: 0,
+          r: '0x',
+          s: '0x',
+          deadline: 0,
+        },
+        abi: campaignAbi as Abi,
+      })
+
+      if (isInCreate) return toast.success('Kaching! you have a new donation.')
+
+      try {
+        const receipt = await donateToCampaign({
+          contractAddress,
+          amount,
+          campaignId,
+          permit: {
+            v: 0,
+            r: '0x',
+            s: '0x',
+            deadline: 0,
+          },
+          abi: campaignAbi as Abi,
+        })
+
+        console.log(receipt)
+        return
+      } catch (error) {
+        toast.error('Something went wrong while unwrapping.')
+        console.error(error)
+        return
+      }
+    },
+  })
 
   const currentAmount = watch('amount')
 
@@ -42,7 +100,7 @@ function DonationWidget({
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit((data) => onDonate(data))}>
         <div className="flex flex-col gap-3">
           <div>
             <h2 className="text-xl mb-3 font-bold">{title}</h2>
@@ -106,6 +164,7 @@ function DonationWidget({
             )}
           />
           <button className="btn btn-accent">
+            {isDonating ? 'Donating...' : ''}
             {currentAmount > 0 ? `Donate $${currentAmount}` : 'Support'}
           </button>
         </div>

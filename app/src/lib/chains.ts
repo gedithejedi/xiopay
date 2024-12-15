@@ -48,5 +48,6 @@ export const wagmiProviderConfig = createConfig({
   transports: {
     [neoXTestnet.id]: fallback([http()]),
     [neoXMainnet.id]: fallback([http()]),
+    [sepolia.id]: fallback([http()]),
   },
 })

@@ -1,4 +1,4 @@
-export interface DonateFormProps {
+export interface DonateFormData {
   amount: number
   name: string
   description: string
