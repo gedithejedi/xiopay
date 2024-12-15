@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GNU AGPLv3
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.0;
 
 bytes32 constant EMPTY_UID = 0;
 
