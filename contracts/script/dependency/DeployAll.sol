@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GNU AGPLv3
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.0;
 
 import {Usdx} from "src/Usdx.sol";
 import {XDP} from "src/XDP.sol";

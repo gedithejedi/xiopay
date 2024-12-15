@@ -4,6 +4,7 @@ out = "out"
 libs = ["lib"]
 verifier = "blockscout"
 gasPrice = 20000000000 # 20 gwei
+solc_version = "0.8.20"
 
 [profile.networks]
 neo_x = { rpc_url = "${MAINNET_RPC_URL}", chain_id = 47763 }
