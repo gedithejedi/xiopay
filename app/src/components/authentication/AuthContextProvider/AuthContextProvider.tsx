@@ -23,8 +23,7 @@ import { neoXMainnet, neoXTestnet, wagmiProviderConfig } from '@/lib/chains'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
-import { getUser } from '@/utils/user/getUser'
-import { postUser } from '@/utils/user/postUser'
+import Loading from '@/components/atoms/Loading'
 
 const queryConfig: DefaultOptions = {
   queries: {
@@ -167,7 +166,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         <QueryClientProvider client={queryClient}>
           {
             <DynamicWagmiConnector suppressChainMismatchError>
-              {isLoading ? <p>Loading..</p> : children}
+              {isLoading ? <Loading /> : children}
             </DynamicWagmiConnector>
           }
         </QueryClientProvider>
