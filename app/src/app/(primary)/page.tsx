@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { auth } from '@/auth'
+import Token from '@/components/organisms/Token'
 
 export default async function Home() {
   const session = await auth()
@@ -7,7 +8,22 @@ export default async function Home() {
   return (
     <div className="flex flex-col min-h-full">
       <main className="flex flex-col flex-1 gap-8 items-center justify-center">
-        <div className="flex flex-col gap-4">
+        <Token
+          className="absolute top-40 left-60"
+          color="yellow"
+          effect="turn"
+        />
+        <Token
+          className="absolute top-80 right-60"
+          color="blue"
+          effect="jump"
+        />
+        <Token
+          className="absolute bottom-60 left-80"
+          color="green"
+          effect="jump"
+        />
+        <div className="flex flex-col gap-4 z-[1]">
           <h1 className="text-8xl font-bold tracking-tighter text-center">
             Fund your work
             <br /> with crypto
