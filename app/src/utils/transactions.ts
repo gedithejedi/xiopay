@@ -32,7 +32,7 @@ export const createCampaign = async ({
       args: [name],
       functionName: 'createCampaign',
     }
-
+    console.log(unwrapArgs)
     const res = await client.simulateContract(unwrapArgs)
     if (!res?.request) throw new Error('Something went wrong while simulating.')
 

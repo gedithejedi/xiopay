@@ -46,8 +46,14 @@ export const chains: readonly [Chain, ...Chain[]] = [
 export const wagmiProviderConfig = createConfig({
   chains,
   transports: {
-    [neoXTestnet.id]: fallback([http()]),
-    [neoXMainnet.id]: fallback([http()]),
+    [neoXTestnet.id]: fallback([
+      http('https://testnet.rpc.banelabs.org'),
+      http(),
+    ]),
+    [neoXMainnet.id]: fallback([
+      http('https://mainnet-2.rpc.banelabs.org'),
+      http(),
+    ]),
     [sepolia.id]: fallback([http()]),
   },
 })

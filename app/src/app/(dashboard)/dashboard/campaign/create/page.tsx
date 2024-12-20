@@ -11,6 +11,8 @@ import { useAccount } from 'wagmi'
 import campaignAbi from '@/constants/abi/campaign.json'
 import { Abi } from 'viem'
 import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
+import { useGetCampaigns } from '@/utils/campaign/getCampaigns'
+import { Chain } from '@/app/lib/chains'
 
 interface CreateWidgetFormData {
   title: string
@@ -20,6 +22,10 @@ interface CreateWidgetFormData {
 export default function Home() {
   const { chain } = useAccount()
   const chainId = chain?.id || ''
+
+  const { data: campaignData } = useGetCampaigns({
+    contractAddress: getCampaignDeploymentAddress(Chain.NEOX_TESTNET),
+  })
 
   const {
     register,
