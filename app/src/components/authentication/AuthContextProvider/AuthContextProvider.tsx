@@ -100,7 +100,6 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const onLogout = async () => {
     setIsLoading(true)
-
     await signOut({ callbackUrl: 'http://localhost:3000' })
     toast.success('Successfully logged out')
 

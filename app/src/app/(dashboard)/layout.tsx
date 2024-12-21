@@ -5,6 +5,7 @@ import { HiOutlineCollection } from 'react-icons/hi'
 import Link from 'next/link'
 import { useState } from 'react'
 import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core'
+import { usePathname } from 'next/navigation'
 import Button from '@/components/atoms/Button'
 
 interface MenuConfig {
@@ -13,27 +14,30 @@ interface MenuConfig {
   to: string
 }
 
-export default function StudioLayout({
+const menuConfig: MenuConfig[] = [
+  {
+    title: 'Home',
+    icon: HiOutlineHome,
+    to: '/dashboard',
+  },
+  {
+    title: 'Campaigns',
+    icon: HiOutlineCollection,
+    to: '/dashboard/campaign',
+  },
+]
+
+export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const [selectedConfig, setSelectedConfig] = useState('Home')
+  const path = usePathname()
+  const [selectedConfig, setSelectedConfig] = useState(
+    menuConfig.find((config) => config.to === path) ?? menuConfig[0]
+  )
 
   const { handleLogOut } = useDynamicContext()
-
-  const menuConfig: MenuConfig[] = [
-    {
-      title: 'Home',
-      icon: HiOutlineHome,
-      to: '/dashboard',
-    },
-    {
-      title: 'Campaigns',
-      icon: HiOutlineCollection,
-      to: '/dashboard/campaign',
-    },
-  ]
 
   return (
     <main>
@@ -85,16 +89,16 @@ export default function StudioLayout({
                   <li
                     key={item.title}
                     className=""
-                    onClick={() => setSelectedConfig(item.title)}
+                    onClick={() => setSelectedConfig(item)}
                   >
                     <Link
                       className={
-                        item.title === selectedConfig ? 'bg-base-300' : ''
+                        item.title === selectedConfig.title ? 'bg-base-300' : ''
                       }
                       href={item.to}
                     >
                       <item.icon
-                        className={`${item.title === selectedConfig ? 'fill-brand' : ''} text-[1.2rem]`}
+                        className={`${item.title === selectedConfig.title ? 'fill-brand' : ''} text-[1.2rem]`}
                       />
                       {item.title}
                     </Link>
