@@ -28,8 +28,7 @@ export const getCampaigns = async ({
     const data = logs.reduce((acc: any, log: any) => {
       const { args } = log
       const { campaignId: _campaignId, creator: _creator, name } = args
-      console.log('creator', creator?.toLowerCase())
-      console.log('_creator', _creator?.toLowerCase())
+
       if (creator) {
         if (creator?.toLowerCase() === _creator?.toLowerCase()) {
           acc.push({ campaignId: _campaignId, creator: _creator, name })

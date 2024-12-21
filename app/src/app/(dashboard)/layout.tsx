@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core'
 import { usePathname } from 'next/navigation'
+import Button from '@/components/atoms/Button'
 
 interface MenuConfig {
   title: string
@@ -105,12 +106,9 @@ export default function DashboardLayout({
                 ))}
               </ul>
 
-              <button
-                className="btn btn-sm btn-secondary"
-                onClick={() => handleLogOut()}
-              >
+              <Button styling="secondary" onClick={() => handleLogOut()}>
                 Logout
-              </button>
+              </Button>
             </aside>
           </div>
         </div>
