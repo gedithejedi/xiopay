@@ -5,6 +5,7 @@ import Button from '@/components/atoms/Button'
 import Card from '@/components/atoms/Card'
 import PageTitle from '@/components/atoms/PageTitle'
 import Spinner from '@/components/atoms/Spinner'
+import CampaignCard from '@/components/organisms/CampaignCard'
 import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
 import { getCampaigns } from '@/utils/campaign/getCampaigns'
 import { useQuery } from '@tanstack/react-query'
@@ -76,20 +77,18 @@ export default function Campaigns() {
       ) : (
         <div className="flex flex-col gap-4">
           {campaignData?.map((campaign) => (
-            <Card key={campaign.campaignId}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-lg font-semibold">{campaign.name}</p>
-                  <p className="text-sm">{campaign.creator}</p>
-                  <p className="text-sm">Balance: {campaign?.balance}</p>
-                </div>
-                <div>
-                  <Link href={`/dashboard/campaign/${campaign.campaignId}`}>
-                    <Button styling="secondary">View</Button>
-                  </Link>
-                </div>
+            <CampaignCard
+              key={campaign.campaignId}
+              name={campaign.name}
+              creator={campaign.creator}
+              balance={campaign?.balance ?? '0'}
+            >
+              <div className="flex w-full justify-end">
+                <Link href={`/dashboard/campaign/${campaign.campaignId}`}>
+                  <Button styling="secondary">View</Button>
+                </Link>
               </div>
-            </Card>
+            </CampaignCard>
           ))}
         </div>
       )}
