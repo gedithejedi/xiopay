@@ -1,7 +1,10 @@
 'use client'
+
 import Card from '@/components/atoms/Card'
 import PageTitle from '@/components/atoms/PageTitle'
+import useUnwrapParams from '@/hooks/unwrapParams'
 import { useGetCampaingById } from '@/utils/campaign/getCampaignById'
+import React from 'react'
 import { useMemo } from 'react'
 import { formatEther } from 'viem'
 
@@ -12,16 +15,13 @@ type Props = {
 }
 
 export default function Campaign({ params }: Props) {
-  const { id: campaignId } = params
+  const unwrappedParams = useUnwrapParams(Promise.resolve(params))
+  const campaignId = unwrappedParams?.id || ''
 
   const { data: campaignData, isLoading } = useGetCampaingById({
     contractAddress: '0xcaf52Cf7e810802e68b007DE479E07a674f1a170',
     campaignId,
   })
-
-  if (isLoading) {
-    return <p>Loading...</p>
-  }
 
   const contractBalance = useMemo(() => {
     if (!campaignData) return 0
@@ -29,6 +29,10 @@ export default function Campaign({ params }: Props) {
     const balance = formatEther(campaignData.balance)
     return balance
   }, [campaignData])
+
+  if (isLoading) {
+    return <p>Loading...</p>
+  }
 
   return (
     <>
