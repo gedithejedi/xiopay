@@ -1,3 +1,5 @@
-export default function Loading() {
-  return <div>Loading...</div>
+import Loading from '@/components/atoms/Loading'
+
+export default function LoadingPage() {
+  return <Loading />
 }

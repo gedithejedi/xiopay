@@ -4,6 +4,7 @@ import { Chain } from '@/app/lib/chains'
 import Button from '@/components/atoms/Button'
 import Card from '@/components/atoms/Card'
 import PageTitle from '@/components/atoms/PageTitle'
+import Spinner from '@/components/atoms/Spinner'
 import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
 import { getCampaigns } from '@/utils/campaign/getCampaigns'
 import { useQuery } from '@tanstack/react-query'
@@ -36,7 +37,11 @@ export default function Campaigns() {
   })
 
   if (isLoading) {
-    return <p>Loading...</p>
+    return (
+      <div className="flex justify-center items-center w-full h-full">
+        <Spinner className="w-10 h-10" />
+      </div>
+    )
   }
 
   return (
