@@ -36,7 +36,6 @@ export const useGetCampaingById = ({
     queryKey: ['campaign', contractAddress, campaignId],
     queryFn: () => getCampaignById({ contractAddress, campaignId }),
     enabled: !!contractAddress || !!campaignId,
-    staleTime: 300000,
     ...config,
   })
 }

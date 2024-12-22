@@ -28,7 +28,7 @@ export default function Campaign({ params }: Props) {
   const contractBalance = useMemo(() => {
     if (!campaignData) return 0
 
-    const balance = formatEther(campaignData.balance)
+    const balance = formatEther(campaignData.balance || BigInt('0'))
     return balance
   }, [campaignData])
 
