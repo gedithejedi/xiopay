@@ -5,20 +5,35 @@ import Button from '@/components/atoms/Button'
 import Card from '@/components/atoms/Card'
 import PageTitle from '@/components/atoms/PageTitle'
 import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
-import { useGetCampaigns } from '@/utils/campaign/getCampaigns'
+import { getCampaigns } from '@/utils/campaign/getCampaigns'
+import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 import { HiOutlineFolder } from 'react-icons/hi'
+import { formatEther } from 'viem'
 import { useAccount } from 'wagmi'
 
 export default function Campaigns() {
   const { address, isConnected } = useAccount()
+  const contractAddress = getCampaignDeploymentAddress(Chain.NEOX_TESTNET)
+  const creator = address || ''
 
-  const { data: campaignData, isLoading } = useGetCampaigns({
-    contractAddress: getCampaignDeploymentAddress(Chain.NEOX_TESTNET),
-    creator: address || '',
+  const { data: campaignData, isLoading } = useQuery({
+    queryKey: ['campaign', contractAddress, creator],
+    queryFn: async () => {
+      try {
+        const campaigns = await getCampaigns({ contractAddress, creator })
+
+        return campaigns?.map((campaign) => ({
+          ...campaign,
+          balance: formatEther(campaign.balance),
+        }))
+      } catch (error: any) {
+        console.error(error)
+        return []
+      }
+    },
+    enabled: !!contractAddress && !!creator,
   })
-
-  console.log(campaignData)
 
   if (isLoading) {
     return <p>Loading...</p>
@@ -61,10 +76,11 @@ export default function Campaigns() {
                 <div>
                   <p className="text-lg font-semibold">{campaign.name}</p>
                   <p className="text-sm">{campaign.creator}</p>
+                  <p className="text-sm">Balance: {campaign?.balance}</p>
                 </div>
                 <div>
                   <Link href={`/dashboard/campaign/${campaign.campaignId}`}>
-                    View
+                    <Button styling="secondary">View</Button>
                   </Link>
                 </div>
               </div>

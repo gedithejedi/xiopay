@@ -8,7 +8,7 @@ interface GetParams {
 }
 
 export async function GET(_: NextRequest, context: { params: GetParams }) {
-  const { campaignId, contractAddress } = context.params
+  const { campaignId, contractAddress } = await context.params
 
   if (!campaignId || !contractAddress) {
     return NextResponse.json({ error: 'Missing args' }, { status: 404 })

@@ -20,11 +20,12 @@ interface CreateWidgetFormData {
 }
 
 export default function Home() {
-  const { chain } = useAccount()
+  const { chain, address } = useAccount()
   const chainId = chain?.id || ''
 
   const { data: campaignData } = useGetCampaigns({
     contractAddress: getCampaignDeploymentAddress(Chain.NEOX_TESTNET),
+    creator: address || '',
   })
 
   const {
@@ -49,6 +50,14 @@ export default function Home() {
         return toast.error('Title is required')
       }
 
+      if (
+        !!campaignData &&
+        campaignData.length > 0 &&
+        campaignData.find((c) => c.name === data.title)
+      ) {
+        return toast.error('Campaign with this name already exists')
+      }
+
       const contractAddress = getCampaignDeploymentAddress(chainId)
 
       try {
@@ -58,7 +67,6 @@ export default function Home() {
           abi: campaignAbi as Abi,
         })
 
-        console.log(receipt)
         return
       } catch (error) {
         toast.error('Something went wrong while unwrapping.')
