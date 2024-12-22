@@ -8,6 +8,7 @@ import { useGetCampaingById } from '@/utils/campaign/getCampaignById'
 import React from 'react'
 import { useMemo } from 'react'
 import { formatEther } from 'viem'
+import { FaRegUser, FaWallet } from 'react-icons/fa'
 
 type Props = {
   params: {
@@ -44,9 +45,27 @@ export default function Campaign({ params }: Props) {
       <PageTitle>Campaign</PageTitle>
 
       <Card>
-        <p>{campaignData?.name}</p>
-        <p>{campaignData?.creator}</p>
-        <p>Balance: {contractBalance}</p>
+        <div className="flex justify-between ">
+          <h2 className="text-2xl font-bold tracking-tight">
+            {campaignData?.name || 'Campaign Name'}
+          </h2>
+          <div className="my-2 flex items-center gap-3 font-medium text-gray-500">
+            <FaRegUser className="h-4 w-4" />
+            <span className="text-sm">
+              Created by: {campaignData?.creator || 'Unknown Creator'}
+            </span>
+          </div>
+        </div>
+        <hr className="my-4" />
+        <div className="flex flex-col gap-y-4 px-4">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-4 text-base font-semibold">
+              <FaWallet className="h-5 w-5" />
+              <p>Balance</p>
+              <p className="font-semibold">{contractBalance || '0'}</p>
+            </div>
+          </div>
+        </div>
       </Card>
     </>
   )
