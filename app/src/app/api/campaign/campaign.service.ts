@@ -1,10 +1,11 @@
 import logger from '@/app/lib/logger'
-import { indexContractEvents } from '@/lib/indexer'
+import { indexContractEvents, readContract } from '@/lib/indexer'
 
 export interface Campaign {
   campaignId: string
   creator: string
   name: string
+  balance: string
 }
 
 interface CampaignsGetRequest {
@@ -23,25 +24,45 @@ export const getCampaigns = async ({
   creator,
 }: CampaignsGetRequest): Promise<CampaignsGetResponse> => {
   try {
-    const logs = await indexContractEvents(contractAddress)
+    const logs = (await indexContractEvents(contractAddress)) as any[]
+    const allCampaigns = [] as Campaign[]
 
-    const data = logs.reduce((acc: any, log: any) => {
+    for (const log of logs) {
       const { args } = log
       const { campaignId: _campaignId, creator: _creator, name } = args
 
       if (creator) {
         if (creator?.toLowerCase() === _creator?.toLowerCase()) {
-          acc.push({ campaignId: _campaignId, creator: _creator, name })
+          //Fetch campaign balance
+          const balance = (await readContract(contractAddress, 'getBalance', [
+            _campaignId,
+          ])) as BigInt
+
+          allCampaigns.push({
+            campaignId: _campaignId,
+            creator: _creator,
+            name,
+            balance: balance?.toString(),
+          })
         }
-        return acc
+
+        continue
       }
 
-      acc.push({ campaignId: _campaignId, creator, name })
+      //Fetch campaign balance
+      const balance = (await readContract(contractAddress, 'getBalance', [
+        _campaignId,
+      ])) as BigInt
 
-      return acc
-    }, [])
+      allCampaigns.push({
+        campaignId: _campaignId,
+        creator: _creator,
+        name,
+        balance: balance?.toString(),
+      })
+    }
 
-    return { status: 200, data }
+    return { status: 200, data: allCampaigns }
   } catch (e: any) {
     logger.error(`Error getting contract ${contractAddress}: ${e}`)
     return {
@@ -83,7 +104,12 @@ export const getWithCampaignId = async ({
       return { status: 404, error: 'Campaign not found' }
     }
 
-    return { status: 200, data }
+    //Fetch campaign balance
+    const balance = (await readContract(contractAddress, 'getBalance', [
+      campaignId,
+    ])) as BigInt
+
+    return { status: 200, data: { ...data, balance: balance?.toString() } }
   } catch (e: any) {
     logger.error(`Error getting contract ${contractAddress}: ${e}`)
     return {

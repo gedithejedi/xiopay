@@ -1,6 +1,9 @@
 'use client'
+import Card from '@/components/atoms/Card'
 import PageTitle from '@/components/atoms/PageTitle'
 import { useGetCampaingById } from '@/utils/campaign/getCampaignById'
+import { useMemo } from 'react'
+import { formatEther } from 'viem'
 
 type Props = {
   params: {
@@ -16,20 +19,26 @@ export default function Campaign({ params }: Props) {
     campaignId,
   })
 
-  console.log(campaignData)
+  if (isLoading) {
+    return <p>Loading...</p>
+  }
+
+  const contractBalance = useMemo(() => {
+    if (!campaignData) return 0
+
+    const balance = formatEther(campaignData.balance)
+    return balance
+  }, [campaignData])
 
   return (
     <>
       <PageTitle>Campaign</PageTitle>
 
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <div>
-          <p>{campaignData?.name}</p>
-          <p>{campaignData?.creator}</p>
-        </div>
-      )}
+      <Card>
+        <p>{campaignData?.name}</p>
+        <p>{campaignData?.creator}</p>
+        <p>Balance: {contractBalance}</p>
+      </Card>
     </>
   )
 }
