@@ -18,12 +18,12 @@ const menuConfig: MenuConfig[] = [
   {
     title: 'Home',
     icon: HiOutlineHome,
-    to: '/dashboard',
+    to: '/',
   },
   {
     title: 'Campaigns',
     icon: HiOutlineCollection,
-    to: '/dashboard/campaign',
+    to: '/campaign',
   },
 ]
 
@@ -34,7 +34,13 @@ export default function DashboardLayout({
 }>) {
   const path = usePathname()
   const [selectedConfig, setSelectedConfig] = useState(
-    menuConfig.find((config) => path.startsWith(config.to)) ?? menuConfig[0]
+    menuConfig.find((config) => {
+      const currentPath = path.replace('/dashboard', '')
+      if (config.title === 'Home') {
+        return currentPath === config.to
+      }
+      return currentPath.startsWith(config.to)
+    }) ?? menuConfig[0]
   )
 
   const { handleLogOut } = useDynamicContext()
@@ -95,7 +101,7 @@ export default function DashboardLayout({
                       className={
                         item.title === selectedConfig.title ? 'bg-base-300' : ''
                       }
-                      href={item.to}
+                      href={`/dashboard${item.to}`}
                     >
                       <item.icon
                         className={`${item.title === selectedConfig.title ? 'fill-brand' : ''} text-[1.2rem]`}
