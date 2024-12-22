@@ -10,7 +10,7 @@ export async function GET(
   request: NextRequest,
   context: { params: GetParams }
 ) {
-  const { contractAddress } = context.params
+  const { contractAddress } = await context.params
   const creator = request.nextUrl.searchParams.get('creator')
 
   if (!contractAddress) {
