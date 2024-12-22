@@ -34,7 +34,7 @@ export default function DashboardLayout({
 }>) {
   const path = usePathname()
   const [selectedConfig, setSelectedConfig] = useState(
-    menuConfig.find((config) => config.to === path) ?? menuConfig[0]
+    menuConfig.find((config) => path.startsWith(config.to)) ?? menuConfig[0]
   )
 
   const { handleLogOut } = useDynamicContext()

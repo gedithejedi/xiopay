@@ -4,7 +4,7 @@ import { getPublicClient } from 'wagmi/actions'
 
 export enum EventTypes {
   Create = 'CampaignCreated',
-  Updade = 'CampaignUpdated',
+  Update = 'CampaignUpdated',
   Delete = 'CampaignDeleted',
 }
 
@@ -12,7 +12,7 @@ const getEventFunction = (event: EventTypes) => {
   switch (event) {
     case EventTypes.Create:
       return 'event CampaignCreated(bytes32 indexed campaignId, address indexed creator, string name)'
-    case EventTypes.Updade:
+    case EventTypes.Update:
       return 'event CampaignUpdated(bytes32 indexed campaignId, address indexed updater, string name)'
     case EventTypes.Delete:
       return 'event CampaignDeleted(bytes32 indexed campaignId, address indexed deleter)'
