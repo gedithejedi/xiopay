@@ -32,11 +32,11 @@ const Button = ({
 }
 
 export const buttonBase =
-  'flex gap-1 group cursor-pointer items-center whitespace-nowrap rounded-lg border text-sm font-medium transition duration-200 disabled:pointer-events-none disabled:text-subdued'
+  'flex gap-1 group cursor-pointer items-center whitespace-nowrap rounded-lg border text-[16px] font-medium transition duration-200 disabled:pointer-events-none disabled:text-subdued'
 
 export const buttonStyles: Record<ButtonStyleTypes, string> = {
-  primary: 'btn btn-accent btn-sm',
-  secondary: 'btn btn-sm btn-secondary',
+  primary: 'btn btn-accent',
+  secondary: 'btn btn-secondary',
 }
 
 export default Button

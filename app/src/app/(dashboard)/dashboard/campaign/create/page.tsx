@@ -2,7 +2,6 @@
 
 import Card from '@/components/atoms/Card'
 import PageTitle from '@/components/atoms/PageTitle'
-import DonationWidget from '@/components/organisms/DonationWidget'
 import { createCampaign } from '@/utils/transactions'
 import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
@@ -13,6 +12,9 @@ import { Abi } from 'viem'
 import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
 import { useGetCampaigns } from '@/utils/campaign/getCampaigns'
 import { Chain } from '@/app/lib/chains'
+import Button from '@/components/atoms/Button'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 interface CreateWidgetFormData {
   title: string
@@ -23,23 +25,24 @@ export default function Home() {
   const { chain, address } = useAccount()
   const chainId = chain?.id || ''
 
+  const [isDeployed, setIsDeployed] = useState(false)
+
   const { data: campaignData } = useGetCampaigns({
     contractAddress: getCampaignDeploymentAddress(Chain.NEOX_TESTNET),
     creator: address || '',
   })
 
+  const router = useRouter()
+
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<CreateWidgetFormData>({
     defaultValues: {
       title: 'My new campaign',
     },
   })
-
-  const campaignTitle = watch('title')
 
   const { mutate: onCreate, isPending: isCreating } = useMutation({
     mutationFn: async (data: CreateWidgetFormData) => {
@@ -67,6 +70,33 @@ export default function Home() {
           abi: campaignAbi as Abi,
         })
 
+        if (!receipt) {
+          toast.error('Something went wrong while creating the campaign.')
+          return
+        }
+
+        const topic =
+          '0xc45b06cdba4c6571442bc66a5f531757b478e6a049b3c25a8418919893769f06'
+
+        const log = receipt.logs.find((log) => {
+          if (log.topics[0] === topic) {
+            return true
+          }
+
+          return false
+        })
+
+        if (!log) {
+          toast.error('Something went wrong while creating the campaign.')
+          return
+        }
+
+        const campaignId = log.topics[1]
+        setIsDeployed(true)
+
+        toast.success('Successfully created your campaign.')
+        router.push(`/dashboard/campaign/${campaignId}`)
+
         return
       } catch (error) {
         toast.error('Something went wrong while unwrapping.')
@@ -82,7 +112,6 @@ export default function Home() {
 
       <div className="flex flex-col gap-6">
         <div>
-          <span className="text-lg">Create widget:</span>
           <Card>
             <div className="flex gap-6 w-full flex-col">
               <div className="flex-1 pb-4">
@@ -116,9 +145,19 @@ export default function Home() {
                       </label>
                     </div> */}
 
-                    <button className="btn btn-accent">
-                      {isCreating ? 'Creating...' : 'Create widget'}
-                    </button>
+                    <Button
+                      styling="secondary"
+                      className="btn btn-accent"
+                      disabled={isDeployed}
+                      loading={isCreating || isDeployed}
+                      type="submit"
+                    >
+                      {isCreating
+                        ? 'Creating...'
+                        : isDeployed
+                          ? 'Campaign created'
+                          : 'Create widget'}
+                    </Button>
                   </div>
                 </form>
               </div>
@@ -126,7 +165,7 @@ export default function Home() {
           </Card>
         </div>
 
-        <div>
+        {/* <div>
           <span className="text-lg">Preview:</span>
           <Card>
             <DonationWidget
@@ -135,7 +174,7 @@ export default function Home() {
               campaignId={'ID'}
             />
           </Card>
-        </div>
+        </div> */}
       </div>
     </div>
   )
