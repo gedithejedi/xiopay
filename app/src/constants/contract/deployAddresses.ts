@@ -13,10 +13,10 @@ export const getCampaignDeploymentAddress = (chain: Chain) => {
   }
 }
 
-export const getTokenAddresses = (chain: Chain) => {
+export const getTokenAddress = (chain: Chain) => {
   switch (chain) {
     case Chain.NEOX_TESTNET:
-      '0xcaf52cf7e810802e68b007de479e07a674f1a170'
+      return '0x6995948f1ed59158d5c6071d081848df00482db6'
     case Chain.NEOX:
       return ''
     case Chain.SEPOLIA:

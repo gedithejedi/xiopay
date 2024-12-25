@@ -19,11 +19,12 @@ import { getCsrfToken, signOut } from 'next-auth/react'
 
 import { AuthContextProviderProps } from './AuthContextProvider.type'
 
-import { neoXMainnet, neoXTestnet, wagmiProviderConfig } from '@/lib/chains'
-import { useState } from 'react'
+import { wagmiProviderConfig } from '@/lib/chains'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import Loading from '@/components/atoms/Loading'
+import { neoxT4 } from 'viem/chains'
 
 const queryConfig: DefaultOptions = {
   queries: {
@@ -39,6 +40,7 @@ export const queryClient = new QueryClient({ defaultOptions: queryConfig })
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
 
   const router = useRouter()
 
@@ -107,41 +109,46 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   }
 
   const evmNetworks = [
+    // {
+    //   blockExplorerUrls: [neoXMainnet.blockExplorers.default.url],
+    //   chainId: neoXMainnet.id,
+    //   chainName: neoXMainnet.name,
+    //   iconUrls: ['https://neo-web.azureedge.net/images/logo%20files-dark.svg'],
+    //   name: neoXMainnet.name,
+    //   nativeCurrency: {
+    //     decimals: neoXMainnet.nativeCurrency.decimals,
+    //     name: neoXMainnet.nativeCurrency.symbol,
+    //     symbol: neoXMainnet.nativeCurrency.symbol,
+    //   },
+    //   networkId: neoXMainnet.id,
+    //   rpcUrls: [neoXMainnet.rpcUrls.default.http[0]],
+    //   vanityName: neoXMainnet.name,
+    //   shortName: neoXMainnet.nativeCurrency.symbol,
+    //   chain: neoXMainnet.nativeCurrency.symbol,
+    // },
     {
-      blockExplorerUrls: [neoXMainnet.blockExplorers.default.url],
-      chainId: neoXMainnet.id,
-      chainName: neoXMainnet.name,
+      blockExplorerUrls: [neoxT4.blockExplorers.default.url],
+      chainId: neoxT4.id,
+      chainName: neoxT4.name,
       iconUrls: ['https://neo-web.azureedge.net/images/logo%20files-dark.svg'],
-      name: neoXMainnet.name,
+      name: neoxT4.name,
       nativeCurrency: {
-        decimals: neoXMainnet.nativeCurrency.decimals,
-        name: neoXMainnet.nativeCurrency.symbol,
-        symbol: neoXMainnet.nativeCurrency.symbol,
+        decimals: neoxT4.nativeCurrency.decimals,
+        name: neoxT4.nativeCurrency.symbol,
+        symbol: neoxT4.nativeCurrency.symbol,
       },
-      networkId: neoXMainnet.id,
-      rpcUrls: [neoXMainnet.rpcUrls.default.http[0]],
-      vanityName: neoXMainnet.name,
-      shortName: neoXMainnet.nativeCurrency.symbol,
-      chain: neoXMainnet.nativeCurrency.symbol,
-    },
-    {
-      blockExplorerUrls: [neoXTestnet.blockExplorers.default.url],
-      chainId: neoXTestnet.id,
-      chainName: neoXTestnet.name,
-      iconUrls: ['https://neo-web.azureedge.net/images/logo%20files-dark.svg'],
-      name: neoXTestnet.name,
-      nativeCurrency: {
-        decimals: neoXTestnet.nativeCurrency.decimals,
-        name: neoXTestnet.nativeCurrency.symbol,
-        symbol: neoXTestnet.nativeCurrency.symbol,
-      },
-      networkId: neoXTestnet.id,
-      rpcUrls: [neoXTestnet.rpcUrls.default.http[0]],
-      vanityName: neoXTestnet.name,
-      shortName: neoXTestnet.nativeCurrency.symbol,
-      chain: neoXTestnet.nativeCurrency.symbol,
+      networkId: neoxT4.id,
+      rpcUrls: [neoxT4.rpcUrls.default.http[0]],
+      vanityName: neoxT4.name,
+      shortName: neoxT4.nativeCurrency.name,
+      chain: neoxT4.nativeCurrency.symbol,
     },
   ]
+
+  useEffect(() => {
+    if (!!isHydrated) return
+    setIsHydrated(true)
+  }, [])
 
   return (
     <DynamicContextProvider
@@ -164,8 +171,8 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       <WagmiProvider config={wagmiProviderConfig}>
         <QueryClientProvider client={queryClient}>
           {
-            <DynamicWagmiConnector suppressChainMismatchError>
-              {isLoading ? <Loading /> : children}
+            <DynamicWagmiConnector>
+              {isLoading || !isHydrated ? <Loading /> : children}
             </DynamicWagmiConnector>
           }
         </QueryClientProvider>

@@ -66,7 +66,11 @@ export default function DashboardLayout({
               ></path>
             </svg>
           </label>
-          <div className="font-semibold text-lg">XioPay</div>
+          <div className="font-semibold text-lg">
+            <Link href={`/dashboard`}>
+              <span className="text-3xl font-bold">XioPay</span>
+            </Link>
+          </div>
         </div>
 
         <div className="drawer lg:drawer-open w-full h-full">

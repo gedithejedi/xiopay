@@ -1,59 +1,34 @@
-import { Chain, defineChain, fallback, http } from 'viem'
+import { Chain, http } from 'viem'
 import { createConfig } from 'wagmi'
-import { sepolia } from 'viem/chains'
+import { neoxMainnet, neoxT4 } from 'viem/chains'
+import { Chain as ChainI } from '@/app/lib/chains'
 
-export const neoXTestnet = /*#__PURE__*/ defineChain({
-  id: 12227332,
-  name: 'NeoX T4',
-  nativeCurrency: { name: 'GAS', symbol: 'GAS', decimals: 18 },
-  rpcUrls: {
-    default: {
-      http: ['https://testnet.rpc.banelabs.org'],
-    },
-  },
-  blockExplorers: {
-    default: {
-      name: 'Blockscout',
-      url: 'xt4scan.ngd.network',
-    },
-  },
-  testnet: true,
-})
-
-export const neoXMainnet = /*#__PURE__*/ defineChain({
-  id: 47763,
-  name: 'NeoX',
-  nativeCurrency: { name: 'GAS', symbol: 'GAS', decimals: 18 },
-  rpcUrls: {
-    default: {
-      http: ['https://mainnet-2.rpc.banelabs.org'],
-    },
-  },
-  blockExplorers: {
-    default: {
-      name: 'Blockscout',
-      url: 'https://xexplorer.neo.org/',
-    },
-  },
-})
+export const chainIdToViemChain = (chainId: number): Chain | undefined => {
+  switch (chainId) {
+    case ChainI.NEOX_TESTNET:
+      return neoxT4 as Chain
+    case ChainI.NEOX:
+      return neoxMainnet as Chain
+    default:
+      return undefined
+  }
+}
 
 export const chains: readonly [Chain, ...Chain[]] = [
-  neoXTestnet,
-  neoXMainnet,
-  sepolia,
+  neoxT4 as Chain,
+  // neoXMainnet,
+  // sepolia,
 ]
 
 export const wagmiProviderConfig = createConfig({
   chains,
+  multiInjectedProviderDiscovery: false,
   transports: {
-    [neoXTestnet.id]: fallback([
-      http('https://testnet.rpc.banelabs.org'),
-      http(),
-    ]),
-    [neoXMainnet.id]: fallback([
-      http('https://mainnet-2.rpc.banelabs.org'),
-      http(),
-    ]),
-    [sepolia.id]: fallback([http()]),
+    [neoxT4.id]: http(),
+    // [neoXMainnet.id]: fallback([
+    //   http('https://mainnet-2.rpc.banelabs.org'),
+    //   http(),
+    // ]),
+    // [sepolia.id]: fallback([http()]),
   },
 })

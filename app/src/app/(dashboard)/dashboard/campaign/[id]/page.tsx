@@ -1,6 +1,5 @@
 'use client'
 
-import Card from '@/components/atoms/Card'
 import PageTitle from '@/components/atoms/PageTitle'
 import Spinner from '@/components/atoms/Spinner'
 import useUnwrapParams from '@/hooks/unwrapParams'
@@ -9,6 +8,8 @@ import React from 'react'
 import { useMemo } from 'react'
 import { formatEther } from 'viem'
 import CampaignCard from '@/components/organisms/CampaignCard'
+import Link from 'next/link'
+import Button from '@/components/atoms/Button'
 
 type Props = {
   params: {
@@ -48,7 +49,13 @@ export default function Campaign({ params }: Props) {
         name={campaignData?.name || 'Campaign Name'}
         creator={campaignData?.creator || 'Unknown Creator'}
         balance={contractBalance || '0'}
-      />
+      >
+        <div className="flex w-full justify-end">
+          <Link href={`/donate/${campaignId}`} target="_blank">
+            <Button styling={'secondary'}>View page</Button>
+          </Link>
+        </div>
+      </CampaignCard>
     </>
   )
 }

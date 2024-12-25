@@ -22,7 +22,8 @@ export const getCampaigns = async ({
 
     return data.data
   } catch (error: any) {
-    toast.error(error.message)
+    console.error(error)
+    toast.error('Something went wrong while fetching campaigns.')
     return []
   }
 }

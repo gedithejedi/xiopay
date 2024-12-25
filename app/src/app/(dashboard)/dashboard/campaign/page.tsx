@@ -85,7 +85,7 @@ export default function Campaigns() {
             >
               <div className="flex w-full justify-end">
                 <Link href={`/dashboard/campaign/${campaign.campaignId}`}>
-                  <Button styling="secondary">View</Button>
+                  <Button styling="secondary">Edit campaign</Button>
                 </Link>
               </div>
             </CampaignCard>

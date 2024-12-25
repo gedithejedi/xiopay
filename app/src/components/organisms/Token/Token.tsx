@@ -9,12 +9,14 @@ interface TokenProps {
   color?: string
   effect?: 'turn' | 'jump'
   className?: string
+  Svg?: React.ReactNode
 }
 
 const Token: React.FC<TokenProps> = ({
   size = 120,
   color,
   effect = 'turn',
+  Svg,
   className,
 }) => {
   const tokenColor = color || `hsl(${Math.random() * 360}, 70%, 50%)`
@@ -46,9 +48,15 @@ const Token: React.FC<TokenProps> = ({
       onMouseEnter={handleHover}
       onMouseLeave={handleMouseLeave}
     >
-      <circle cx="50" cy="50" r="45" fill={tokenColor} />
-      <circle cx="50" cy="50" r="35" fill="white" fillOpacity="0.3" />
-      <path d="M50 20 L80 65 L20 65 Z" fill="white" fillOpacity="0.5" />
+      {Svg ? (
+        Svg
+      ) : (
+        <>
+          <circle cx="50" cy="50" r="45" fill={tokenColor} />
+          <circle cx="50" cy="50" r="35" fill="white" fillOpacity="0.3" />
+          <path d="M50 20 L80 65 L20 65 Z" fill="white" fillOpacity="0.5" />
+        </>
+      )}
     </animated.svg>
   )
 }

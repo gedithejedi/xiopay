@@ -5,10 +5,14 @@ import toast from 'react-hot-toast'
 import { DonateFormData } from './DonationWidget.types'
 import { useMutation } from '@tanstack/react-query'
 import { useAccount } from 'wagmi'
-import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
-import { donateToCampaign } from '@/utils/transactions'
-import { Abi, parseEther } from 'viem'
-import campaignAbi from '@/constants/abi/campaign.json'
+import {
+  getCampaignDeploymentAddress,
+  getTokenAddress,
+} from '@/constants/contract/deployAddresses'
+import { getPermit } from '@/utils/transactions'
+import { parseEther } from 'viem'
+import Button from '@/components/atoms/Button'
+import { postPermitDonation } from '@/utils/donate/postPermitDonation'
 
 function DonationWidget({
   isInCreate = false,
@@ -19,7 +23,7 @@ function DonationWidget({
   title: string
   campaignId: string
 }) {
-  const { address, chain } = useAccount()
+  const { chain, address } = useAccount()
   const chainId = chain?.id || ''
 
   const {
@@ -39,7 +43,7 @@ function DonationWidget({
 
   const { mutate: onDonate, isPending: isDonating } = useMutation({
     mutationFn: async (data: DonateFormData) => {
-      if (!chainId) {
+      if (!chainId || !address) {
         return toast.error('Something went wrong while processing.')
       }
 
@@ -51,41 +55,39 @@ function DonationWidget({
       if (!rawAmount) return toast.error('Please enter an amount to donate.')
 
       const contractAddress = getCampaignDeploymentAddress(chainId)
-      const amount = parseEther(rawAmount.toString())
+      const tokenAddress = getTokenAddress(chainId)
 
-      console.log({
-        contractAddress,
-        amount,
-        campaignId,
-        permit: {
-          v: 0,
-          r: '0x',
-          s: '0x',
-          deadline: 0,
-        },
-        abi: campaignAbi as Abi,
-      })
+      const amount = parseEther(rawAmount.toString())
 
       if (isInCreate) return toast.success('Kaching! you have a new donation.')
 
+      const permit = await getPermit({
+        chainId,
+        tokenAddress,
+        account: address, // User address
+        toAddress: contractAddress, // Donation contract address
+        amount,
+      })
+
+      if (!permit) {
+        return toast.error(
+          'Something went wrong while signing the donation transaction.'
+        )
+      }
+
+      console.log(permit)
       try {
-        const receipt = await donateToCampaign({
-          contractAddress,
-          amount,
+        const res = await postPermitDonation({
           campaignId,
-          permit: {
-            v: 0,
-            r: '0x',
-            s: '0x',
-            deadline: 0,
-          },
-          abi: campaignAbi as Abi,
+          contractAddress,
+          chainId: chainId.toString(),
+          txData: permit,
         })
 
-        console.log(receipt)
-        return
+        console.log(res)
+        return res
       } catch (error) {
-        toast.error('Something went wrong while unwrapping.')
+        toast.error('Something went wrong while processing donation.')
         console.error(error)
         return
       }
@@ -163,10 +165,14 @@ function DonationWidget({
               ></textarea>
             )}
           />
-          <button className="btn btn-accent">
-            {isDonating ? 'Donating...' : ''}
-            {currentAmount > 0 ? `Donate $${currentAmount}` : 'Support'}
-          </button>
+          {isDonating}
+          <Button styling="primary" loading={isDonating} type="submit">
+            {isDonating
+              ? 'Donating...'
+              : currentAmount > 0
+                ? `Donate $${currentAmount}`
+                : 'Support'}
+          </Button>
         </div>
       </form>
     </>
