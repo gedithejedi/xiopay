@@ -69,22 +69,6 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       .then(async (res) => {
         if (res.ok && isAuthenticated) {
           toast.success('Successfully logged in')
-
-          //Dynamic user get/ create from the database
-          // if (dynamicUserId) {
-          //   const data = await getUser({ dynamicUserId })
-
-          //   if (data.status === 404) {
-          //     try {
-          //       await postUser({ dynamicUserId })
-          //       await queryClient.invalidateQueries({ queryKey: ['user'] })
-          //     } catch (err) {
-          //       toast.error('Something went wrong')
-          //       await args.handleLogOut()
-          //     }
-          //   }
-          // }
-
           router.push('/dashboard')
         } else {
           toast.error('Something went wrong, please try again!')
