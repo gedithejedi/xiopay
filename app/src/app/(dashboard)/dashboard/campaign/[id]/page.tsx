@@ -10,6 +10,8 @@ import { formatEther } from 'viem'
 import CampaignCard from '@/components/organisms/CampaignCard'
 import Link from 'next/link'
 import Button from '@/components/atoms/Button'
+import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
+import { useAccount } from 'wagmi'
 
 type Props = {
   params: {
@@ -18,11 +20,14 @@ type Props = {
 }
 
 export default function Campaign({ params }: Props) {
+  const { chain } = useAccount()
+  const chainId = chain?.id || 1
+
   const unwrappedParams = useUnwrapParams(Promise.resolve(params))
   const campaignId = unwrappedParams?.id || ''
 
   const { data: campaignData, isLoading } = useGetCampaingById({
-    contractAddress: '0xcaf52Cf7e810802e68b007DE479E07a674f1a170',
+    contractAddress: getCampaignDeploymentAddress(chainId),
     campaignId,
   })
 

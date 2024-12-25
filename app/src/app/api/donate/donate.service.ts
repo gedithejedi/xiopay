@@ -6,7 +6,7 @@ import { privateKeyToAccount } from 'viem/accounts'
 import campaignAbi from '@/constants/abi/campaign.json'
 import { createPublicClient } from 'viem'
 import { http } from 'viem'
-import { waitForTransactionReceipt } from 'wagmi/actions'
+// import { waitForTransactionReceipt } from 'wagmi/actions'
 
 export interface DonationPermitData {
   owner: string
@@ -74,23 +74,24 @@ export const postDonation = async ({
     )
 
     const { deadline, v, r, s, value: amount } = txData
-    console.log({ deadline, v, r, s, value: amount })
+
     const res = await publicClient.simulateContract({
       address: contractAddress as `0x${string}`,
       abi: campaignAbi,
-      args: [campaignId, amount, deadline, v, r, s],
+      args: [campaignId, BigInt(amount), BigInt(deadline), BigInt(v), r, s],
       functionName: 'donateWithPermit',
     })
     if (!res?.request) throw new Error('Something went wrong while donating.')
 
-    const hash = await client.writeContract(res?.request)
-    console.log('hash', hash)
-    const receipt = await waitForTransactionReceipt(publicClient, {
-      hash,
-    })
-    console.log('receipt', receipt)
+    // const hash = await client.writeContract(res?.request)
+    // console.log('hash', hash)
+    // const receipt = await waitForTransactionReceipt(publicClient, {
+    //   hash,
+    // })
+    // console.log('receipt', receipt)
 
-    return { status: 200, data: receipt }
+    // return { status: 200, data: receipt }
+    return { status: 200 }
   } catch (e: unknown) {
     logger.error(`Error executing a permit tx ${contractAddress}: ${e}`)
 

@@ -1,7 +1,7 @@
 import { wagmiProviderConfig } from '@/lib/chains'
 import dayjs from 'dayjs'
 import toast from 'react-hot-toast'
-import { Abi } from 'viem'
+import { Abi, parseSignature } from 'viem'
 import customErc20Ai from '@/constants/abi/token.json'
 import {
   getPublicClient,
@@ -28,15 +28,15 @@ export const createCampaign = async ({
     if (!client || !walletClient)
       throw new Error('Error retrieving public client')
 
-    const unwrapArgs = {
+    const createArgs = {
       account,
       address: contractAddress as `0x${string}`,
       abi: abi as Abi,
       args: [name],
       functionName: 'createCampaign',
     }
-    console.log(unwrapArgs)
-    const res = await client.simulateContract(unwrapArgs)
+
+    const res = await client.simulateContract(createArgs)
     if (!res?.request) throw new Error('Something went wrong while simulating.')
 
     const hash = await walletClient.writeContract(res?.request)
@@ -47,7 +47,13 @@ export const createCampaign = async ({
     toast.success('Successfully created you campaign.', { id: toastId })
 
     return receipt
-  } catch (e: any) {
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error(e)
+      toast.error('Something went wrong in contract execution', { id: toastId })
+      return
+    }
+
     console.error(e)
     toast.error('Something went wrong in contract execution', { id: toastId })
     return
@@ -66,10 +72,15 @@ export const donateToCampaign = async ({
   campaignId: string
   abi: Abi
   permit: {
-    deadline: number
-    v: number
-    r: string
-    s: string
+    owner: string
+    spender: string
+    value: bigint
+    deadline: bigint
+    v: bigint | undefined
+    r: `0x${string}`
+    s: `0x${string}`
+    tokenAddress: string
+    chainId: number
   }
 }) => {
   const toastId = toast.loading('Donating...')
@@ -102,7 +113,13 @@ export const donateToCampaign = async ({
     toast.success('Successfully donated.', { id: toastId })
 
     return receipt
-  } catch (e: any) {
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error(e)
+      toast.error('Something went wrong while donating', { id: toastId })
+      return
+    }
+
     console.error(e)
     toast.error('Something went wrong while donating', { id: toastId })
     return
@@ -180,7 +197,7 @@ export const getPermit = async (data: PermitData) => {
 
     const domain = {
       name,
-      version: '2',
+      version: '1',
       chainId,
       verifyingContract: tokenAddress as `0x${string}`,
     }
@@ -204,9 +221,7 @@ export const getPermit = async (data: PermitData) => {
       if (!signature) throw new Error('Error signing permit')
 
       // Split signature
-      const r = signature.slice(0, 66)
-      const s = `0x${signature.slice(66, 130)}`
-      const v = Number(`0x${signature.slice(130, 132)}`)
+      const { r, s, v } = parseSignature(signature)
 
       return {
         owner: account,
@@ -219,7 +234,13 @@ export const getPermit = async (data: PermitData) => {
         tokenAddress,
         chainId,
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error)
+        toast.error('Something went wrong while signing the permit.')
+        return
+      }
+
       console.error(error)
       toast.error('Something went wrong while signing the permit.')
       return

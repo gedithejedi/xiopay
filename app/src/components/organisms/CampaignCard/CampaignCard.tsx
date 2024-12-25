@@ -26,7 +26,7 @@ export default function CampaignCard({
           <div className="flex items-center gap-4 text-base font-semibold">
             <FaWallet className="h-5 w-5" />
             <p>Balance</p>
-            <p className="font-semibold">{balance || '0'}</p>
+            <p className="font-semibold">${balance || '0'}</p>
           </div>
         </div>
       </div>

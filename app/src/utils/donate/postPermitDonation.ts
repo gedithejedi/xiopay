@@ -33,6 +33,7 @@ export const postPermitDonation = async ({
         ...txData,
         deadline: txData.deadline.toString(),
         value: txData.value.toString(),
+        v: txData.v.toString(),
       }),
     })
 

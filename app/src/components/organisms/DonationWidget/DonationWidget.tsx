@@ -9,10 +9,10 @@ import {
   getCampaignDeploymentAddress,
   getTokenAddress,
 } from '@/constants/contract/deployAddresses'
-import { getPermit } from '@/utils/transactions'
-import { parseEther } from 'viem'
+import { donateToCampaign, getPermit } from '@/utils/transactions'
+import { Abi, parseEther } from 'viem'
 import Button from '@/components/atoms/Button'
-import { postPermitDonation } from '@/utils/donate/postPermitDonation'
+import CampaignAbi from '@/constants/abi/campaign.json'
 
 function DonationWidget({
   isInCreate = false,
@@ -75,13 +75,13 @@ function DonationWidget({
         )
       }
 
-      console.log(permit)
       try {
-        const res = await postPermitDonation({
-          campaignId,
+        const res = await donateToCampaign({
+          amount,
           contractAddress,
-          chainId: chainId.toString(),
-          txData: permit,
+          campaignId,
+          abi: CampaignAbi as Abi,
+          permit,
         })
 
         console.log(res)
