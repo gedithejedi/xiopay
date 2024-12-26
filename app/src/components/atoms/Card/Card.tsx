@@ -12,7 +12,7 @@ function Card({
   return (
     <div
       className={classnames(
-        'card card-compact bg-base-100 shadow-sm p-6',
+        'card card-compact bg-base-100 shadow-xs p-6',
         className
       )}
     >

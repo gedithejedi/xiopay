@@ -92,21 +92,21 @@ export default function DashboardLayout({
               ></path>
             </svg>
           </label>
-          <div className="font-semibold text-lg flex-grow">
+          <div className="font-semibold text-lg grow">
             <Link href={`/dashboard`}>
               <span className="text-3xl font-bold">XioPay</span>
             </Link>
           </div>
         </div>
 
-        <div className="drawer lg:drawer-open w-full h-full flex-grow">
+        <div className="drawer lg:drawer-open w-full h-full grow">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-          <div className="py-4 px-4 flex items-center flex-col w-full h-full drawer-content bg-base-200">
+          <div className="px-4 flex items-center flex-col w-full h-full drawer-content bg-base-200">
             <div className="w-full flex sticky justify-end p-2">
               <DynamicWidget />
             </div>
             <div className="py-8 flex-1 max-w-3xl w-full">{children}</div>
-            <footer className="text-center">
+            <footer className="text-center mb-4">
               <p>Built with 💚 for Neo Hackathon</p>
             </footer>
           </div>
@@ -120,7 +120,7 @@ export default function DashboardLayout({
               <div className="hidden lg:block font-semibold text-2xl border-b border-gray-200 mb-2 pb-2">
                 XioPay
               </div>
-              <ul className="menu menu-md bg-white text-base-content space-y-1 flex-1 px-0">
+              <ul className="menu menu-md bg-white text-base-content space-y-1 flex-1 w-full px-0">
                 {menuConfig.map((item) => (
                   <li
                     key={item.title}

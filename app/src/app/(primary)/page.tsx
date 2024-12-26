@@ -70,7 +70,7 @@ export default async function Home() {
             </svg>
           }
         />
-        <div className="flex flex-col gap-4 z-[1]">
+        <div className="flex flex-col gap-4 z-1">
           <h1 className="text-8xl font-bold tracking-tighter text-center">
             Fund your work
             <br /> with crypto
