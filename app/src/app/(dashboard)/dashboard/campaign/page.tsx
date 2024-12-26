@@ -47,7 +47,7 @@ export default function Campaigns() {
 
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between mb-4">
         <PageTitle>Campaigns</PageTitle>
 
         {!!campaignData && (

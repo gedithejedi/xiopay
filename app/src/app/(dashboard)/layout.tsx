@@ -59,7 +59,7 @@ export default function DashboardLayout({
 
   return (
     <main>
-      <div>
+      <div className="min-h-screen flex flex-col">
         <div className="lg:hidden py-2 px-4 sticky top-0 z-30 h-16 bg-opacity-90 flex gap-4 items-center bg-white">
           <label htmlFor="my-drawer" className="btn drawer-button">
             <svg
@@ -78,14 +78,14 @@ export default function DashboardLayout({
               ></path>
             </svg>
           </label>
-          <div className="font-semibold text-lg">
+          <div className="font-semibold text-lg flex-grow">
             <Link href={`/dashboard`}>
               <span className="text-3xl font-bold">XioPay</span>
             </Link>
           </div>
         </div>
 
-        <div className="drawer lg:drawer-open w-full h-full">
+        <div className="drawer lg:drawer-open w-full h-full flex-grow">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
           <div className="py-4 px-4 flex items-center flex-col w-full h-full drawer-content bg-base-200">
             <div className="w-full flex sticky justify-end p-2">
