@@ -10,7 +10,7 @@ export default function CampaignCard({
   return (
     <Card>
       <div className="flex justify-between ">
-        <h2 className="text-2xl font-bold tracking-tight">
+        <h2 className="text-xl font-bold tracking-tight">
           {name || 'Campaign Name'}
         </h2>
         <div className="my-2 flex items-center gap-3 font-medium text-gray-500">

@@ -15,11 +15,11 @@ import Button from '@/components/atoms/Button'
 import CampaignAbi from '@/constants/abi/campaign.json'
 
 function DonationWidget({
-  isInCreate = false,
+  isDemoMode = false,
   title,
-  campaignId, // TODO: remove the default once done testing
+  campaignId,
 }: {
-  isInCreate?: boolean
+  isDemoMode?: boolean
   title: string
   campaignId: string
 }) {
@@ -59,7 +59,7 @@ function DonationWidget({
 
       const amount = parseEther(rawAmount.toString())
 
-      if (isInCreate) return toast.success('Kaching! you have a new donation.')
+      if (isDemoMode) return toast.success('Kaching! you have a new donation.')
 
       const permit = await getPermit({
         chainId,

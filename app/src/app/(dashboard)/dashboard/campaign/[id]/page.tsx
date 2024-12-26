@@ -59,7 +59,7 @@ export default function Campaign({ params }: Props) {
           </div>
           <div className="bg-base-300 rounded-lg p-4">
             <DonationWidget
-              isInCreate={true}
+              isDemoMode={true}
               title={campaignData?.name || 'Campaign Name'}
               campaignId={campaignId}
             />
