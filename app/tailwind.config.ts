@@ -1,6 +1,6 @@
 import type { Config } from 'tailwindcss'
-import daisyUi from 'daisyui'
-import daysyThemes from 'daisyui/src/theming/themes'
+// import daisyUi from 'daisyui'
+// import daysyThemes from 'daisyui/src/theming/themes'
 
 export default {
   content: [
@@ -18,25 +18,25 @@ export default {
       },
     },
   },
-  daisyui: {
-    themes: [
-      {
-        light: {
-          ...daysyThemes['light'],
-          accent: '#ffdd04',
-          secondary: '#222222',
-          success: '#00dd42',
-          warning: '#ffe749',
-        },
-      },
-    ],
-  },
-  darkTheme: 'light',
+  // daisyui: {
+  //   themes: [
+  //     {
+  //       light: {
+  //         ...daysyThemes['light'],
+  //         accent: '#ffdd04',
+  //         secondary: '#222222',
+  //         success: '#00dd42',
+  //         warning: '#ffe749',
+  //       },
+  //     },
+  //   ],
+  // },
+  // darkTheme: 'light',
   base: true, // applies background color and foreground color for root element by default
   styled: true, // include daisyUI colors and design decisions for all components
   utils: true, // adds responsive and modifier utility classes
   prefix: '', // prefix for daisyUI classnames (components, modifiers and responsive class names. Not colors)
   logs: true, // Shows info about daisyUI version and used config in the console when building your CSS
   themeRoot: ':root', // The element that receives theme color CSS variables
-  plugins: [daisyUi],
+  // plugins: [daisyUi],
 } satisfies Config
