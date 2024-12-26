@@ -165,7 +165,6 @@ function DonationWidget({
               ></textarea>
             )}
           />
-          {isDonating}
           <Button styling="primary" loading={isDonating} type="submit">
             {isDonating
               ? 'Donating...'
