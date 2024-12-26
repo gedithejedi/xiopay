@@ -4,6 +4,7 @@ import {
   HiOutlineHome,
   HiOutlineCollection,
   HiOutlineChartSquareBar,
+  HiOutlineCurrencyDollar,
 } from 'react-icons/hi'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
@@ -34,6 +35,11 @@ const menuConfig: MenuConfig[] = [
     title: 'Statistics',
     icon: HiOutlineChartSquareBar,
     to: '/statistics',
+  },
+  {
+    title: 'Payouts',
+    icon: HiOutlineCurrencyDollar,
+    to: '/payouts',
   },
 ]
 
