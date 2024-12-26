@@ -16,6 +16,10 @@ export const config = {
   theme: {
     logo: 'https://next-auth.js.org/img/logo/logo-sm.png',
   },
+  session: {
+    strategy: 'jwt',
+    maxAge: 2 * 60 * 60, // 2 hours
+  },
   providers: [
     Credentials({
       name: 'Credentials',

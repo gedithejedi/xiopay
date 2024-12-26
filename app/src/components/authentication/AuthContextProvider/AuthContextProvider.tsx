@@ -21,7 +21,7 @@ import { AuthContextProviderProps } from './AuthContextProvider.type'
 
 import { wagmiProviderConfig } from '@/lib/chains'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import toast from 'react-hot-toast'
 import Loading from '@/components/atoms/Loading'
 import { neoxT4 } from 'viem/chains'
@@ -37,15 +37,20 @@ const queryConfig: DefaultOptions = {
 
 export const queryClient = new QueryClient({ defaultOptions: queryConfig })
 
+const pathToDisableRedirect = ['/donate']
+function shouldRedirect(pathname: string) {
+  return pathToDisableRedirect.every((p) => !pathname.startsWith(p))
+}
+
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
 
   const router = useRouter()
+  const pathname = usePathname()
 
   const onAuthSuccess: OnAuthSuccess = async (args) => {
-    const dynamicUserId = args.user.userId
     const isAuthenticated = args.isAuthenticated
     setIsLoading(true)
 
@@ -69,30 +74,15 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       .then(async (res) => {
         if (res.ok && isAuthenticated) {
           toast.success('Successfully logged in')
-
-          //Dynamic user get/ create from the database
-          // if (dynamicUserId) {
-          //   const data = await getUser({ dynamicUserId })
-
-          //   if (data.status === 404) {
-          //     try {
-          //       await postUser({ dynamicUserId })
-          //       await queryClient.invalidateQueries({ queryKey: ['user'] })
-          //     } catch (err) {
-          //       toast.error('Something went wrong')
-          //       await args.handleLogOut()
-          //     }
-          //   }
-          // }
-
-          router.push('/dashboard')
+          if (shouldRedirect(pathname)) {
+            router.push('/dashboard')
+          }
         } else {
           toast.error('Something went wrong, please try again!')
           console.error('Failed to log in')
         }
       })
       .catch((error) => {
-        // Handle any exceptions
         console.error('Error logging in', error)
       })
       .finally(() => {
@@ -102,8 +92,11 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const onLogout = async () => {
     setIsLoading(true)
-    await signOut({ callbackUrl: 'http://localhost:3000' })
+    await signOut()
     toast.success('Successfully logged out')
+    if (shouldRedirect(pathname)) {
+      router.push('/')
+    }
 
     setIsLoading(false)
   }

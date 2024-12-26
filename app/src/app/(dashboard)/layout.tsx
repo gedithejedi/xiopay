@@ -3,10 +3,12 @@ import type { IconType } from 'react-icons'
 import { HiOutlineHome } from 'react-icons/hi'
 import { HiOutlineCollection } from 'react-icons/hi'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core'
 import { usePathname } from 'next/navigation'
 import Button from '@/components/atoms/Button'
+import { getAuthToken } from '@dynamic-labs/sdk-react-core'
+import { useSession, signOut } from 'next-auth/react'
 
 interface MenuConfig {
   title: string
@@ -33,6 +35,8 @@ export default function DashboardLayout({
   children: React.ReactNode
 }>) {
   const path = usePathname()
+  const authToken = getAuthToken()
+  const session = useSession()
   const [selectedConfig, setSelectedConfig] = useState(
     menuConfig.find((config) => {
       const currentPath = path.replace('/dashboard', '')
@@ -42,6 +46,14 @@ export default function DashboardLayout({
       return currentPath.startsWith(config.to)
     }) ?? menuConfig[0]
   )
+
+  useEffect(() => {
+    if (session.data?.user && !authToken) {
+      console.log('session', session)
+      console.log('authToken', authToken)
+      signOut({ callbackUrl: 'http://localhost:3000' })
+    }
+  }, [authToken])
 
   const { handleLogOut } = useDynamicContext()
 
