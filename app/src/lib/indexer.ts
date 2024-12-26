@@ -1,5 +1,5 @@
 import { wagmiProviderConfig } from '@/lib/chains'
-import { Abi, parseAbiItem } from 'viem'
+import { Abi, GetLogsReturnType, parseAbiItem } from 'viem'
 import { getPublicClient } from 'wagmi/actions'
 import CampaignAbi from '@/constants/abi/campaign.json'
 
@@ -25,7 +25,7 @@ const getEventFunction = (event: EventTypes) => {
 const indexContractEvents = async (
   contractAddress: string,
   event: EventTypes = EventTypes.Create
-) => {
+): Promise<GetLogsReturnType | undefined> => {
   const client = getPublicClient(wagmiProviderConfig)
   if (!client) throw new Error('Error retrieving public client')
 
@@ -47,7 +47,7 @@ const indexContractEvents = async (
 const readContract = async (
   contractAddress: string,
   functionName: string,
-  args: any
+  args: (string | number | bigint)[]
 ) => {
   if (!functionName) throw new Error('Invalid event type')
 

@@ -1,5 +1,6 @@
 import logger from '@/app/lib/logger'
 import { indexContractEvents, readContract } from '@/lib/indexer'
+import { Log } from 'viem'
 
 export interface Campaign {
   campaignId: string
@@ -19,24 +20,27 @@ interface CampaignsGetResponse {
   status: number
 }
 
-export const getCampaigns = async ({
+const getCampaigns = async ({
   contractAddress,
   creator,
 }: CampaignsGetRequest): Promise<CampaignsGetResponse> => {
   try {
-    const logs = (await indexContractEvents(contractAddress)) as any[]
+    const logs = await indexContractEvents(contractAddress)
     const allCampaigns = [] as Campaign[]
 
+    if (!logs || !logs.length) {
+      return { status: 200, error: 'No logs found' }
+    }
+
     for (const log of logs) {
-      const { args } = log
-      const { campaignId: _campaignId, creator: _creator, name } = args
+      const { campaignId: _campaignId, creator: _creator, name } = log.args
 
       if (creator) {
         if (creator?.toLowerCase() === _creator?.toLowerCase()) {
           //Fetch campaign balance
           const balance = (await readContract(contractAddress, 'getBalance', [
             _campaignId,
-          ])) as BigInt
+          ])) as bigint
 
           allCampaigns.push({
             campaignId: _campaignId,
@@ -52,7 +56,7 @@ export const getCampaigns = async ({
       //Fetch campaign balance
       const balance = (await readContract(contractAddress, 'getBalance', [
         _campaignId,
-      ])) as BigInt
+      ])) as bigint
 
       allCampaigns.push({
         campaignId: _campaignId,
@@ -63,11 +67,13 @@ export const getCampaigns = async ({
     }
 
     return { status: 200, data: allCampaigns }
-  } catch (e: any) {
-    logger.error(`Error getting contract ${contractAddress}: ${e}`)
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      logger.error(`Error getting contract ${contractAddress}: ${e}`)
+    }
     return {
       status: 500,
-      error: e?.data?.message || e?.error?.message || e.message,
+      error: (e as Error)?.message,
     }
   }
 }
@@ -83,22 +89,25 @@ interface CampaignGetResponse {
   status: number
 }
 
-export const getWithCampaignId = async ({
+const getWithCampaignId = async ({
   campaignId,
   contractAddress,
 }: CampaignGetRequest): Promise<CampaignGetResponse> => {
   try {
     const logs = await indexContractEvents(contractAddress)
 
-    const [data] = logs.reduce((acc: any, log: any) => {
-      const { args } = log
-      const { campaignId: logCampaignId, creator, name } = args
+    if (!logs || !logs.length) {
+      return { status: 200, error: 'No logs found' }
+    }
+
+    const [data] = logs.reduce((acc, log: Log) => {
+      const { campaignId: logCampaignId, creator, name } = log.args
 
       if (campaignId === logCampaignId) {
         acc.push({ campaignId: logCampaignId, creator, name })
       }
       return acc
-    }, [])
+    }, [] as Partial<Campaign>[])
 
     if (!data) {
       return { status: 404, error: 'Campaign not found' }
@@ -107,14 +116,19 @@ export const getWithCampaignId = async ({
     //Fetch campaign balance
     const balance = (await readContract(contractAddress, 'getBalance', [
       campaignId,
-    ])) as BigInt
+    ])) as bigint
 
-    return { status: 200, data: { ...data, balance: balance?.toString() } }
-  } catch (e: any) {
-    logger.error(`Error getting contract ${contractAddress}: ${e}`)
+    return {
+      status: 200,
+      data: { ...data, balance: balance?.toString() } as Campaign,
+    }
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      logger.error(`Error getting contract ${contractAddress}: ${e}`)
+    }
     return {
       status: 500,
-      error: e?.data?.message || e?.error?.message || e.message,
+      error: (e as Error)?.message,
     }
   }
 }

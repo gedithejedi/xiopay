@@ -7,7 +7,6 @@ export interface UserInterface extends mongoose.Document {
   pageLink?: string
   avatar: string
   updatedAt?: number
-  campaigns?: any[]
 }
 
 export interface IUserModel extends UserInterface, Document {}
@@ -17,7 +16,6 @@ const UserSchema = new mongoose.Schema<UserInterface>({
   publicId: { type: String, required: true, unique: true },
   pageLink: { type: String, required: false, unique: true },
   avatar: { type: String, required: false },
-  campaigns: { type: Array, required: false },
   updatedAt: { type: Number, required: true, default: dayjs().unix() },
 })
 

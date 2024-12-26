@@ -94,7 +94,7 @@ export default function Dashboard() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <p className="text-2xl font-bold">Earnings</p>
+          <p className="text-2xl font-bold">Total earnings</p>
           <p className="text-5xl font-extrabold">$0</p>
         </div>
       </Card>

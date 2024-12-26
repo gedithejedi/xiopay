@@ -1,4 +1,4 @@
-import User, { IUserModel, UserInterface } from '@/../../db/models/user-model'
+import User, { UserInterface } from '@/../../db/models/user-model'
 import logger from '@/app/lib/logger'
 import { v4 as uuid } from 'uuid'
 
@@ -23,17 +23,18 @@ export const get = async ({
     }
 
     return { data: user, status: 200 }
-  } catch (e: any) {
+  } catch (e: unknown) {
     logger.error(`Error getting user ${dynamicUserId}: ${e}`)
+
     return {
       status: 500,
-      error: e?.data?.message || e?.error?.message || e.message,
+      error: (e as Error)?.message,
     }
   }
 }
 
 interface UserPostRequest {
-  body: any
+  body: UserInterface
 }
 
 interface UserPostResponse {
@@ -55,14 +56,16 @@ export const post = async (
     const publicId = uuid()
 
     await User.create({
+      ...body,
       dynamicUserId,
       publicId,
     })
-  } catch (e: any) {
+  } catch (e: unknown) {
     logger.error(`Error creating user: ${e}`)
+
     return {
       status: 500,
-      error: e?.data?.message || e?.error?.message || e.message,
+      error: (e as Error)?.message,
     }
   }
 

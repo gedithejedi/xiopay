@@ -25,6 +25,8 @@ import { useRouter, usePathname } from 'next/navigation'
 import toast from 'react-hot-toast'
 import Loading from '@/components/atoms/Loading'
 import { neoxT4 } from 'viem/chains'
+import { postUser } from '@/utils/user/postUser'
+import { getUser } from '@/utils/user/getUser'
 
 const queryConfig: DefaultOptions = {
   queries: {
@@ -51,6 +53,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const pathname = usePathname()
 
   const onAuthSuccess: OnAuthSuccess = async (args) => {
+    const dynamicUserId = args.user.userId
     const isAuthenticated = args.isAuthenticated
     setIsLoading(true)
 
@@ -74,6 +77,22 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       .then(async (res) => {
         if (res.ok && isAuthenticated) {
           toast.success('Successfully logged in')
+
+          //Dynamic user get/ create from the database
+          if (dynamicUserId) {
+            const data = await getUser({ dynamicUserId })
+
+            if (data.status === 404) {
+              try {
+                await postUser({ dynamicUserId })
+                await queryClient.invalidateQueries({ queryKey: ['user'] })
+              } catch {
+                toast.error('Something went wrong')
+                await args.handleLogOut()
+              }
+            }
+          }
+
           if (shouldRedirect(pathname)) {
             router.push('/dashboard')
           }
