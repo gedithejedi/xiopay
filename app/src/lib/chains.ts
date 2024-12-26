@@ -24,6 +24,7 @@ export const wagmiProviderConfig = createConfig({
   chains,
   multiInjectedProviderDiscovery: false,
   transports: {
+    batch: true,
     [neoxT4.id]: http(),
     // [neoXMainnet.id]: fallback([
     //   http('https://mainnet-2.rpc.banelabs.org'),
