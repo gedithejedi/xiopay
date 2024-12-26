@@ -3,9 +3,8 @@
 import { Chain } from '@/app/lib/chains'
 import Button from '@/components/atoms/Button'
 import Card from '@/components/atoms/Card'
-import PageTitle from '@/components/atoms/PageTitle'
-import Spinner from '@/components/atoms/Spinner'
 import CampaignCard from '@/components/organisms/CampaignCard'
+import PageLayout from '@/components/organisms/PageLayout'
 import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
 import { getCampaigns } from '@/utils/campaign/getCampaigns'
 import { useQuery } from '@tanstack/react-query'
@@ -13,6 +12,14 @@ import Link from 'next/link'
 import { HiOutlineFolder } from 'react-icons/hi'
 import { formatEther } from 'viem'
 import { useAccount } from 'wagmi'
+
+function CampaignsHeaderButton() {
+  return (
+    <Button styling="primary">
+      <Link href={'/dashboard/campaign/create'}>Create a campaign</Link>
+    </Button>
+  )
+}
 
 export default function Campaigns() {
   const { address, isConnected } = useAccount()
@@ -37,26 +44,12 @@ export default function Campaigns() {
     enabled: !!contractAddress && !!creator,
   })
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center w-full h-full">
-        <Spinner className="w-10 h-10" />
-      </div>
-    )
-  }
-
   return (
-    <>
-      <div className="flex justify-between mb-4">
-        <PageTitle>Campaigns</PageTitle>
-
-        {!!campaignData && (
-          <Button styling="primary">
-            <Link href={'/dashboard/campaign/create'}>Create a campaign</Link>
-          </Button>
-        )}
-      </div>
-
+    <PageLayout
+      title="Campaigns"
+      isLoading={isLoading}
+      headerChildren={<CampaignsHeaderButton />}
+    >
       {!isConnected || (!!campaignData && !campaignData.length) ? (
         <Card className="flex flex-col gap-2">
           <div className="text-center flex flex-col gap-1 items-center">
@@ -85,13 +78,13 @@ export default function Campaigns() {
             >
               <div className="flex w-full justify-end">
                 <Link href={`/dashboard/campaign/${campaign.campaignId}`}>
-                  <Button styling="secondary">Edit campaign</Button>
+                  <Button styling="secondary">Campaign details</Button>
                 </Link>
               </div>
             </CampaignCard>
           ))}
         </div>
       )}
-    </>
+    </PageLayout>
   )
 }

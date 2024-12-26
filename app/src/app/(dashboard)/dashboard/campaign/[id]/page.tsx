@@ -1,7 +1,6 @@
 'use client'
 
-import PageTitle from '@/components/atoms/PageTitle'
-import Spinner from '@/components/atoms/Spinner'
+import PageLayout from '@/components/organisms/PageLayout'
 import useUnwrapParams from '@/hooks/unwrapParams'
 import { useGetCampaingById } from '@/utils/campaign/getCampaignById'
 import React from 'react'
@@ -12,6 +11,8 @@ import Link from 'next/link'
 import Button from '@/components/atoms/Button'
 import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
 import { useAccount } from 'wagmi'
+import Card from '@/components/atoms/Card'
+import DonationWidget from '@/components/organisms/DonationWidget'
 
 type Props = {
   params: {
@@ -38,29 +39,33 @@ export default function Campaign({ params }: Props) {
     return balance
   }, [campaignData])
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center w-full h-full">
-        <Spinner className="w-10 h-10" />
-      </div>
-    )
-  }
-
   return (
-    <>
-      <PageTitle>Campaign</PageTitle>
+    <PageLayout title="Campaign" isLoading={isLoading}>
+      <div className="flex flex-col gap-4">
+        <CampaignCard
+          name={campaignData?.name || 'Campaign Name'}
+          creator={campaignData?.creator || 'Unknown Creator'}
+          balance={contractBalance || '0'}
+        ></CampaignCard>
 
-      <CampaignCard
-        name={campaignData?.name || 'Campaign Name'}
-        creator={campaignData?.creator || 'Unknown Creator'}
-        balance={contractBalance || '0'}
-      >
-        <div className="flex w-full justify-end">
-          <Link href={`/donate/${campaignId}`} target="_blank">
-            <Button styling={'secondary'}>View page</Button>
-          </Link>
-        </div>
-      </CampaignCard>
-    </>
+        <Card className="flex flex-col gap-2">
+          <div className="flex justify-between items-center gap-2">
+            <h3 className="text-lg font-semibold">Preview:</h3>
+            <Link href={`/donate/${campaignId}`} target="_blank">
+              <Button size="sm" styling={'secondary'}>
+                Open in new page
+              </Button>
+            </Link>
+          </div>
+          <div className="bg-base-300 rounded-lg p-4">
+            <DonationWidget
+              isInCreate={true}
+              title={campaignData?.name || 'Campaign Name'}
+              campaignId={campaignId}
+            />
+          </div>
+        </Card>
+      </div>
+    </PageLayout>
   )
 }

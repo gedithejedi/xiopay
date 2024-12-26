@@ -1,7 +1,7 @@
 'use client'
 
 import Card from '@/components/atoms/Card'
-import PageTitle from '@/components/atoms/PageTitle'
+import PageLayout from '@/components/organisms/PageLayout'
 import { createCampaign } from '@/utils/transactions'
 import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
@@ -107,9 +107,7 @@ export default function Home() {
   })
 
   return (
-    <div>
-      <PageTitle>Create a Campaign</PageTitle>
-
+    <PageLayout title="Create a Campaign" isLoading={false}>
       <div className="flex flex-col gap-6">
         <div>
           <Card>
@@ -133,18 +131,6 @@ export default function Home() {
                       )}
                     </div>
 
-                    {/* <div>
-                      <label className="input input-bordered flex items-center gap-2">
-                        <input
-                          disabled
-                          {...register('recipient', { required: false })}
-                          type="text"
-                          className="grow"
-                          placeholder="Recipient wallet address"
-                        />
-                      </label>
-                    </div> */}
-
                     <Button
                       styling="secondary"
                       className="btn btn-accent"
@@ -164,18 +150,7 @@ export default function Home() {
             </div>
           </Card>
         </div>
-
-        {/* <div>
-          <span className="text-lg">Preview:</span>
-          <Card>
-            <DonationWidget
-              isInCreate={true}
-              title={campaignTitle}
-              campaignId={'ID'}
-            />
-          </Card>
-        </div> */}
       </div>
-    </div>
+    </PageLayout>
   )
 }

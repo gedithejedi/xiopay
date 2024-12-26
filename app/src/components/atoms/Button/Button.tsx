@@ -46,7 +46,7 @@ export const buttonStyles: Record<ButtonStyleTypes, string> = {
 }
 
 export const buttonSize: Record<ButtonSizeTypes, string> = {
-  sm: 'h-8 min-h-8',
+  sm: 'h-8 min-h-8 text-sm',
   md: 'h-11 min-h-11',
   lg: 'btn-lg',
 }
