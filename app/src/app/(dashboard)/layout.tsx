@@ -1,7 +1,10 @@
 'use client'
 import type { IconType } from 'react-icons'
-import { HiOutlineHome } from 'react-icons/hi'
-import { HiOutlineCollection } from 'react-icons/hi'
+import {
+  HiOutlineHome,
+  HiOutlineCollection,
+  HiOutlineChartSquareBar,
+} from 'react-icons/hi'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core'
@@ -26,6 +29,11 @@ const menuConfig: MenuConfig[] = [
     title: 'Campaigns',
     icon: HiOutlineCollection,
     to: '/campaign',
+  },
+  {
+    title: 'Statistics',
+    icon: HiOutlineChartSquareBar,
+    to: '/statistics',
   },
 ]
 
