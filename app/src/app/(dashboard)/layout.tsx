@@ -13,6 +13,7 @@ import { usePathname } from 'next/navigation'
 import Button from '@/components/atoms/Button'
 import { getAuthToken } from '@dynamic-labs/sdk-react-core'
 import { useSession, signOut } from 'next-auth/react'
+import toast from 'react-hot-toast'
 
 interface MenuConfig {
   title: string
@@ -63,9 +64,8 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (session.data?.user && !authToken) {
-      console.log('session', session)
-      console.log('authToken', authToken)
       signOut({ callbackUrl: 'http://localhost:3000' })
+      toast.error('You are session has expired')
     }
   }, [authToken])
 
