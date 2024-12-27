@@ -1,3 +1,4 @@
+import Button from '@/components/atoms/Button'
 import Card from '@/components/atoms/Card'
 import PageTitle from '@/components/atoms/PageTitle'
 import Table from '@/components/organisms/Table'
@@ -86,10 +87,10 @@ export default function Dashboard() {
                 buymeacoffee.com/gedtest
               </Link>
             </div>
-            <button className="btn btn-secondary rounded-full btn-md flex gap-2">
+            <Button styling="secondary" className="flex gap-2">
               <HiOutlineDocumentDuplicate />
               Copy Link
-            </button>
+            </Button>
           </div>
         </div>
 
