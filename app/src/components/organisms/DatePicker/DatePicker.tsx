@@ -1,21 +1,17 @@
 import 'cally'
-import { useMemo } from 'react'
 import { format } from 'date-fns'
+import { HiOutlineCalendar } from 'react-icons/hi'
 import { DatePickerProps } from './DatePicker.types'
+
+const getDateValue = (dateRange: [Date, Date]) => {
+  return `${format(dateRange[0], 'yyyy-MM-dd')}/${format(dateRange[1], 'yyyy-MM-dd')}`
+}
+const dateFormatToShow = 'LLL dd, y'
 
 export default function DatePicker({
   dateRange,
   setDateRange,
 }: DatePickerProps) {
-  const formattedStartDay = useMemo(
-    () => format(dateRange[0], 'yyyy-MM-dd'),
-    [dateRange]
-  )
-  const formattedEndDay = useMemo(
-    () => format(dateRange[1], 'yyyy-MM-dd'),
-    [dateRange]
-  )
-
   return (
     <>
       <button
@@ -24,7 +20,9 @@ export default function DatePicker({
         id="cally1"
         style={{ anchorName: '--cally1' }}
       >
-        {formattedStartDay} / {formattedEndDay}
+        <HiOutlineCalendar />
+        {format(dateRange[0], dateFormatToShow)} -{' '}
+        {format(dateRange[1], dateFormatToShow)}
       </button>
       <div
         popover="auto"
@@ -39,7 +37,7 @@ export default function DatePicker({
         <calendar-range
           max={format(new Date(), 'yyyy-MM-dd')}
           class="cally"
-          value={`${formattedStartDay}/${formattedEndDay}`}
+          value={getDateValue(dateRange)}
           onchange={(e) => {
             const [start, end] = e.target.value.split('/')
             setDateRange([new Date(start), new Date(end)])
