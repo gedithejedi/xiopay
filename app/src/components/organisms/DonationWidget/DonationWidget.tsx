@@ -106,7 +106,7 @@ function DonationWidget({
         <div className="flex flex-col gap-3">
           <div>
             <h2 className="text-xl mb-3 font-bold">{title}</h2>
-            <label className="input input-bordered flex items-center gap-2">
+            <label className="input input-bordered flex items-center gap-2 w-full">
               <span>$</span>
               <input
                 type="number"
@@ -143,7 +143,7 @@ function DonationWidget({
               </span>
             )}
           </div>
-          <label className="input input-bordered flex items-center gap-2">
+          <label className="input input-bordered flex items-center gap-2 w-full">
             <input
               {...register('name', { required: false })}
               type="text"
@@ -160,7 +160,7 @@ function DonationWidget({
                 {...field}
                 rows={4}
                 cols={50}
-                className="textarea textarea-bordered textarea-md text-[16px] pt-2"
+                className="textarea textarea-bordered text-[16px] pt-2 w-full"
                 placeholder="Say something nice..."
               ></textarea>
             )}
