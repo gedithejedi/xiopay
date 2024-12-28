@@ -3,7 +3,7 @@ import { Chain } from '@/app/lib/chains'
 export const getCampaignDeploymentAddress = (chain: Chain) => {
   switch (chain) {
     case Chain.NEOX_TESTNET:
-      return '0xED8566308239403FC30026dB5cc0Df0E47E6D877'
+      return '0x7cd746824a59E733744560eba905A08e6db5dC97'
     case Chain.NEOX:
       return ''
     case Chain.SEPOLIA:
@@ -16,7 +16,7 @@ export const getCampaignDeploymentAddress = (chain: Chain) => {
 export const getTokenAddress = (chain: Chain) => {
   switch (chain) {
     case Chain.NEOX_TESTNET:
-      return '0x176AB35e905c1fD7Dd1169Ba1165729FD1f8Ab44'
+      return '0x5e2D16a78b614b71eb74feCE22A766eC631C13e3'
     case Chain.NEOX:
       return ''
     case Chain.SEPOLIA:

@@ -16,6 +16,7 @@ import Button from '@/components/atoms/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import useIndexCampaigns from '@/utils/campaign/indexCampaign'
+import { queryClient } from '@/components/authentication/AuthContextProvider/AuthContextProvider'
 
 interface CreateWidgetFormData {
   title: string
@@ -96,9 +97,18 @@ export default function Home() {
         }
 
         const campaignId = log.topics[1]
+
+        forceReindex({
+          contractAddress: getCampaignDeploymentAddress(chainId),
+          chainId: Chain.NEOX_TESTNET.toString(),
+        })
+
+        await queryClient.invalidateQueries({
+          queryKey: ['campaign', chainId, contractAddress, address],
+        })
+
         setIsDeployed(true)
 
-        toast.success('Successfully created your campaign.')
         router.push(`/dashboard/campaign/${campaignId}`)
 
         return
@@ -142,7 +152,7 @@ export default function Home() {
                       loading={isCreating || isDeployed}
                       type="submit"
                     >
-                      {isCreating
+                      {isCreating || isReindexing
                         ? 'Creating...'
                         : isDeployed
                           ? 'Campaign created'
