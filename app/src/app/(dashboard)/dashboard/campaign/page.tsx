@@ -30,7 +30,11 @@ export default function Campaigns() {
     queryKey: ['campaign', contractAddress, creator],
     queryFn: async () => {
       try {
-        const campaigns = await getCampaigns({ contractAddress, creator })
+        const campaigns = await getCampaigns({
+          contractAddress,
+          creator,
+          chainId: Chain.NEOX_TESTNET.toString(),
+        })
 
         return campaigns?.map((campaign) => ({
           ...campaign,

@@ -6,10 +6,11 @@ import dbConnect from '@/app/lib/mongo'
 interface GetParams {
   campaignId: string
   contractAddress: string
+  chainId: string
 }
 
 export async function GET(_: NextRequest, context: { params: GetParams }) {
-  const { campaignId, contractAddress } = await context.params
+  const { campaignId, contractAddress, chainId } = await context.params
 
   if (!campaignId || !contractAddress) {
     return NextResponse.json({ error: 'Missing args' }, { status: 404 })
@@ -21,6 +22,7 @@ export async function GET(_: NextRequest, context: { params: GetParams }) {
   const { error, status, data } = await CampaignService.getWithCampaignId({
     campaignId,
     contractAddress,
+    chainId,
   })
 
   if (error) {

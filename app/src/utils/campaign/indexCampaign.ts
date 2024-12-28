@@ -32,9 +32,9 @@ const useIndexCampaigns = () => {
       contractAddress: string
       chainId: string
     }) => indexCampaigns({ contractAddress, chainId }),
-    onSuccess: () =>
+    onSuccess: (_, { contractAddress, chainId }) =>
       queryClient.invalidateQueries({
-        queryKey: ['campaign', 'contractAddress'],
+        queryKey: ['campaign', chainId, contractAddress],
       }),
   })
 }

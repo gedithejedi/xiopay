@@ -4,6 +4,7 @@ import Campaign, { CampaignInterface } from '@/../db/models/campaign-model'
 import CampaignContract from '@/../db/models/campaignContract-model'
 import { getPublicClient } from 'wagmi/actions'
 import { wagmiProviderConfig } from '@/lib/chains'
+import { checksumAddress } from 'viem'
 
 export interface Campaign {
   campaignId: string
@@ -175,7 +176,11 @@ const getCampaigns = async ({
 }: CampaignsGetRequest): Promise<CampaignsGetResponse> => {
   try {
     const creatorQuery: object = creator ? { creator } : {}
-
+    console.log({
+      contractAddress,
+      creator,
+      chainId,
+    })
     const logs = await Campaign.find({
       contractAddress,
       chainId,
@@ -219,7 +224,7 @@ const getWithCampaignId = async ({
       chainId,
       ...campaignIdQuery,
     })
-
+    console.log(logs)
     return {
       status: 200,
       data: logs,
