@@ -15,6 +15,7 @@ import { Chain } from '@/app/lib/chains'
 import Button from '@/components/atoms/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import useIndexCampaigns from '@/utils/campaign/indexCampaign'
 
 interface CreateWidgetFormData {
   title: string
@@ -30,6 +31,7 @@ export default function Home() {
   const { data: campaignData } = useGetCampaigns({
     contractAddress: getCampaignDeploymentAddress(Chain.NEOX_TESTNET),
     creator: address || '',
+    chainId: Chain.NEOX_TESTNET.toString(),
   })
 
   const router = useRouter()
@@ -43,6 +45,8 @@ export default function Home() {
       title: 'My new campaign',
     },
   })
+
+  const { mutate: forceReindex, isPending: isReindexing } = useIndexCampaigns()
 
   const { mutate: onCreate, isPending: isCreating } = useMutation({
     mutationFn: async (data: CreateWidgetFormData) => {
@@ -116,7 +120,7 @@ export default function Home() {
                 <form onSubmit={handleSubmit((data) => onCreate(data))}>
                   <div className="flex flex-col gap-3">
                     <div>
-                      <label className="input input-bordered flex items-center gap-2">
+                      <label className="input input-bordered flex items-center gap-2 w-full">
                         <input
                           {...register('title', { required: false })}
                           type="text"

@@ -1,6 +1,7 @@
 import logger from '@/app/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
-import CampaignService from '../../campaign.service'
+import CampaignService from '../../../campaign.service'
+import dbConnect from '@/app/lib/mongo'
 
 interface GetParams {
   campaignId: string
@@ -14,6 +15,7 @@ export async function GET(_: NextRequest, context: { params: GetParams }) {
     return NextResponse.json({ error: 'Missing args' }, { status: 404 })
   }
 
+  await dbConnect()
   logger.info(`Indexing transactions for ${campaignId} on ${contractAddress}`)
 
   const { error, status, data } = await CampaignService.getWithCampaignId({
