@@ -41,8 +41,8 @@ export const buttonBase =
   'flex gap-1 group cursor-pointer items-center whitespace-nowrap rounded-lg border text-[1rem] font-medium transition duration-200 disabled:pointer-events-none disabled:text-subdued'
 
 export const buttonStyles: Record<ButtonStyleTypes, string> = {
-  primary: 'btn btn-accent',
-  secondary: 'btn btn-secondary',
+  primary: 'btn btn-accent text-foreground',
+  secondary: 'btn btn-secondary text-white',
 }
 
 export const buttonSize: Record<ButtonSizeTypes, string> = {
