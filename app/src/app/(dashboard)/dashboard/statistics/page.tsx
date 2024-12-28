@@ -56,10 +56,10 @@ export default function StatisticsPage() {
           </label>
           <DatePicker dateRange={dateRange} setDateRange={setDateRange} />
         </div>
-        <div className="w-full grid grid-cols-1 gap-2">
+        <div className="w-full grid grid-cols-1 gap-4">
           <Card>
             <div className="mb-2">
-              <h2 className="text-2xl font-bold">Total Amount</h2>
+              <h2 className="text-xl font-bold">Total Amount</h2>
               <p className="text-sm text-gray-500">Total donations amount</p>
             </div>
             <ResponsiveContainer width="100%" height={300}>
@@ -83,7 +83,7 @@ export default function StatisticsPage() {
           </Card>
           <Card>
             <div className="mb-2">
-              <h2 className="text-2xl font-bold">Total Count</h2>
+              <h2 className="text-xl font-bold">Total Count</h2>
               <p className="text-sm text-gray-500">Number of donations</p>
             </div>
 
