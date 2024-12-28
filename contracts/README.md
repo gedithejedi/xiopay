@@ -53,7 +53,7 @@ $ forge script script/Deploy.s.sol:DeployScript --rpc-url $SEPOLIA_RPC_URL --pri
 
 ### Environment variable
 - `PRIVATE_KEY`: Deployer wallet private key
-- `TESTNET_RPC_URL`
+- `TESTNET_RPC_URL` (optional)
 - `MAINNET_RPC_URL`
-- `TESTNET_BLOCK_SCOUT_API_KEY`
+- `TESTNET_BLOCK_SCOUT_API_KEY` (optional)
 - `MAINNET_BLOCK_SCOUT_API_KEY`

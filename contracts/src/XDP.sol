@@ -117,6 +117,14 @@ contract XDP {
         _withdraw(_campaignUid, _amount, msg.sender);
     }
 
+    function getOwner() public view returns (address) {
+        return owner;
+    }
+
+    function getToken() public view returns (address) {
+        return usdx;
+    }
+
     function getBalance(bytes32 _campaignUid) public view returns (uint256) {
         return campaigns[_campaignUid].balance;
     }
@@ -125,16 +133,12 @@ contract XDP {
         return campaigns[_campaignUid].status;
     }
 
+    function getCampaign(bytes32 _campaignUid) public view returns (Campaign memory) {
+        return campaigns[_campaignUid];
+    }
+
     function getPermissions(bytes32 _campaignUid, address _member) public view returns (uint8) {
         return permissions[_campaignUid][_member];
-    }
-
-    function getOwner() public view returns (address) {
-        return owner;
-    }
-
-    function getToken() public view returns (address) {
-        return usdx;
     }
 
     function _withdraw(bytes32 _campaignUid, uint256 _amount, address receiver) private {
