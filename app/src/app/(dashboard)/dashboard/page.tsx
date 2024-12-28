@@ -8,65 +8,51 @@ import Link from 'next/link'
 import { HiOutlineDocumentDuplicate } from 'react-icons/hi'
 
 interface Transaction {
-  id: number
-  from: string
-  amount: number
+  id: string
+  name: string
+  balance: number
   time: string
-  status: 'withdrawn' | 'pending'
 }
 
 const transactions: Transaction[] = [
   {
-    id: 1,
-    from: 'Alice',
-    amount: 100.5,
+    id: '0x01',
+    name: 'Campaign 1',
+    balance: 100.5,
     time: '2023-06-01 10:30 AM',
-    status: 'withdrawn',
   },
   {
-    id: 2,
-    from: 'Bob',
-    amount: 75.2,
+    id: '0x02',
+    name: 'Campaign 2',
+    balance: 75.2,
     time: '2023-06-01 11:45 AM',
-    status: 'pending',
   },
   {
-    id: 3,
-    from: 'Charlie',
-    amount: 200.0,
+    id: '0x03',
+    name: 'Campaign 3',
+    balance: 200.0,
     time: '2023-06-01 1:15 PM',
-    status: 'withdrawn',
   },
   {
-    id: 5,
-    from: 'Eve',
-    amount: 150.3,
+    id: '0x04',
+    name: 'Campaign 4',
+    balance: 150.3,
     time: '2023-06-01 4:30 PM',
-    status: 'withdrawn',
   },
 ]
 
 const columns: TableColumn<Transaction>[] = [
-  { header: 'From', accessor: 'from' },
+  { header: 'Id', accessor: 'id' },
   {
-    header: 'Amount',
-    accessor: 'amount',
-    render: (value) => `$${(value as number).toFixed(2)}`,
+    header: 'Name',
+    accessor: 'name',
   },
-  { header: 'Time', accessor: 'time' },
   {
-    header: 'Status',
-    accessor: 'status',
-    render: (value) => (
-      <span
-        className={`badge ${
-          value === 'withdrawn' ? 'badge-success' : 'badge-warning'
-        }`}
-      >
-        {value}
-      </span>
-    ),
+    header: 'Balance',
+    accessor: 'balance',
+    render: (value) => `${(value as number).toFixed(2)}`,
   },
+  { header: 'Created at', accessor: 'time' },
 ]
 
 export default function Dashboard() {
@@ -101,7 +87,7 @@ export default function Dashboard() {
       </Card>
 
       <Card className="flex flex-col gap-2">
-        <PageTitle>Payout history</PageTitle>
+        <PageTitle>My Campaigns</PageTitle>
         <Table
           data={transactions}
           columns={columns}
