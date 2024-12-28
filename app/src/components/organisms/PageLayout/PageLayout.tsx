@@ -6,16 +6,19 @@ function PageLayout({
   isLoading,
   children,
   headerChildren,
+  customHeader,
 }: {
   title: string
   isLoading: boolean
   children: React.ReactNode
   headerChildren?: React.ReactNode
+  customHeader?: React.ReactNode
 }) {
   return (
     <div className="h-full flex flex-col">
       <div className="flex justify-between mb-4">
         <PageTitle>{title}</PageTitle>
+        {customHeader ? customHeader : ''}
 
         {headerChildren}
       </div>

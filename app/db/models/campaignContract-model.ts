@@ -8,7 +8,9 @@ export interface CampaignContractInterface extends mongoose.Document {
   updatedAt?: number
 }
 
-export interface IUserModel extends CampaignContractInterface, Document {}
+export interface ICampaignContractModel
+  extends CampaignContractInterface,
+    Document {}
 
 const CampaignContractSchema = new mongoose.Schema<CampaignContractInterface>({
   contractAddress: { type: String, required: true, unique: false },
@@ -17,7 +19,7 @@ const CampaignContractSchema = new mongoose.Schema<CampaignContractInterface>({
   updatedAt: { type: Number, required: true, default: dayjs().unix() },
 })
 
-export default mongoose.models.Campaign ||
+export default mongoose.models.CampaignContract ||
   mongoose.model<CampaignContractInterface>(
     'CampaignContract',
     CampaignContractSchema
