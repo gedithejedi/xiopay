@@ -16,7 +16,7 @@ export default function DatePicker({
     <>
       <button
         popoverTarget="cally-popover1"
-        className="input input-border"
+        className="input input-border min-w-[240px]"
         id="cally1"
         style={{ anchorName: '--cally1' }}
       >
@@ -27,7 +27,7 @@ export default function DatePicker({
       <div
         popover="auto"
         id="cally-popover1"
-        className="dropdown bg-base-100 rounded-box shadow-lg"
+        className="absolute bg-base-100 rounded-box shadow-lg"
         style={{
           positionAnchor: '--cally1',
           top: 'calc(anchor(bottom) + 5px)',
