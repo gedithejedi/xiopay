@@ -1,5 +1,6 @@
 'use client'
 
+import { Chain } from '@/app/lib/chains'
 import Card from '@/components/atoms/Card'
 import PageTitle from '@/components/atoms/PageTitle'
 import DonationWidget from '@/components/organisms/DonationWidget'
@@ -26,6 +27,7 @@ export default function Donate({ params }: Props) {
   const { data: campaignData, isLoading } = useGetCampaingById({
     contractAddress: getCampaignDeploymentAddress(chainId),
     campaignId,
+    chainId: Chain.NEOX_TESTNET.toString(),
   })
 
   // const contractBalance = useMemo(() => {

@@ -1,44 +1,39 @@
 import { wagmiProviderConfig } from '@/lib/chains'
-import { Abi, GetLogsReturnType, parseAbiItem } from 'viem'
+import { Abi, AbiEvent, GetLogsReturnType } from 'viem'
 import { getPublicClient } from 'wagmi/actions'
 import CampaignAbi from '@/constants/abi/campaign.json'
 
-export enum EventTypes {
+export enum EventNames {
   Create = 'CampaignCreated',
   Update = 'CampaignUpdated',
   Delete = 'CampaignDeleted',
 }
 
-const getEventFunction = (event: EventTypes) => {
-  switch (event) {
-    case EventTypes.Create:
-      return 'event CampaignCreated(bytes32 indexed campaignId, address indexed creator, string name)'
-    case EventTypes.Update:
-      return 'event CampaignUpdated(bytes32 indexed campaignId, address indexed updater, string name)'
-    case EventTypes.Delete:
-      return 'event CampaignDeleted(bytes32 indexed campaignId, address indexed deleter)'
-    default:
-      return ''
-  }
+const getEventFunction = (event: string, abi: Abi) => {
+  return (abi as Abi).find(
+    (item) => item.type === 'event' && item.name === event
+  ) as AbiEvent
 }
 
-const indexContractEvents = async (
-  contractAddress: string,
-  event: EventTypes = EventTypes.Create
-): Promise<GetLogsReturnType | undefined> => {
+const indexContractEvents = async ({
+  contractAddress,
+  event,
+  fromBlock = BigInt(0),
+  toBlock = 'latest',
+}: {
+  contractAddress: string
+  event: EventNames
+  fromBlock?: bigint
+  toBlock?: bigint | 'latest'
+}): Promise<GetLogsReturnType | undefined> => {
   const client = getPublicClient(wagmiProviderConfig)
   if (!client) throw new Error('Error retrieving public client')
 
-  const blockNumber = await client.getBlockNumber()
-  const functionName = getEventFunction(event)
-
-  if (!functionName) throw new Error('Invalid event type')
-
   const logs = await client.getLogs({
     address: contractAddress as `0x${string}`,
-    event: parseAbiItem(functionName),
-    fromBlock: BigInt(0),
-    toBlock: BigInt(blockNumber),
+    event: getEventFunction(event, CampaignAbi as Abi),
+    fromBlock,
+    toBlock,
   })
 
   return logs

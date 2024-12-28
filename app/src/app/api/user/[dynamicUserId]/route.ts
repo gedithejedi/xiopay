@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import UserService from '../user.service'
 import dbConnect from '@/app/lib/mongo'
+import { UserInterface } from '@/../../db/models/user-model'
 
 interface GetParams {
   dynamicUserId: string
@@ -35,7 +36,7 @@ export async function GET(_: NextRequest, context: { params: GetParams }) {
 
 interface PostParams {
   dynamicUserId: string
-  body: any
+  body: UserInterface
 }
 
 export async function POST(_: NextRequest, context: { params: PostParams }) {

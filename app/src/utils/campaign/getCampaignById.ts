@@ -5,12 +5,14 @@ import { Campaign } from './getCampaigns'
 export const getCampaignById = async ({
   campaignId,
   contractAddress,
+  chainId,
 }: {
   campaignId: string
   contractAddress: string
+  chainId: string
 }): Promise<Campaign | any> => {
   try {
-    const apiUrl = `/api/campaign/${contractAddress}/${campaignId}`
+    const apiUrl = `/api/campaign/${chainId}/${contractAddress}/${campaignId}`
     const { data } = await axios.get(apiUrl)
 
     return data.data
@@ -26,15 +28,17 @@ export const getCampaignById = async ({
 export const useGetCampaingById = ({
   campaignId,
   contractAddress,
+  chainId,
   config = {},
 }: {
   campaignId: string
   contractAddress: string
+  chainId: string
   config?: Omit<UseQueryOptions<Campaign, Error>, 'queryKey'>
 }) => {
   return useQuery<Campaign, Error>({
-    queryKey: ['campaign', contractAddress, campaignId],
-    queryFn: () => getCampaignById({ contractAddress, campaignId }),
+    queryKey: ['campaign', chainId, contractAddress, campaignId],
+    queryFn: () => getCampaignById({ contractAddress, campaignId, chainId }),
     enabled: !!contractAddress || !!campaignId,
     ...config,
   })

@@ -13,6 +13,8 @@ import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddress
 import { useAccount } from 'wagmi'
 import Card from '@/components/atoms/Card'
 import DonationWidget from '@/components/organisms/DonationWidget'
+import { Chain } from '@/app/lib/chains'
+import useIndexCampaigns from '@/utils/campaign/indexCampaign'
 
 type Props = {
   params: {
@@ -30,6 +32,7 @@ export default function Campaign({ params }: Props) {
   const { data: campaignData, isLoading } = useGetCampaingById({
     contractAddress: getCampaignDeploymentAddress(chainId),
     campaignId,
+    chainId: Chain.NEOX_TESTNET.toString(),
   })
 
   const contractBalance = useMemo(() => {
@@ -38,6 +41,8 @@ export default function Campaign({ params }: Props) {
     const balance = formatEther(campaignData.balance || BigInt('0'))
     return balance
   }, [campaignData])
+
+  const { mutate: forceReindex, isPending: isReindexing } = useIndexCampaigns()
 
   return (
     <PageLayout title="Campaign" isLoading={isLoading}>
@@ -48,12 +53,24 @@ export default function Campaign({ params }: Props) {
           balance={contractBalance || '0'}
         ></CampaignCard>
 
+        <Button
+          styling="primary"
+          onClick={() =>
+            forceReindex({
+              contractAddress: getCampaignDeploymentAddress(chainId),
+              chainId: Chain.NEOX_TESTNET.toString(),
+            })
+          }
+        >
+          Reindex Campaign
+        </Button>
+
         <Card className="flex flex-col gap-2">
           <div className="flex justify-between items-center gap-2">
             <h3 className="text-lg font-semibold">Preview:</h3>
             <Link href={`/donate/${campaignId}`} target="_blank">
               <Button size="sm" styling={'secondary'}>
-                Open in new page
+                Open donation page
               </Button>
             </Link>
           </div>
