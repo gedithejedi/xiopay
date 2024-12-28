@@ -1,3 +1,9 @@
+# Xio pay
+
+This project contains 
+- XDP.sol: stands for `Xio Donation Protocol`, this act as main contract for the protocol
+- Usdx.sol: This supposed to be usd pegged token. This mock stable token is used for development purpose.
+  
 ## Foundry
 
 **Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
@@ -42,18 +48,19 @@ $ forge script script/Deploy.s.sol:DeployScript --fork-url neo_x_test
 
 #### Deploy with broadcast
 
-- Deploy on neo x testnet
+- Deploy on neo x testnet and verify contract
 ```shell
 $ forge script script/Deploy.s.sol:DeployScript --rpc-url $TESTNET_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --verifier blockscout --verifier-url $TESTNET_BLOCK_SCOUT_API_KEY
 ```
-- Deploy on sepolia
+- Deploy on neo x mainnet and verify contract
 ```shell
-$ forge script script/Deploy.s.sol:DeployScript --rpc-url $SEPOLIA_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --verifier blockscout --verifier-url $SEPOLIA_BLOCK_SCOUT_API_KEY
+$ forge script script/Deploy.s.sol:DeployScript --rpc-url $MAINNET_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --verifier blockscout --verifier-url $MAINNET_BLOCK_SCOUT_API_KEY
 ```
+
 
 ### Environment variable
 - `PRIVATE_KEY`: Deployer wallet private key
-- `TESTNET_RPC_URL` (optional)
-- `MAINNET_RPC_URL`
-- `TESTNET_BLOCK_SCOUT_API_KEY` (optional)
-- `MAINNET_BLOCK_SCOUT_API_KEY`
+- `TESTNET_RPC_URL`: (optional) Neo X testnet RPC url
+- `MAINNET_RPC_URL`: Neo X mainnet RPC url
+- `TESTNET_BLOCK_SCOUT_API_KEY`: (optional) Neo X testnet block scout api url
+- `MAINNET_BLOCK_SCOUT_API_KEY`: (optional) Neo X mainnet block scout api url
