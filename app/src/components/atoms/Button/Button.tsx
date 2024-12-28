@@ -43,6 +43,7 @@ export const buttonBase =
 export const buttonStyles: Record<ButtonStyleTypes, string> = {
   primary: 'btn btn-accent text-foreground',
   secondary: 'btn btn-secondary text-white',
+  tertiary: 'btn btn-tertiary',
 }
 
 export const buttonSize: Record<ButtonSizeTypes, string> = {

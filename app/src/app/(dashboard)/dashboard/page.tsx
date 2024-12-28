@@ -3,9 +3,12 @@ import Card from '@/components/atoms/Card'
 import PageTitle from '@/components/atoms/PageTitle'
 import Table from '@/components/organisms/Table'
 import { TableColumn } from '@/components/organisms/Table/Table.types'
-import Image from 'next/image'
 import Link from 'next/link'
-import { HiOutlineDocumentDuplicate } from 'react-icons/hi'
+import {
+  HiOutlineUser,
+  HiOutlineUserCircle,
+  HiOutlineDocumentDuplicate,
+} from 'react-icons/hi'
 
 interface Transaction {
   id: string
@@ -59,12 +62,11 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col gap-6">
       <Card className="flex flex-col">
-        <div className="flex gap-3 border-b border-gray-100 pb-5 mb-5">
-          <Image src="/globe.svg" width={64} height={64} alt="profile icon" />
-
+        <div className="flex items-center gap-3 border-b border-gray-100 pb-5 mb-5">
+          <HiOutlineUserCircle className="text-7xl" />
           <div className="flex gap-2 justify-between w-full items-center">
             <div className="flex flex-col">
-              <p className="text-lg font-bold">Hi, Peter</p>
+              <p className="text-lg font-bold">Hi, 0x123...456</p>
               <Link
                 href="xionPay.xyz/gedtest"
                 className="text-md hover:underline"
@@ -73,10 +75,16 @@ export default function Dashboard() {
                 buymeacoffee.com/gedtest
               </Link>
             </div>
-            <Button styling="secondary" className="flex gap-2">
-              <HiOutlineDocumentDuplicate />
-              Copy Link
-            </Button>
+            <div className="flex gap-2">
+              <Button styling="tertiary" className="flex gap-2">
+                <HiOutlineDocumentDuplicate />
+                Copy Link
+              </Button>
+              <Button styling="secondary" className="flex gap-2">
+                <HiOutlineUser />
+                Edit Profile
+              </Button>
+            </div>
           </div>
         </div>
 

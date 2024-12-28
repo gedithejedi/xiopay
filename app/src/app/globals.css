@@ -9,6 +9,7 @@
   --color-foreground: var(--foreground);
   --color-brand: #ffdd04;
   --color-accent-200: rgb(255 234 100);
+  --color-accent-700: #ccaa03;
 }
 
 @plugin "daisyui/theme" {

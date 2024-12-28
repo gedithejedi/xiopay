@@ -9,6 +9,6 @@ export interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
   size?: ButtonSizeTypes
 }
 
-export type ButtonStyleTypes = 'primary' | 'secondary'
+export type ButtonStyleTypes = 'primary' | 'secondary' | 'tertiary'
 
 export type ButtonSizeTypes = 'sm' | 'md' | 'lg'
