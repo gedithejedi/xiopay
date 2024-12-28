@@ -28,6 +28,7 @@ export async function GET(
   const { error, status, data } = await CampaignService.getCampaigns({
     contractAddress,
     creator,
+    chainId,
   })
 
   if (error) {

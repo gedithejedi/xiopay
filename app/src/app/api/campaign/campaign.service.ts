@@ -2,7 +2,6 @@ import logger from '@/app/lib/logger'
 import { EventNames, indexContractEvents, readContract } from '@/lib/indexer'
 import Campaign, { CampaignInterface } from '@/../db/models/campaign-model'
 import CampaignContract from '@/../db/models/campaignContract-model'
-import { Log } from 'viem'
 import { getPublicClient } from 'wagmi/actions'
 import { wagmiProviderConfig } from '@/lib/chains'
 
@@ -114,18 +113,36 @@ const indexContract = async ({
       }
     })
 
-    logger.debug(`Inserting new and updated campaigns.`)
-
     // Delete all existing logs with the same contract address and chainId
     await Campaign.deleteMany({
       contractAddress,
       chainId,
     })
-    console.log([...(newCampaigns || []), ...(updatedCachedCampaigns || [])])
+
     await Campaign.insertMany([
       ...(newCampaigns || []),
       ...(updatedCachedCampaigns || []),
     ])
+
+    if (campaignContract) {
+      logger.debug(`Updating contract ${contractAddress}`)
+      await CampaignContract.updateOne(
+        {
+          contractAddress,
+          chainId,
+        },
+        {
+          latestBlockUpdate: Number(latestBlock),
+        }
+      )
+    } else {
+      logger.debug(`Creating contract ${contractAddress}`)
+      await CampaignContract.create({
+        contractAddress,
+        chainId,
+        latestBlockUpdate: Number(latestBlock),
+      })
+    }
 
     return { status: 200 }
   } catch (e: unknown) {
@@ -142,6 +159,7 @@ const indexContract = async ({
 interface CampaignsGetRequest {
   contractAddress: string
   creator?: string
+  chainId: string
 }
 
 interface CampaignsGetResponse {
@@ -153,12 +171,14 @@ interface CampaignsGetResponse {
 const getCampaigns = async ({
   contractAddress,
   creator,
+  chainId,
 }: CampaignsGetRequest): Promise<CampaignsGetResponse> => {
   try {
     const creatorQuery: object = creator ? { creator } : {}
 
     const logs = await Campaign.find({
       contractAddress,
+      chainId,
       ...creatorQuery,
     })
 
@@ -177,7 +197,7 @@ const getCampaigns = async ({
 interface CampaignGetRequest {
   campaignId: string
   contractAddress: string
-  // chainId: string
+  chainId: string
 }
 
 interface CampaignGetResponse {
@@ -189,13 +209,14 @@ interface CampaignGetResponse {
 const getWithCampaignId = async ({
   campaignId,
   contractAddress,
-  // chainId,
+  chainId,
 }: CampaignGetRequest): Promise<CampaignGetResponse> => {
   try {
     const campaignIdQuery: object = campaignId ? { campaignId } : {}
 
     const logs = await Campaign.findOne({
       contractAddress,
+      chainId,
       ...campaignIdQuery,
     })
 

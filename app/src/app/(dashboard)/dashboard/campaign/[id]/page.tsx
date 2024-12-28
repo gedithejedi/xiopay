@@ -44,26 +44,32 @@ export default function Campaign({ params }: Props) {
 
   const { mutate: forceReindex, isPending: isReindexing } = useIndexCampaigns()
 
+  const customHeader = (
+    <Button
+      styling="primary"
+      onClick={() =>
+        forceReindex({
+          contractAddress: getCampaignDeploymentAddress(chainId),
+          chainId: Chain.NEOX_TESTNET.toString(),
+        })
+      }
+    >
+      Reindex Campaign
+    </Button>
+  )
+
   return (
-    <PageLayout title="Campaign" isLoading={isLoading}>
+    <PageLayout
+      title="Campaign"
+      isLoading={isLoading}
+      customHeader={customHeader}
+    >
       <div className="flex flex-col gap-4">
         <CampaignCard
           name={campaignData?.name || 'Campaign Name'}
           creator={campaignData?.creator || 'Unknown Creator'}
           balance={contractBalance || '0'}
         ></CampaignCard>
-
-        <Button
-          styling="primary"
-          onClick={() =>
-            forceReindex({
-              contractAddress: getCampaignDeploymentAddress(chainId),
-              chainId: Chain.NEOX_TESTNET.toString(),
-            })
-          }
-        >
-          Reindex Campaign
-        </Button>
 
         <Card className="flex flex-col gap-2">
           <div className="flex justify-between items-center gap-2">
