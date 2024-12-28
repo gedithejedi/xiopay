@@ -56,6 +56,15 @@ const columns: TableColumn<Transaction>[] = [
     render: (value) => `${(value as number).toFixed(2)}`,
   },
   { header: 'Created at', accessor: 'time' },
+  {
+    header: '',
+    accessor: 'id',
+    render: (id) => (
+      <Button styling="tertiary">
+        <Link href={`/campaign/${id}`}>Details</Link>
+      </Button>
+    ),
+  },
 ]
 
 export default function Dashboard() {
