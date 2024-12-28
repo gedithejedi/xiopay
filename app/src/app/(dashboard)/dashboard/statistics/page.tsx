@@ -40,6 +40,7 @@ export default function StatisticsPage() {
   const today = startOfDay(new Date())
   const startOfWeek = addDays(today, -7)
   const [dateRange, setDateRange] = useState<[Date, Date]>([startOfWeek, today])
+  const [selectedCampaign, setSelectedCampaign] = useState(campaignNames[0])
   const events = useMemo(() => getMockData(dateRange), [dateRange])
 
   return (
@@ -48,7 +49,11 @@ export default function StatisticsPage() {
         <div className="w-full flex justify-between">
           <label className="flex gap-1 w-full items-center font-semibold">
             <span>Donations for </span>
-            <select className="select">
+            <select
+              className="select"
+              value={selectedCampaign}
+              onChange={(e) => setSelectedCampaign(e.target.value)}
+            >
               {campaignNames.map((n, i) => (
                 <option key={i}>{n}</option>
               ))}
