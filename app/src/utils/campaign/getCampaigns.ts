@@ -27,8 +27,12 @@ export const getCampaigns = async ({
     const { data } = await axios.get(apiUrl, { params: { creator } })
 
     return data.data
-  } catch (error: any) {
-    console.error(error)
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(error)
+    } else {
+      console.error(error)
+    }
     toast.error('Something went wrong while fetching campaigns.')
     return []
   }

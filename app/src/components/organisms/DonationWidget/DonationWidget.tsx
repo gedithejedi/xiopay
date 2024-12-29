@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { DonateFormData } from './DonationWidget.types'
 import { useMutation } from '@tanstack/react-query'
@@ -29,7 +29,6 @@ function DonationWidget({
   const {
     register,
     handleSubmit,
-    control,
     setValue,
     reset,
     watch,

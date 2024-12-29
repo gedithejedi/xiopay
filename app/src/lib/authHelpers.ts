@@ -1,7 +1,7 @@
 import jwt, { JwtPayload, Secret, VerifyErrors } from 'jsonwebtoken'
 
 export const getKey = (
-  headers: any,
+  _: unknown,
   callback: (err: Error | null, key?: Secret) => void
 ): void => {
   // Define the options for the fetch request

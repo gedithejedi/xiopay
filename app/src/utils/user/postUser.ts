@@ -14,8 +14,12 @@ export const postUser = async ({
     const response = await axios.post(apiUrl, { headers })
 
     return response
-  } catch (error: any) {
-    console.error(error)
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(error)
+    } else {
+      console.error(error)
+    }
     throw error
   }
 }

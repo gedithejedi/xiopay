@@ -32,7 +32,7 @@ function getMockData(dateRange: [Date, Date]) {
 }
 
 const dateFormat = 'MMM d, yyyy'
-function tooltipLabelFormatter(label: any) {
+function tooltipLabelFormatter(label: string) {
   return format(new Date(label), dateFormat)
 }
 

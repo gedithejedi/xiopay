@@ -2,7 +2,7 @@
 
 import PageLayout from '@/components/organisms/PageLayout'
 import useUnwrapParams from '@/hooks/unwrapParams'
-import { useGetCampaingById } from '@/utils/campaign/getCampaignById'
+import { useGetCampaignById } from '@/utils/campaign/getCampaignById'
 import React from 'react'
 import { useMemo } from 'react'
 import { formatEther } from 'viem'
@@ -14,7 +14,6 @@ import { useAccount } from 'wagmi'
 import Card from '@/components/atoms/Card'
 import DonationWidget from '@/components/organisms/DonationWidget'
 import { Chain } from '@/app/lib/chains'
-import useIndexCampaigns from '@/utils/campaign/indexCampaign'
 
 type Props = {
   params: {
@@ -29,7 +28,7 @@ export default function Campaign({ params }: Props) {
   const unwrappedParams = useUnwrapParams(Promise.resolve(params))
   const campaignId = unwrappedParams?.id || ''
 
-  const { data: campaignData, isLoading } = useGetCampaingById({
+  const { data: campaignData, isLoading } = useGetCampaignById({
     contractAddress: getCampaignDeploymentAddress(chainId),
     campaignId,
     chainId: Chain.NEOX_TESTNET.toString(),

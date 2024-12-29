@@ -25,7 +25,7 @@ export const getCampaignById = async ({
   }
 }
 
-export const useGetCampaingById = ({
+export const useGetCampaignById = ({
   campaignId,
   contractAddress,
   chainId,

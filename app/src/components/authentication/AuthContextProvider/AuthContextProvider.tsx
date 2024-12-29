@@ -160,6 +160,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   useEffect(() => {
     if (!!isHydrated) return
     setIsHydrated(true)
+    // @ts-ignore Hydration check only updates on initial render
   }, [])
 
   return (

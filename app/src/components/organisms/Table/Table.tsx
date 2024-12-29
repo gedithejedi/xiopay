@@ -1,6 +1,7 @@
 import React from 'react'
 import { TableProps } from './Table.types'
 
+// @ts-ignore: We use any type here as we don't know what the data will be
 export function Table<T extends Record<string, any>>({
   data,
   columns,
