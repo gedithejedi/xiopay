@@ -1,5 +1,5 @@
 import PageLayout from '@/components/organisms/PageLayout'
-import Campaign from '@/modules/campaign/routes/Campaign'
+import Campaign from '@/components/campaignPage'
 
 export default async function Page({
   params,
