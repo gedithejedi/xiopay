@@ -21,7 +21,7 @@ function DonationWidget({
   campaignData,
 }: {
   isDemoMode?: boolean
-  campaignData?: Campaign
+  campaignData?: Campaign | null
 }) {
   const { chain, address } = useAccount()
   const chainId = chain?.id || ''

@@ -2,6 +2,8 @@ import { UseQueryOptions, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { Campaign } from './getCampaigns'
 
+type GetCampaignByIdResult = Campaign | null
+
 export const getCampaignById = async ({
   campaignId,
   contractAddress,
@@ -10,18 +12,15 @@ export const getCampaignById = async ({
   campaignId: string
   contractAddress: string
   chainId: string
-}): Promise<Campaign | any> => {
+}): Promise<GetCampaignByIdResult> => {
   try {
     const apiUrl = `/api/campaign/${chainId}/${contractAddress}/${campaignId}`
     const { data } = await axios.get(apiUrl)
 
     return data.data
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return { message: error.message, status: error.response?.status }
-    } else {
-      return { message: 'An unexpected error occurred' }
-    }
+  } catch (error: unknown) {
+    console.error(error)
+    return null
   }
 }
 
@@ -34,9 +33,12 @@ export const useGetCampaignById = ({
   campaignId: string
   contractAddress: string
   chainId: string
-  config?: Omit<UseQueryOptions<Campaign, Error>, 'queryKey'>
+  config?: Omit<
+    UseQueryOptions<GetCampaignByIdResult, Error, GetCampaignByIdResult>,
+    'queryKey' | 'queryFn' | 'enabled'
+  >
 }) => {
-  return useQuery<Campaign, Error>({
+  return useQuery<GetCampaignByIdResult, Error>({
     queryKey: ['campaign', chainId, contractAddress, campaignId],
     queryFn: () => getCampaignById({ contractAddress, campaignId, chainId }),
     enabled: !!contractAddress || !!campaignId,
