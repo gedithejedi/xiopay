@@ -48,7 +48,7 @@ const menuConfig: MenuConfig[] = [
     to: '/payouts',
   },
   {
-    title: 'My Organizations',
+    title: 'My Organization',
     icon: HiOutlineOfficeBuilding,
     to: '/my-organization',
   },

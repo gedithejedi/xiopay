@@ -51,7 +51,7 @@ export default function Campaign({ params }: Props) {
           balance={contractBalance || '0'}
         ></CampaignCard>
 
-        <Card className="flex flex-col gap-2">
+        <Card className="flex flex-col gap-4">
           <div className="flex justify-between items-center gap-2">
             <h3 className="text-lg font-semibold">Preview:</h3>
             <Link href={`/donate/${campaignId}`} target="_blank">
