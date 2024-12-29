@@ -6,7 +6,6 @@ import { privateKeyToAccount } from 'viem/accounts'
 import campaignAbi from '@/constants/abi/campaign.json'
 import { createPublicClient } from 'viem'
 import { http } from 'viem'
-// import { waitForTransactionReceipt } from 'wagmi/actions'
 
 export interface DonationPermitData {
   owner: string

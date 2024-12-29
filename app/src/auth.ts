@@ -27,8 +27,7 @@ export const config = {
         token: { label: 'Token', type: 'text' },
       },
       async authorize(
-        credentials: Partial<Record<'token', unknown>>,
-        request: Request
+        credentials: Partial<Record<'token', unknown>>
       ): Promise<User | null> {
         const token = credentials.token as string // Safely cast to string; ensure to handle undefined case
         if (typeof token !== 'string' || !token) {
