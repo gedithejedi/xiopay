@@ -16,18 +16,20 @@ export const indexCampaigns = async ({
     const apiUrl = `/api/campaign/${chainId}`
     await axios.post(apiUrl)
 
-    toastId
-      ? toast.success('Campaigns indexed successfully.', { id: toastId })
-      : null
+    if (toastId) {
+      toast.success('Campaigns indexed successfully.', { id: toastId })
+    }
+
     return true
   } catch (error: unknown) {
     console.error(error)
 
-    toastId
-      ? toast.error('Something went wrong while indexing campaigns.', {
-          id: toastId,
-        })
-      : null
+    if (toastId) {
+      toast.error('Something went wrong while indexing campaigns.', {
+        id: toastId,
+      })
+    }
+
     return true
   }
 }

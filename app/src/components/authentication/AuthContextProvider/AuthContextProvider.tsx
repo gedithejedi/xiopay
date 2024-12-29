@@ -24,7 +24,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import toast from 'react-hot-toast'
 import Loading from '@/components/atoms/Loading'
-import { neoxT4 } from 'viem/chains'
+import { neoxT4, neoxMainnet } from 'viem/chains'
 import { postUser } from '@/utils/user/postUser'
 import { getUser } from '@/utils/user/getUser'
 
@@ -121,23 +121,23 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   }
 
   const evmNetworks = [
-    // {
-    //   blockExplorerUrls: [neoXMainnet.blockExplorers.default.url],
-    //   chainId: neoXMainnet.id,
-    //   chainName: neoXMainnet.name,
-    //   iconUrls: ['https://neo-web.azureedge.net/images/logo%20files-dark.svg'],
-    //   name: neoXMainnet.name,
-    //   nativeCurrency: {
-    //     decimals: neoXMainnet.nativeCurrency.decimals,
-    //     name: neoXMainnet.nativeCurrency.symbol,
-    //     symbol: neoXMainnet.nativeCurrency.symbol,
-    //   },
-    //   networkId: neoXMainnet.id,
-    //   rpcUrls: [neoXMainnet.rpcUrls.default.http[0]],
-    //   vanityName: neoXMainnet.name,
-    //   shortName: neoXMainnet.nativeCurrency.symbol,
-    //   chain: neoXMainnet.nativeCurrency.symbol,
-    // },
+    {
+      blockExplorerUrls: [neoxMainnet.blockExplorers.default.url],
+      chainId: neoxMainnet.id,
+      chainName: neoxMainnet.name,
+      iconUrls: ['https://neo-web.azureedge.net/images/logo%20files-dark.svg'],
+      name: neoxMainnet.name,
+      nativeCurrency: {
+        decimals: neoxMainnet.nativeCurrency.decimals,
+        name: neoxMainnet.nativeCurrency.symbol,
+        symbol: neoxMainnet.nativeCurrency.symbol,
+      },
+      networkId: neoxMainnet.id,
+      rpcUrls: [neoxMainnet.rpcUrls.default.http[0]],
+      vanityName: neoxMainnet.name,
+      shortName: neoxMainnet.nativeCurrency.symbol,
+      chain: neoxMainnet.nativeCurrency.symbol,
+    },
     {
       blockExplorerUrls: [neoxT4.blockExplorers.default.url],
       chainId: neoxT4.id,

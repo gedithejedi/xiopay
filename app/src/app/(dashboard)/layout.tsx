@@ -59,7 +59,7 @@ export default function DashboardLayout({
   children: React.ReactNode
 }>) {
   const { chain } = useAccount()
-  const chainId = chain?.id || 1
+  const chainId = chain?.id || Chain.NEOX_TESTNET
 
   const path = usePathname()
   const authToken = getAuthToken()
@@ -124,7 +124,7 @@ export default function DashboardLayout({
                 size="sm"
                 onClick={() =>
                   forceReindex({
-                    chainId: Chain.NEOX_TESTNET,
+                    chainId,
                     enableToast: true,
                   })
                 }

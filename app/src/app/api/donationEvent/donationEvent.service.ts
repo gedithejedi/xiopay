@@ -69,7 +69,6 @@ async function getDonationEventsByUserAddress({
   address,
 }: DonationFiltersByAddress) {
   try {
-    const contractAddress = getCampaignDeploymentAddress(chainId)
     const chain = chainIdToViemChain(Number(chainId))
 
     if (!chain) {
