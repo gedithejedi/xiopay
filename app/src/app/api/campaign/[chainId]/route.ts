@@ -9,9 +9,12 @@ import { z } from 'zod'
 const paramsSchema = z.object({
   chainId: z.enum(chainsInString).transform((chainId) => Number(chainId)),
 })
-type Params = z.infer<typeof paramsSchema>
+type Params = z.input<typeof paramsSchema>
 
-export async function GET(request: NextRequest, context: { params: Params }) {
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<Params> }
+) {
   const params = await context.params
   const { chainId } = paramsSchema.parse(params)
   const contractAddress = getCampaignDeploymentAddress(chainId)
@@ -46,7 +49,10 @@ export async function GET(request: NextRequest, context: { params: Params }) {
   })
 }
 
-export async function POST(request: NextRequest, context: { params: Params }) {
+export async function POST(
+  _: NextRequest,
+  context: { params: Promise<Params> }
+) {
   const params = await context.params
   const { chainId } = paramsSchema.parse(params)
   const contractAddress = getCampaignDeploymentAddress(chainId)

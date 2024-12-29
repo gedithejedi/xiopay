@@ -18,6 +18,7 @@ export default function DatePicker({
         popoverTarget="cally-popover1"
         className="input input-border min-w-[240px]"
         id="cally1"
+        // @ts-expect-error: This css style exist
         style={{ anchorName: '--cally1' }}
       >
         <HiOutlineCalendar />
@@ -29,6 +30,7 @@ export default function DatePicker({
         id="cally-popover1"
         className="absolute bg-base-100 rounded-box shadow-lg"
         style={{
+          // @ts-expect-error: This css style exist
           positionAnchor: '--cally1',
           top: 'calc(anchor(bottom) + 5px)',
           justifySelf: 'anchor-center',

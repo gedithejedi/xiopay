@@ -8,8 +8,11 @@ interface GetParams {
   dynamicUserId: string
 }
 
-export async function GET(_: NextRequest, context: { params: GetParams }) {
-  const { dynamicUserId } = context.params
+export async function GET(
+  _: NextRequest,
+  context: { params: Promise<GetParams> }
+) {
+  const { dynamicUserId } = await context.params
   if (!dynamicUserId) {
     return NextResponse.json({
       error: 'Dynamic id is required',
@@ -39,8 +42,11 @@ interface PostParams {
   body: UserInterface
 }
 
-export async function POST(_: NextRequest, context: { params: PostParams }) {
-  const { dynamicUserId, body } = context.params
+export async function POST(
+  _: NextRequest,
+  context: { params: Promise<PostParams> }
+) {
+  const { dynamicUserId, body } = await context.params
 
   await dbConnect()
 

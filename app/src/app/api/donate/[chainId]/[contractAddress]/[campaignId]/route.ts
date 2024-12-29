@@ -10,7 +10,7 @@ interface PostParams {
 
 export async function POST(
   request: NextRequest,
-  context: { params: PostParams }
+  context: { params: Promise<PostParams> }
 ) {
   console.log('POST /api/donate/[chainId]/[contractAddress]/[campaignId]')
   const { campaignId, contractAddress, chainId } = await context.params

@@ -21,8 +21,9 @@ function CampaignsHeaderButton() {
 }
 
 export default function Campaigns() {
-  const { address, isConnected } = useAccount()
+  const { address, isConnected, chain } = useAccount()
   const creator = address || ''
+  const chainId = chain?.id || Chain.NEOX_TESTNET
 
   const { data: campaignData, isLoading } = useQuery({
     queryKey: ['campaign', creator],
@@ -30,7 +31,7 @@ export default function Campaigns() {
       try {
         const campaigns = await getCampaigns({
           creator,
-          chainId: Chain.NEOX_TESTNET.toString(),
+          chainId,
         })
 
         return campaigns?.map((campaign) => ({

@@ -10,9 +10,11 @@ const paramsSchema = z.object({
   campaignId: z.string(),
   chainId: z.enum(chainsInString).transform((chainId) => Number(chainId)),
 })
-type Params = z.infer<typeof paramsSchema>
 
-export async function GET(_: NextRequest, context: { params: Params }) {
+export async function GET(
+  _: NextRequest,
+  context: { params: Promise<Record<string, string>> }
+) {
   const params = await context.params
   const { campaignId, chainId } = paramsSchema.parse(params)
   const contractAddress = getCampaignDeploymentAddress(chainId)

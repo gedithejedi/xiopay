@@ -3,11 +3,11 @@ import { chainIdToViemChain } from '@/lib/chains'
 import DonationEvent from '@/../db/models/donationEvent-model'
 import { z } from 'zod'
 import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
-import { Chain } from '@/app/lib/chains'
+import { chainsInString } from '@/app/lib/chains'
 import Campaign from '@/../db/models/campaign-model'
 
 const donationFilterSchema = z.object({
-  chainId: z.nativeEnum(Chain),
+  chainId: z.enum(chainsInString).transform((chainId) => Number(chainId)),
   timestamp: z.object({
     from: z.number(),
     to: z.number(),

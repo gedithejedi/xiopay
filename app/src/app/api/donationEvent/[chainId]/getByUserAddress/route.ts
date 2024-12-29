@@ -6,7 +6,7 @@ import DonationEventService, {
 
 export async function GET(
   _: NextRequest,
-  context: { params: DonationFiltersByAddress }
+  context: { params: Promise<DonationFiltersByAddress> }
 ) {
   const params = await context.params
   const parsedParams = donationFiltersByAddressSchema.parse(params)

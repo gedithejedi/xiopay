@@ -6,7 +6,7 @@ import DonationEventService, {
 
 export async function GET(
   _: NextRequest,
-  context: { params: DonationFilterByCampaignId }
+  context: { params: Promise<DonationFilterByCampaignId> }
 ) {
   const params = await context.params
   const parsedParams = donationFilterSchemaByCampaignIdSchema.parse(params)

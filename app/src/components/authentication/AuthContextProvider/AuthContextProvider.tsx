@@ -82,7 +82,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
           if (dynamicUserId) {
             const data = await getUser({ dynamicUserId })
 
-            if (data.status === 404) {
+            if (!data) {
               try {
                 await postUser({ dynamicUserId })
                 await queryClient.invalidateQueries({ queryKey: ['user'] })
