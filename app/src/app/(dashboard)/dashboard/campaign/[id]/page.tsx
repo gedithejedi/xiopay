@@ -14,7 +14,6 @@ import { useAccount } from 'wagmi'
 import Card from '@/components/atoms/Card'
 import DonationWidget from '@/components/organisms/DonationWidget'
 import { Chain } from '@/app/lib/chains'
-import useIndexCampaigns from '@/utils/campaign/indexCampaign'
 
 type Props = {
   params: {
