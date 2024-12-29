@@ -15,6 +15,10 @@ import Button from '@/components/atoms/Button'
 import { getAuthToken } from '@dynamic-labs/sdk-react-core'
 import { useSession, signOut } from 'next-auth/react'
 import toast from 'react-hot-toast'
+import useIndexCampaigns from '@/utils/campaign/indexCampaign'
+import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
+import { Chain } from '../lib/chains'
+import { useAccount } from 'wagmi'
 
 interface MenuConfig {
   title: string
@@ -55,9 +59,13 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const { chain } = useAccount()
+  const chainId = chain?.id || 1
+
   const path = usePathname()
   const authToken = getAuthToken()
   const session = useSession()
+
   const [selectedConfig, setSelectedConfig] = useState(
     menuConfig.find((config) => {
       const currentPath = path.replace('/dashboard', '')
@@ -67,6 +75,8 @@ export default function DashboardLayout({
       return currentPath.startsWith(config.to)
     }) ?? menuConfig[0]
   )
+
+  const { mutate: forceReindex, isPending: isReindexing } = useIndexCampaigns()
 
   useEffect(() => {
     if (session.data?.user && !authToken) {
@@ -108,7 +118,21 @@ export default function DashboardLayout({
         <div className="drawer lg:drawer-open w-full h-full grow">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
           <div className="px-4 flex items-center flex-col w-full h-full drawer-content bg-base-200">
-            <div className="w-full flex sticky justify-end p-2">
+            <div className="w-full flex sticky justify-end p-2 items-center gap-4">
+              <Button
+                disabled={isReindexing}
+                styling="primary"
+                size="sm"
+                onClick={() =>
+                  forceReindex({
+                    contractAddress: getCampaignDeploymentAddress(chainId),
+                    chainId: Chain.NEOX_TESTNET.toString(),
+                  })
+                }
+              >
+                Reindex
+              </Button>
+
               <DynamicWidget />
             </div>
             <div className="py-8 flex-1 max-w-3xl w-full">{children}</div>

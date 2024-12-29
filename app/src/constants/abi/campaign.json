@@ -10,11 +10,7 @@
     "type": "function",
     "name": "addAdmin",
     "inputs": [
-      {
-        "name": "_campaignUid",
-        "type": "bytes32",
-        "internalType": "bytes32"
-      },
+      { "name": "_campaignUid", "type": "bytes32", "internalType": "bytes32" },
       { "name": "_admin", "type": "address", "internalType": "address" }
     ],
     "outputs": [],
@@ -24,11 +20,7 @@
     "type": "function",
     "name": "addMember",
     "inputs": [
-      {
-        "name": "_campaignUid",
-        "type": "bytes32",
-        "internalType": "bytes32"
-      },
+      { "name": "_campaignUid", "type": "bytes32", "internalType": "bytes32" },
       { "name": "_member", "type": "address", "internalType": "address" }
     ],
     "outputs": [],
@@ -63,11 +55,7 @@
     "type": "function",
     "name": "donateWithPermit",
     "inputs": [
-      {
-        "name": "_campaignUid",
-        "type": "bytes32",
-        "internalType": "bytes32"
-      },
+      { "name": "_campaignUid", "type": "bytes32", "internalType": "bytes32" },
       { "name": "amount", "type": "uint256", "internalType": "uint256" },
       { "name": "deadline", "type": "uint256", "internalType": "uint256" },
       { "name": "v", "type": "uint8", "internalType": "uint8" },
@@ -88,6 +76,27 @@
   },
   {
     "type": "function",
+    "name": "getCampaign",
+    "inputs": [
+      { "name": "_campaignUid", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct XDP.Campaign",
+        "components": [
+          { "name": "uid", "type": "bytes32", "internalType": "bytes32" },
+          { "name": "name", "type": "string", "internalType": "string" },
+          { "name": "balance", "type": "uint256", "internalType": "uint256" },
+          { "name": "status", "type": "uint8", "internalType": "uint8" }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "getOwner",
     "inputs": [],
     "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
@@ -97,11 +106,7 @@
     "type": "function",
     "name": "getPermissions",
     "inputs": [
-      {
-        "name": "_campaignUid",
-        "type": "bytes32",
-        "internalType": "bytes32"
-      },
+      { "name": "_campaignUid", "type": "bytes32", "internalType": "bytes32" },
       { "name": "_member", "type": "address", "internalType": "address" }
     ],
     "outputs": [{ "name": "", "type": "uint8", "internalType": "uint8" }],
@@ -134,11 +139,7 @@
     "type": "function",
     "name": "removeMember",
     "inputs": [
-      {
-        "name": "_campaignUid",
-        "type": "bytes32",
-        "internalType": "bytes32"
-      },
+      { "name": "_campaignUid", "type": "bytes32", "internalType": "bytes32" },
       { "name": "_member", "type": "address", "internalType": "address" }
     ],
     "outputs": [],
@@ -155,11 +156,7 @@
     "type": "function",
     "name": "withdraw",
     "inputs": [
-      {
-        "name": "_campaignUid",
-        "type": "bytes32",
-        "internalType": "bytes32"
-      },
+      { "name": "_campaignUid", "type": "bytes32", "internalType": "bytes32" },
       { "name": "_amount", "type": "uint256", "internalType": "uint256" }
     ],
     "outputs": [],
@@ -169,11 +166,7 @@
     "type": "function",
     "name": "withdraw",
     "inputs": [
-      {
-        "name": "_campaignUid",
-        "type": "bytes32",
-        "internalType": "bytes32"
-      },
+      { "name": "_campaignUid", "type": "bytes32", "internalType": "bytes32" },
       { "name": "_amount", "type": "uint256", "internalType": "uint256" },
       { "name": "receiver", "type": "address", "internalType": "address" }
     ],

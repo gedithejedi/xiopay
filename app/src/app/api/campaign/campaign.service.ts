@@ -2,9 +2,9 @@ import logger from '@/app/lib/logger'
 import { EventNames, indexContractEvents, readContract } from '@/lib/indexer'
 import Campaign, { CampaignInterface } from '@/../db/models/campaign-model'
 import CampaignContract from '@/../db/models/campaignContract-model'
+import DonationEvent from '@/../db/models/donationEvent-model'
 import { getPublicClient } from 'wagmi/actions'
 import { wagmiProviderConfig } from '@/lib/chains'
-import { checksumAddress } from 'viem'
 
 export interface Campaign {
   campaignId: string
@@ -54,26 +54,40 @@ const indexContract = async ({
     logger.debug(`Latest block: ${latestBlock}`)
     logger.debug(`Cached campaigns: ${cachedCampaigns?.length}`)
 
-    // Fetch all logs from chain based on last delta
-    const fetchedCampaigns = await indexContractEvents({
-      contractAddress,
-      event: EventNames.Create,
-      fromBlock: BigInt(latestBlockUpdate),
-      toBlock: latestBlock,
-    })
+    const [fetchedCampaigns, donations] = await Promise.all([
+      indexContractEvents({
+        contractAddress,
+        event: EventNames.Create,
+        fromBlock: BigInt(latestBlockUpdate),
+        toBlock: latestBlock,
+      }),
+      indexContractEvents({
+        contractAddress,
+        event: EventNames.Donate,
+        fromBlock: BigInt(latestBlockUpdate),
+        toBlock: latestBlock,
+      }),
+    ])
 
     logger.debug(`Fetched campaigns: ${fetchedCampaigns?.length}`)
     const newCampaigns = [] as CampaignInterface[]
 
-    // Parse all new campaigns
+    // Parse all new campaigns and fetch their balances
     if (!!fetchedCampaigns && fetchedCampaigns.length) {
-      for (const log of fetchedCampaigns) {
+      const fetchedCampaignBalances = await Promise.all(
+        [...fetchedCampaigns].map((log) => {
+          // @ts-expect-error: Checking if creator exist below so safe to ignore
+          const { campaignId: _campaignId } = log?.args
+          return readContract(contractAddress, 'getBalance', [_campaignId])
+        })
+      )
+
+      // Update balances for cached campaigns
+      fetchedCampaigns.forEach((log, i) => {
+        const balance = fetchedCampaignBalances[i] as bigint | undefined
+
         // @ts-expect-error: Checking if creator exist below so safe to ignore
         const { campaignId: _campaignId, creator: _creator, name } = log?.args
-
-        const balance = (await readContract(contractAddress, 'getBalance', [
-          _campaignId,
-        ])) as bigint
 
         newCampaigns.push({
           contractAddress,
@@ -81,26 +95,17 @@ const indexContract = async ({
           campaignId: _campaignId,
           creator: _creator,
           name: name,
-          balance: balance,
+          balance: BigInt(balance || 0),
           latestBlockUpdate: Number(latestBlock),
         })
-      }
-    }
-
-    logger.debug(`Putting campaign id's in a set.`)
-
-    // put all campaign ids in a set
-    const campaignIds = new Set<string>()
-    for (const campaign of newCampaigns) {
-      campaignIds.add(campaign.campaignId)
+      })
     }
 
     logger.debug(`Fetchin balances.`)
-
     // Fetch all balances for the cached campaigns
     const cachedCampaignBalances = await Promise.all(
-      [...campaignIds].map((id) => {
-        return readContract(contractAddress, 'getBalance', [id])
+      [...cachedCampaigns].map(({ campaignId }) => {
+        return readContract(contractAddress, 'getBalance', [campaignId])
       })
     )
 
@@ -113,17 +118,31 @@ const indexContract = async ({
         balance: balance || BigInt(0),
       }
     })
-
+    console.log([...(newCampaigns || []), ...(updatedCachedCampaigns || [])])
     // Delete all existing logs with the same contract address and chainId
-    await Campaign.deleteMany({
-      contractAddress,
-      chainId,
-    })
-
+    await Campaign.deleteMany()
     await Campaign.insertMany([
       ...(newCampaigns || []),
       ...(updatedCachedCampaigns || []),
     ])
+
+    // Parse dontation events
+    if (donations && donations.length) {
+      for (const log of donations) {
+        // @ts-expect-error: Checking if creator exist below so safe to ignore
+        const { campaignId, donor, amount } = log?.args
+
+        //Add donation events to db
+        await DonationEvent.create({
+          contractAddress,
+          chainId,
+          campaignId,
+          fromAddress: donor,
+          amount: BigInt(amount),
+          blockNumber: Number(log.blockNumber),
+        })
+      }
+    }
 
     if (campaignContract) {
       logger.debug(`Updating contract ${contractAddress}`)
@@ -176,11 +195,7 @@ const getCampaigns = async ({
 }: CampaignsGetRequest): Promise<CampaignsGetResponse> => {
   try {
     const creatorQuery: object = creator ? { creator } : {}
-    console.log({
-      contractAddress,
-      creator,
-      chainId,
-    })
+
     const logs = await Campaign.find({
       contractAddress,
       chainId,
@@ -224,7 +239,7 @@ const getWithCampaignId = async ({
       chainId,
       ...campaignIdQuery,
     })
-    console.log(logs)
+
     return {
       status: 200,
       data: logs,

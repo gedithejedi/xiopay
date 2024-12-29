@@ -42,28 +42,8 @@ export default function Campaign({ params }: Props) {
     return balance
   }, [campaignData])
 
-  const { mutate: forceReindex, isPending: isReindexing } = useIndexCampaigns()
-
-  const customHeader = (
-    <Button
-      styling="primary"
-      onClick={() =>
-        forceReindex({
-          contractAddress: getCampaignDeploymentAddress(chainId),
-          chainId: Chain.NEOX_TESTNET.toString(),
-        })
-      }
-    >
-      Reindex Campaign
-    </Button>
-  )
-
   return (
-    <PageLayout
-      title="Campaign"
-      isLoading={isLoading}
-      customHeader={customHeader}
-    >
+    <PageLayout title="Campaign" isLoading={isLoading}>
       <div className="flex flex-col gap-4">
         <CampaignCard
           name={campaignData?.name || 'Campaign Name'}
@@ -81,11 +61,7 @@ export default function Campaign({ params }: Props) {
             </Link>
           </div>
           <div className="bg-base-300 rounded-lg p-4">
-            <DonationWidget
-              isDemoMode={true}
-              title={campaignData?.name || 'Campaign Name'}
-              campaignId={campaignId}
-            />
+            <DonationWidget isDemoMode={true} campaignData={campaignData} />
           </div>
         </Card>
       </div>

@@ -2,7 +2,7 @@
 
 import { Chain } from '@/app/lib/chains'
 import Card from '@/components/atoms/Card'
-import PageTitle from '@/components/atoms/PageTitle'
+import Loading from '@/components/atoms/Loading'
 import DonationWidget from '@/components/organisms/DonationWidget'
 import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
 import useUnwrapParams from '@/hooks/unwrapParams'
@@ -18,7 +18,7 @@ type Props = {
 }
 
 export default function Donate({ params }: Props) {
-  const { address, chain } = useAccount()
+  const { chain } = useAccount()
   const chainId = chain?.id || 1
 
   const unwrappedParams = useUnwrapParams(Promise.resolve(params))
@@ -30,29 +30,21 @@ export default function Donate({ params }: Props) {
     chainId: Chain.NEOX_TESTNET.toString(),
   })
 
-  // const contractBalance = useMemo(() => {
-  //   if (!campaignData) return 0
-
-  //   const balance = formatEther(campaignData.balance)
-  //   return balance
-  // }, [campaignData])
-
   if (isLoading) {
-    return <p>Loading...</p>
+    return <Loading />
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="w-full flex justify-end">
-        <DynamicWidget />
-      </div>
+    <div className="flex w-full justify-center">
+      <div className="flex flex-col gap-3 min-w-[500px]">
+        <div className="w-full flex justify-end">
+          <DynamicWidget />
+        </div>
 
-      <Card>
-        <DonationWidget
-          title={campaignData?.name || 'Campaign'}
-          campaignId={campaignId}
-        />
-      </Card>
+        <Card>
+          <DonationWidget campaignData={campaignData} />
+        </Card>
+      </div>
     </div>
   )
 }

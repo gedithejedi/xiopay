@@ -5,8 +5,12 @@ import toast from 'react-hot-toast'
 export interface Campaign {
   campaignId: string
   creator: string
+  contractAddress: string
+  chainId: string
   name: string
   balance: bigint
+  latestBlockUpdate: number
+  updatedAt?: number
 }
 
 export const getCampaigns = async ({

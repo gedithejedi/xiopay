@@ -5,8 +5,7 @@ import CampaignAbi from '@/constants/abi/campaign.json'
 
 export enum EventNames {
   Create = 'CampaignCreated',
-  Update = 'CampaignUpdated',
-  Delete = 'CampaignDeleted',
+  Donate = 'Donate',
 }
 
 const getEventFunction = (event: string, abi: Abi) => {

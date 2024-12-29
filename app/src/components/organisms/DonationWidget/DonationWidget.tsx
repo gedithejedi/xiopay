@@ -13,15 +13,15 @@ import { donateToCampaign, getPermit } from '@/utils/transactions'
 import { Abi, parseEther } from 'viem'
 import Button from '@/components/atoms/Button'
 import CampaignAbi from '@/constants/abi/campaign.json'
+import { Campaign } from '@/utils/campaign/getCampaigns'
+import useIndexCampaigns from '@/utils/campaign/indexCampaign'
 
 function DonationWidget({
   isDemoMode = false,
-  title,
-  campaignId,
+  campaignData,
 }: {
   isDemoMode?: boolean
-  title: string
-  campaignId: string
+  campaignData?: Campaign
 }) {
   const { chain, address } = useAccount()
   const chainId = chain?.id || ''
@@ -31,6 +31,7 @@ function DonationWidget({
     handleSubmit,
     control,
     setValue,
+    reset,
     watch,
     formState: { errors },
   } = useForm<DonateFormData>({
@@ -41,8 +42,12 @@ function DonationWidget({
     },
   })
 
+  const { mutate: forceReindex, isPending: isReindexing } = useIndexCampaigns()
+
   const { mutate: onDonate, isPending: isDonating } = useMutation({
     mutationFn: async (data: DonateFormData) => {
+      if (!campaignData)
+        return toast.error('Something went wrong while processing.')
       if (!chainId || !address) {
         return toast.error('Something went wrong while processing.')
       }
@@ -71,20 +76,30 @@ function DonationWidget({
 
       if (!permit) {
         return toast.error(
-          'Something went wrong while signing the donation transaction.'
+          'Something went wrong while signing the donation transaction. Missing permit.'
         )
       }
 
       try {
         const res = await donateToCampaign({
           amount,
-          contractAddress,
-          campaignId,
+          contractAddress: campaignData.contractAddress,
+          campaignId: campaignData.campaignId,
           abi: CampaignAbi as Abi,
           permit,
         })
 
-        console.log(res)
+        forceReindex({
+          contractAddress: campaignData?.contractAddress,
+          chainId: campaignData.chainId,
+        })
+
+        reset({
+          amount: 0,
+          name: '',
+          description: '',
+        })
+
         return res
       } catch (error) {
         toast.error('Something went wrong while processing donation.')
@@ -105,7 +120,9 @@ function DonationWidget({
       <form onSubmit={handleSubmit((data) => onDonate(data))}>
         <div className="flex flex-col gap-3">
           <div>
-            <h2 className="text-xl mb-3 font-bold">{title}</h2>
+            <h2 className="text-xl mb-3 font-bold">
+              {campaignData?.name || 'Campaign'}
+            </h2>
             <label className="input input-bordered flex items-center gap-2 w-full">
               <span>$</span>
               <input
@@ -143,7 +160,7 @@ function DonationWidget({
               </span>
             )}
           </div>
-          <label className="input input-bordered flex items-center gap-2 w-full">
+          {/* <label className="input input-bordered flex items-center gap-2 w-full">
             <input
               {...register('name', { required: false })}
               type="text"
@@ -164,8 +181,12 @@ function DonationWidget({
                 placeholder="Say something nice..."
               ></textarea>
             )}
-          />
-          <Button styling="primary" loading={isDonating} type="submit">
+          /> */}
+          <Button
+            styling="primary"
+            loading={isDonating || isReindexing}
+            type="submit"
+          >
             {isDonating
               ? 'Donating...'
               : currentAmount > 0
