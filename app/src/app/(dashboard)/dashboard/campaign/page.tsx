@@ -41,12 +41,7 @@ export default function Campaigns() {
           balance: formatEther(campaign.balance),
         }))
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error(error)
-        } else {
-          console.error(error)
-        }
-
+        console.error(error)
         return []
       }
     },
