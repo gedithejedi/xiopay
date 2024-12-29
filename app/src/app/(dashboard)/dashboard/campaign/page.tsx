@@ -5,7 +5,6 @@ import Button from '@/components/atoms/Button'
 import Card from '@/components/atoms/Card'
 import CampaignCard from '@/components/organisms/CampaignCard'
 import PageLayout from '@/components/organisms/PageLayout'
-import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
 import { getCampaigns } from '@/utils/campaign/getCampaigns'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
@@ -23,15 +22,13 @@ function CampaignsHeaderButton() {
 
 export default function Campaigns() {
   const { address, isConnected } = useAccount()
-  const contractAddress = getCampaignDeploymentAddress(Chain.NEOX_TESTNET)
   const creator = address || ''
 
   const { data: campaignData, isLoading } = useQuery({
-    queryKey: ['campaign', contractAddress, creator],
+    queryKey: ['campaign', creator],
     queryFn: async () => {
       try {
         const campaigns = await getCampaigns({
-          contractAddress,
           creator,
           chainId: Chain.NEOX_TESTNET.toString(),
         })
@@ -45,7 +42,7 @@ export default function Campaigns() {
         return []
       }
     },
-    enabled: !!contractAddress && !!creator,
+    enabled: !!creator,
   })
 
   return (

@@ -15,7 +15,7 @@ export interface Campaign {
 
 interface indexContractPostRequest {
   contractAddress: string
-  chainId: string
+  chainId: number
 }
 
 interface indexContractPostResponse {
@@ -191,7 +191,7 @@ const indexContract = async ({
 interface CampaignsGetRequest {
   contractAddress: string
   creator?: string
-  chainId: string
+  chainId: number
 }
 
 interface CampaignsGetResponse {
@@ -229,7 +229,7 @@ const getCampaigns = async ({
 interface CampaignGetRequest {
   campaignId: string
   contractAddress: string
-  chainId: string
+  chainId: number
 }
 
 interface CampaignGetResponse {

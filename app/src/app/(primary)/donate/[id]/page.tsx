@@ -1,5 +1,4 @@
 import Donate from '@/modules/donate/routes/Donate/Donate'
-
 export default async function Page({
   params,
 }: {

@@ -16,7 +16,6 @@ import { getAuthToken } from '@dynamic-labs/sdk-react-core'
 import { useSession, signOut } from 'next-auth/react'
 import toast from 'react-hot-toast'
 import useIndexCampaigns from '@/utils/campaign/indexCampaign'
-import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
 import { Chain } from '../lib/chains'
 import { useAccount } from 'wagmi'
 
@@ -125,8 +124,8 @@ export default function DashboardLayout({
                 size="sm"
                 onClick={() =>
                   forceReindex({
-                    contractAddress: getCampaignDeploymentAddress(chainId),
-                    chainId: Chain.NEOX_TESTNET.toString(),
+                    chainId: Chain.NEOX_TESTNET,
+                    enableToast: true,
                   })
                 }
               >

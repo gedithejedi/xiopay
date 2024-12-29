@@ -3,25 +3,31 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 
 export const indexCampaigns = async ({
-  contractAddress,
   chainId,
+  enableToast = false,
 }: {
-  contractAddress: string
-  chainId: string
+  chainId: number
+  enableToast?: boolean
 }): Promise<boolean> => {
-  const toastId = toast.loading('Indeixing contract...')
+  const toastId = enableToast
+    ? toast.loading('Indexing contract...')
+    : undefined
   try {
-    const apiUrl = `/api/campaign/${chainId}/${contractAddress}`
+    const apiUrl = `/api/campaign/${chainId}`
     await axios.post(apiUrl)
 
-    toast.success('Campaigns indexed successfully.', { id: toastId })
+    toastId
+      ? toast.success('Campaigns indexed successfully.', { id: toastId })
+      : null
     return true
   } catch (error: unknown) {
     console.error(error)
 
-    toast.error('Something went wrong while indexing campaigns.', {
-      id: toastId,
-    })
+    toastId
+      ? toast.error('Something went wrong while indexing campaigns.', {
+          id: toastId,
+        })
+      : null
     return true
   }
 }
@@ -31,15 +37,15 @@ const useIndexCampaigns = () => {
 
   return useMutation({
     mutationFn: ({
-      contractAddress,
       chainId,
+      enableToast,
     }: {
-      contractAddress: string
-      chainId: string
-    }) => indexCampaigns({ contractAddress, chainId }),
-    onSuccess: (_, { contractAddress, chainId }) => {
+      chainId: number
+      enableToast?: boolean
+    }) => indexCampaigns({ chainId, enableToast }),
+    onSuccess: (_, { chainId }) => {
       queryClient.invalidateQueries({
-        queryKey: ['campaign', chainId, contractAddress],
+        queryKey: ['campaign', chainId],
       })
     },
   })

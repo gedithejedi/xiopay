@@ -89,7 +89,6 @@ function DonationWidget({
         })
 
         forceReindex({
-          contractAddress: campaignData?.contractAddress,
           chainId: campaignData.chainId,
         })
 

@@ -7,7 +7,6 @@ import { formatEther } from 'viem'
 import CampaignCard from '@/components/organisms/CampaignCard'
 import Link from 'next/link'
 import Button from '@/components/atoms/Button'
-import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
 import { useAccount } from 'wagmi'
 import Card from '@/components/atoms/Card'
 import DonationWidget from '@/components/organisms/DonationWidget'
@@ -17,14 +16,13 @@ import LoadingPage from '@/app/(dashboard)/loading'
 
 export default function Campaign({ id }: CampaignProps) {
   const { chain } = useAccount()
-  const chainId = chain?.id || 1
+  const chainId = chain?.id || Chain.NEOX_TESTNET
 
   const campaignId = id || ''
 
   const { data: campaignData, isLoading } = useGetCampaignById({
-    contractAddress: getCampaignDeploymentAddress(chainId),
     campaignId,
-    chainId: Chain.NEOX_TESTNET.toString(),
+    chainId,
   })
 
   const contractBalance = useMemo(() => {

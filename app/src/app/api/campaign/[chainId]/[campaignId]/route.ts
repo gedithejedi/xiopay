@@ -1,16 +1,21 @@
 import logger from '@/app/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
-import CampaignService from '../../../campaign.service'
+import CampaignService from '../../campaign.service'
 import dbConnect from '@/app/lib/mongo'
+import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
+import { chainsInString } from '@/app/lib/chains'
+import { z } from 'zod'
 
-interface GetParams {
-  campaignId: string
-  contractAddress: string
-  chainId: string
-}
+const paramsSchema = z.object({
+  campaignId: z.string(),
+  chainId: z.enum(chainsInString).transform((chainId) => Number(chainId)),
+})
+type Params = z.infer<typeof paramsSchema>
 
-export async function GET(_: NextRequest, context: { params: GetParams }) {
-  const { campaignId, contractAddress, chainId } = await context.params
+export async function GET(_: NextRequest, context: { params: Params }) {
+  const params = await context.params
+  const { campaignId, chainId } = paramsSchema.parse(params)
+  const contractAddress = getCampaignDeploymentAddress(chainId)
 
   if (!campaignId || !contractAddress) {
     return NextResponse.json({ error: 'Missing args' }, { status: 404 })

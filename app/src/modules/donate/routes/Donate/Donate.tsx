@@ -4,7 +4,6 @@ import { Chain } from '@/app/lib/chains'
 import Card from '@/components/atoms/Card'
 import Loading from '@/components/atoms/Loading'
 import DonationWidget from '@/components/organisms/DonationWidget'
-import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
 import { useGetCampaignById } from '@/utils/campaign/getCampaignById'
 import { DynamicWidget } from '@dynamic-labs/sdk-react-core'
 import React from 'react'
@@ -13,12 +12,11 @@ import { DonateProps } from './Donate.types'
 
 export default function Donate({ campaignId }: DonateProps) {
   const { chain } = useAccount()
-  const chainId = chain?.id || 1
+  const chainId = chain?.id || Chain.NEOX_TESTNET
 
   const { data: campaignData, isLoading } = useGetCampaignById({
-    contractAddress: getCampaignDeploymentAddress(chainId),
     campaignId,
-    chainId: Chain.NEOX_TESTNET.toString(),
+    chainId,
   })
 
   if (isLoading) {

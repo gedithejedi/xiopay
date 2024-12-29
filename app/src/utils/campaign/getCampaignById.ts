@@ -6,15 +6,13 @@ type GetCampaignByIdResult = Campaign | null
 
 export const getCampaignById = async ({
   campaignId,
-  contractAddress,
   chainId,
 }: {
   campaignId: string
-  contractAddress: string
-  chainId: string
+  chainId: number
 }): Promise<GetCampaignByIdResult> => {
   try {
-    const apiUrl = `/api/campaign/${chainId}/${contractAddress}/${campaignId}`
+    const apiUrl = `/api/campaign/${chainId}/${campaignId}`
     const { data } = await axios.get(apiUrl)
 
     return data.data
@@ -26,22 +24,20 @@ export const getCampaignById = async ({
 
 export const useGetCampaignById = ({
   campaignId,
-  contractAddress,
   chainId,
   config = {},
 }: {
   campaignId: string
-  contractAddress: string
-  chainId: string
+  chainId: number
   config?: Omit<
     UseQueryOptions<GetCampaignByIdResult, Error, GetCampaignByIdResult>,
     'queryKey' | 'queryFn' | 'enabled'
   >
 }) => {
-  return useQuery<GetCampaignByIdResult, Error>({
-    queryKey: ['campaign', chainId, contractAddress, campaignId],
-    queryFn: () => getCampaignById({ contractAddress, campaignId, chainId }),
-    enabled: !!contractAddress || !!campaignId,
+  return useQuery<Campaign | null, Error>({
+    queryKey: ['campaign', chainId, campaignId],
+    queryFn: () => getCampaignById({ campaignId, chainId }),
+    enabled: !!campaignId,
     ...config,
   })
 }

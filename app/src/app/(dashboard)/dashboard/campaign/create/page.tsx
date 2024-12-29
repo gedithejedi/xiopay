@@ -9,7 +9,6 @@ import toast from 'react-hot-toast'
 import { useAccount } from 'wagmi'
 import campaignAbi from '@/constants/abi/campaign.json'
 import { Abi } from 'viem'
-import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
 import { useGetCampaigns } from '@/utils/campaign/getCampaigns'
 import { Chain } from '@/app/lib/chains'
 import Button from '@/components/atoms/Button'
@@ -25,14 +24,13 @@ interface CreateWidgetFormData {
 
 export default function Home() {
   const { chain, address } = useAccount()
-  const chainId = chain?.id || ''
+  const chainId = chain?.id
 
   const [isDeployed, setIsDeployed] = useState(false)
 
   const { data: campaignData } = useGetCampaigns({
-    contractAddress: getCampaignDeploymentAddress(Chain.NEOX_TESTNET),
     creator: address || '',
-    chainId: Chain.NEOX_TESTNET.toString(),
+    chainId: chainId || Chain.NEOX_TESTNET,
   })
 
   const router = useRouter()
@@ -66,11 +64,9 @@ export default function Home() {
         return toast.error('Campaign with this name already exists')
       }
 
-      const contractAddress = getCampaignDeploymentAddress(chainId)
-
       try {
         const receipt = await createCampaign({
-          contractAddress,
+          chainId,
           name: data.title,
           abi: campaignAbi as Abi,
         })
@@ -99,12 +95,11 @@ export default function Home() {
         const campaignId = log.topics[1]
 
         forceReindex({
-          contractAddress: getCampaignDeploymentAddress(chainId),
-          chainId: Chain.NEOX_TESTNET.toString(),
+          chainId: Chain.NEOX_TESTNET,
         })
 
         await queryClient.invalidateQueries({
-          queryKey: ['campaign', chainId, contractAddress, address],
+          queryKey: ['campaign', chainId, address],
         })
 
         setIsDeployed(true)
