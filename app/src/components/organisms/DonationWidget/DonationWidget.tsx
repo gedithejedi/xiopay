@@ -13,7 +13,7 @@ import { donateToCampaign, getPermit } from '@/utils/transactions'
 import { Abi, parseEther } from 'viem'
 import Button from '@/components/atoms/Button'
 import CampaignAbi from '@/constants/abi/campaign.json'
-import { Campaign } from '@/utils/campaign/getCampaigns'
+import { CampaignInterface } from '@/../db/models/campaign-model'
 import useIndexCampaigns from '@/utils/campaign/indexCampaign'
 
 function DonationWidget({
@@ -21,7 +21,7 @@ function DonationWidget({
   campaignData,
 }: {
   isDemoMode?: boolean
-  campaignData?: Campaign | null
+  campaignData?: CampaignInterface | null
 }) {
   const { chain, address } = useAccount()
   const chainId = chain?.id || ''

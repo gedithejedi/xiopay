@@ -1,17 +1,7 @@
 import { UseQueryOptions, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import toast from 'react-hot-toast'
-
-export interface Campaign {
-  campaignId: string
-  creator: string
-  contractAddress: string
-  chainId: number
-  name: string
-  balance: bigint
-  latestBlockUpdate: number
-  updatedAt?: number
-}
+import type { CampaignInterface } from '../../../db/models/campaign-model'
 
 export const getCampaigns = async ({
   creator,
@@ -19,7 +9,7 @@ export const getCampaigns = async ({
 }: {
   creator: string
   chainId: number
-}): Promise<Campaign[]> => {
+}): Promise<CampaignInterface[]> => {
   try {
     const apiUrl = `/api/campaign/${chainId}`
     const { data } = await axios.get(apiUrl, { params: { creator } })
@@ -39,9 +29,9 @@ export const useGetCampaigns = ({
 }: {
   creator: string
   chainId: number
-  config?: Omit<UseQueryOptions<Campaign[], Error>, 'queryKey'>
+  config?: Omit<UseQueryOptions<CampaignInterface[], Error>, 'queryKey'>
 }) => {
-  return useQuery<Campaign[], Error>({
+  return useQuery<CampaignInterface[], Error>({
     queryKey: ['campaign', chainId, creator],
     queryFn: () => getCampaigns({ creator, chainId }),
     enabled: !!creator,

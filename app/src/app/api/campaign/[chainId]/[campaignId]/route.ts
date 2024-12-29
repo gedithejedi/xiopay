@@ -3,12 +3,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import CampaignService from '../../campaign.service'
 import dbConnect from '@/app/lib/mongo'
 import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
-import { chainsInString } from '@/app/lib/chains'
+import { chainIdSchema } from '@/app/api/schema'
 import { z } from 'zod'
 
 const paramsSchema = z.object({
   campaignId: z.string(),
-  chainId: z.enum(chainsInString).transform((chainId) => Number(chainId)),
+  chainId: chainIdSchema,
 })
 
 export async function GET(

@@ -1,8 +1,8 @@
 import { UseQueryOptions, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { Campaign } from './getCampaigns'
+import type { CampaignInterface } from '../../../db/models/campaign-model'
 
-type GetCampaignByIdResult = Campaign | null
+type GetCampaignByIdResult = CampaignInterface | null
 
 export const getCampaignById = async ({
   campaignId,
@@ -34,7 +34,7 @@ export const useGetCampaignById = ({
     'queryKey' | 'queryFn' | 'enabled'
   >
 }) => {
-  return useQuery<Campaign | null, Error>({
+  return useQuery<GetCampaignByIdResult, Error>({
     queryKey: ['campaign', chainId, campaignId],
     queryFn: () => getCampaignById({ campaignId, chainId }),
     enabled: !!campaignId,

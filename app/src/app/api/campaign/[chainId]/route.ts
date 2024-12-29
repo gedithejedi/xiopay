@@ -3,20 +3,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import CampaignService from '../campaign.service'
 import dbConnect from '@/app/lib/mongo'
 import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
-import { chainsInString } from '@/app/lib/chains'
-import { z } from 'zod'
-
-const paramsSchema = z.object({
-  chainId: z.enum(chainsInString).transform((chainId) => Number(chainId)),
-})
-type Params = z.input<typeof paramsSchema>
+import { chainIdObjectSchema, ChainIdObject } from '@/app/api/schema'
 
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<Params> }
+  context: { params: Promise<ChainIdObject> }
 ) {
   const params = await context.params
-  const { chainId } = paramsSchema.parse(params)
+  const { chainId } = chainIdObjectSchema.parse(params)
   const contractAddress = getCampaignDeploymentAddress(chainId)
   const creator = request.nextUrl.searchParams.get('creator')
 
@@ -51,10 +45,10 @@ export async function GET(
 
 export async function POST(
   _: NextRequest,
-  context: { params: Promise<Params> }
+  context: { params: Promise<ChainIdObject> }
 ) {
   const params = await context.params
-  const { chainId } = paramsSchema.parse(params)
+  const { chainId } = chainIdObjectSchema.parse(params)
   const contractAddress = getCampaignDeploymentAddress(chainId)
 
   if (!contractAddress || !chainId) {

@@ -1,18 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import DonationEventService, {
   donationFiltersByAddressSchema,
-  DonationFiltersByAddress,
 } from '@/app/api/donationEvent/donationEvent.service'
+import { chainIdObjectSchema, ChainIdObject } from '@/app/api/schema'
 
 export async function GET(
-  _: NextRequest,
-  context: { params: Promise<DonationFiltersByAddress> }
+  request: NextRequest,
+  context: { params: Promise<ChainIdObject> }
 ) {
   const params = await context.params
-  const parsedParams = donationFiltersByAddressSchema.parse(params)
+  const { chainId } = chainIdObjectSchema.parse(params)
+  const rawFilters = await request.json()
+  const filters = donationFiltersByAddressSchema.parse(rawFilters)
 
   const { error, status, data } =
-    await DonationEventService.getDonationEventsByUserAddress(parsedParams)
+    await DonationEventService.getDonationEventsByUserAddress(chainId, filters)
 
   if (error) {
     return NextResponse.json({

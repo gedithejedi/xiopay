@@ -1,16 +1,15 @@
+import { z } from 'zod'
 import logger from '@/app/lib/logger'
 import { chainIdToViemChain } from '@/lib/chains'
 import DonationEvent from '@/../db/models/donationEvent-model'
-import { z } from 'zod'
 import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
-import { chainsInString } from '@/app/lib/chains'
 import Campaign from '@/../db/models/campaign-model'
+import { Chain } from '@/app/lib/chains'
 
 const donationFilterSchema = z.object({
-  chainId: z.enum(chainsInString).transform((chainId) => Number(chainId)),
   timestamp: z.object({
-    from: z.number(),
-    to: z.number(),
+    from: z.coerce.number(),
+    to: z.coerce.number(),
   }),
 })
 
@@ -29,11 +28,10 @@ export type DonationFiltersByAddress = z.infer<
   typeof donationFiltersByAddressSchema
 >
 
-async function getDonationEventsByCampaignId({
-  chainId,
-  timestamp,
-  campaignId,
-}: DonationFilterByCampaignId) {
+async function getDonationEventsByCampaignId(
+  chainId: Chain,
+  { timestamp, campaignId }: DonationFilterByCampaignId
+) {
   try {
     const contractAddress = getCampaignDeploymentAddress(chainId)
     const chain = chainIdToViemChain(Number(chainId))
@@ -63,11 +61,10 @@ async function getDonationEventsByCampaignId({
   }
 }
 
-async function getDonationEventsByUserAddress({
-  chainId,
-  timestamp,
-  address,
-}: DonationFiltersByAddress) {
+async function getDonationEventsByUserAddress(
+  chainId: Chain,
+  { timestamp, address }: DonationFiltersByAddress
+) {
   try {
     const chain = chainIdToViemChain(Number(chainId))
 
