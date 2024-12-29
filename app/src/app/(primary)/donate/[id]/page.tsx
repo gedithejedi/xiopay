@@ -1,4 +1,4 @@
-import Donate from '@/modules/donate/routes/Donate/Donate'
+import Donate from '@/components/donatePage/Donate'
 export default async function Page({
   params,
 }: {
