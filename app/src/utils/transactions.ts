@@ -9,17 +9,23 @@ import {
   signTypedData,
   waitForTransactionReceipt,
 } from 'wagmi/actions'
+import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
+import { Chain } from '@/app/lib/chains'
 
 export const createCampaign = async ({
   name,
-  contractAddress,
   abi,
+  chainId,
 }: {
   name: string
-  contractAddress: string
   abi: Abi
+  chainId: Chain
 }) => {
   const toastId = toast.loading('Creating you campaign...')
+  const contractAddress = getCampaignDeploymentAddress(chainId)
+  if (!contractAddress || !contractAddress.length) {
+    throw new Error('Contract address not found')
+  }
 
   try {
     const walletClient = await getWalletClient(wagmiProviderConfig)

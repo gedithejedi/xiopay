@@ -6,7 +6,7 @@ export interface Campaign {
   campaignId: string
   creator: string
   contractAddress: string
-  chainId: string
+  chainId: number
   name: string
   balance: bigint
   latestBlockUpdate: number
@@ -14,16 +14,14 @@ export interface Campaign {
 }
 
 export const getCampaigns = async ({
-  contractAddress,
   creator,
   chainId,
 }: {
-  contractAddress: string
   creator: string
-  chainId: string
+  chainId: number
 }): Promise<Campaign[]> => {
   try {
-    const apiUrl = `/api/campaign/${chainId}/${contractAddress}`
+    const apiUrl = `/api/campaign/${chainId}`
     const { data } = await axios.get(apiUrl, { params: { creator } })
 
     return data.data
@@ -35,20 +33,18 @@ export const getCampaigns = async ({
 }
 
 export const useGetCampaigns = ({
-  contractAddress,
   creator,
   chainId,
   config = {},
 }: {
-  contractAddress: string
   creator: string
-  chainId: string
+  chainId: number
   config?: Omit<UseQueryOptions<Campaign[], Error>, 'queryKey'>
 }) => {
   return useQuery<Campaign[], Error>({
-    queryKey: ['campaign', chainId, contractAddress, creator],
-    queryFn: () => getCampaigns({ contractAddress, creator, chainId }),
-    enabled: !!contractAddress && !!creator,
+    queryKey: ['campaign', chainId, creator],
+    queryFn: () => getCampaigns({ creator, chainId }),
+    enabled: !!creator,
     staleTime: 300000,
     ...config,
   })

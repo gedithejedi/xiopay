@@ -4,7 +4,6 @@ import { Chain } from '@/app/lib/chains'
 import Card from '@/components/atoms/Card'
 import Loading from '@/components/atoms/Loading'
 import DonationWidget from '@/components/organisms/DonationWidget'
-import { getCampaignDeploymentAddress } from '@/constants/contract/deployAddresses'
 import useUnwrapParams from '@/hooks/unwrapParams'
 import { useGetCampaignById } from '@/utils/campaign/getCampaignById'
 import { DynamicWidget } from '@dynamic-labs/sdk-react-core'
@@ -25,7 +24,6 @@ export default function Donate({ params }: Props) {
   const campaignId = unwrappedParams?.id || ''
 
   const { data: campaignData, isLoading } = useGetCampaignById({
-    contractAddress: getCampaignDeploymentAddress(chainId),
     campaignId,
     chainId: Chain.NEOX_TESTNET.toString(),
   })
