@@ -235,12 +235,6 @@ export const getPermit = async (data: PermitData) => {
         chainId,
       }
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error(error)
-        toast.error('Something went wrong while signing the permit.')
-        return
-      }
-
       console.error(error)
       toast.error('Something went wrong while signing the permit.')
       return

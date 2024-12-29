@@ -28,11 +28,7 @@ export const getCampaigns = async ({
 
     return data.data
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error(error)
-    } else {
-      console.error(error)
-    }
+    console.error(error)
     toast.error('Something went wrong while fetching campaigns.')
     return []
   }

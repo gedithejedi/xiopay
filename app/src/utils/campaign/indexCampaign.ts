@@ -17,11 +17,7 @@ export const indexCampaigns = async ({
     toast.success('Campaigns indexed successfully.', { id: toastId })
     return true
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error(error)
-    } else {
-      console.error(error)
-    }
+    console.error(error)
 
     toast.error('Something went wrong while indexing campaigns.', {
       id: toastId,

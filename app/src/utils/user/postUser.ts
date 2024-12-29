@@ -15,11 +15,7 @@ export const postUser = async ({
 
     return response
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error(error)
-    } else {
-      console.error(error)
-    }
+    console.error(error)
     throw error
   }
 }
