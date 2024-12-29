@@ -2,6 +2,7 @@ import 'cally'
 import { format } from 'date-fns'
 import { HiOutlineCalendar } from 'react-icons/hi'
 import { DatePickerProps } from './DatePicker.types'
+import { ChangeEvent } from 'react'
 
 const getDateValue = (dateRange: [Date, Date]) => {
   return `${format(dateRange[0], 'yyyy-MM-dd')}/${format(dateRange[1], 'yyyy-MM-dd')}`
@@ -36,19 +37,23 @@ export default function DatePicker({
           justifySelf: 'anchor-center',
         }}
       >
+        {/* @ts-expect-error: These are imported from cally */}
         <calendar-range
           max={format(new Date(), 'yyyy-MM-dd')}
           class="cally"
           value={getDateValue(dateRange)}
-          onchange={(e) => {
+          onchange={(e: ChangeEvent<HTMLInputElement>) => {
             const [start, end] = e.target.value.split('/')
             setDateRange([new Date(start), new Date(end)])
           }}
         >
           <div className="grid grid-cols-2 gap-1">
+            {/* @ts-expect-error: These are imported from cally */}
             <calendar-month></calendar-month>
+            {/* @ts-expect-error: These are imported from cally */}
             <calendar-month offset={1}></calendar-month>
           </div>
+          {/* @ts-expect-error: These are imported from cally */}
         </calendar-range>
       </div>
     </>
