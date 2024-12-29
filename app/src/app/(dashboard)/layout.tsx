@@ -120,7 +120,7 @@ export default function DashboardLayout({
           <div className="px-4 flex items-center flex-col w-full h-full drawer-content bg-base-200">
             <div className="w-full flex sticky justify-end p-2 items-center gap-4">
               <Button
-                disabled={isReindexing}
+                loading={isReindexing}
                 styling="primary"
                 size="sm"
                 onClick={() =>

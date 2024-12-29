@@ -10,6 +10,7 @@ export interface DonationEventInterface {
   name: string
   description: string
   blockNumber: number
+  timestamp: number
   updatedAt?: number
 }
 
@@ -24,6 +25,7 @@ const DonationEventSchema = new mongoose.Schema<DonationEventInterface>({
   name: { type: String, required: false },
   description: { type: String, required: false },
   blockNumber: { type: Number, required: true },
+  timestamp: { type: Number, required: true },
   updatedAt: { type: Number, required: true, default: dayjs().unix() },
 })
 

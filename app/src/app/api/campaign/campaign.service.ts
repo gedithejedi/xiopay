@@ -118,7 +118,7 @@ const indexContract = async ({
         balance: balance || BigInt(0),
       }
     })
-    console.log([...(newCampaigns || []), ...(updatedCachedCampaigns || [])])
+
     // Delete all existing logs with the same contract address and chainId
     await Campaign.deleteMany()
     await Campaign.insertMany([
@@ -128,20 +128,32 @@ const indexContract = async ({
 
     // Parse dontation events
     if (donations && donations.length) {
-      for (const log of donations) {
+      const donationBlocks = await Promise.all(
+        donations.map(({ blockNumber }) => {
+          return client.getBlock({ blockNumber })
+        })
+      )
+
+      const donationTimestampsMap = new Map(
+        donationBlocks.map((b) => [b.number, Number(b.timestamp)])
+      )
+
+      const donationsToInsert = donations.map((log) => {
         // @ts-expect-error: Checking if creator exist below so safe to ignore
         const { campaignId, donor, amount } = log?.args
-
-        //Add donation events to db
-        await DonationEvent.create({
+        return {
           contractAddress,
           chainId,
           campaignId,
           fromAddress: donor,
           amount: BigInt(amount),
+          timestamp: donationTimestampsMap.get(log.blockNumber),
           blockNumber: Number(log.blockNumber),
-        })
-      }
+        }
+      })
+
+      //Add donation events to db
+      await DonationEvent.insertMany(donationsToInsert)
     }
 
     if (campaignContract) {
