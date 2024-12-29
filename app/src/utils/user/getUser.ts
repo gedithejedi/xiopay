@@ -7,26 +7,24 @@ export interface User {
   pageLink: string
   avatar: string
   updatedAt?: number
-  campaigns?: any[]
 }
+
+type GetUserResult = User | null
 
 export const getUser = async ({
   dynamicUserId,
 }: {
   dynamicUserId: string
-}): Promise<User | any> => {
+}): Promise<GetUserResult> => {
   try {
     if (!dynamicUserId) throw new Error('No id provided.')
     const apiUrl = `/api/user/${dynamicUserId}`
     const { data } = await axios.get(apiUrl)
 
     return data
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return { message: error.message, status: error.response?.status }
-    } else {
-      return { message: 'An unexpected error occurred' }
-    }
+  } catch (error: unknown) {
+    console.error(error)
+    return null
   }
 }
 
@@ -35,9 +33,12 @@ export const useGetUser = ({
   config = {},
 }: {
   dynamicUserId: string
-  config?: Omit<UseQueryOptions<User, Error>, 'queryKey'>
+  config?: Omit<
+    UseQueryOptions<GetUserResult, Error, GetUserResult>,
+    'queryKey' | 'queryFn' | 'enabled'
+  >
 }) => {
-  return useQuery<User, Error>({
+  return useQuery<GetUserResult, Error>({
     queryKey: ['user', dynamicUserId],
     queryFn: () => getUser({ dynamicUserId }),
     enabled: !!dynamicUserId,
