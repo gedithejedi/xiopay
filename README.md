@@ -8,9 +8,9 @@ Once you create donation campaign, you can plug-in donation widget to any websit
 
 The traditional way of online payment is always tricky. When do you truly own the asset that you are paid? The moment transaction is happened? What if the app is shut down for some reason? What if the middle protocol hold your asset for any reason?
 
-Owning asset never been this simpler concept without Web3. We implement this with Quick & Cheap layer 1 NeoX. 
+Owning asset never been this simpler without Web3. We implement this with Quick & Stable layer 1 NeoX. 
 
-On top of this simply, Smart contract is stand-alone server that will never go down. User have freedom to use different app or even create their own app for themselves to manage their donation campaigns.  
+On top of this simplicity, Smart contract is stand-alone server that will never go down. User have freedom to use different app or even create their own UI for managing their donation campaigns.  
 
 
 ## Components
