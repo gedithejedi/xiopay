@@ -11,4 +11,5 @@ export interface TableProps<T> {
   tableClassName?: string
   headerClassName?: string
   rowClassName?: string
+  isLoading?: boolean
 }

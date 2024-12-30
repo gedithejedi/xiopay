@@ -1,3 +1,4 @@
+'use client'
 import Button from '@/components/atoms/Button'
 import Card from '@/components/atoms/Card'
 import PageTitle from '@/components/atoms/PageTitle'
@@ -9,43 +10,16 @@ import {
   HiOutlineUserCircle,
   HiOutlineDocumentDuplicate,
 } from 'react-icons/hi'
+import { useGetCampaigns } from '@/utils/campaign/getCampaigns'
+import { useAccount } from 'wagmi'
+import { DEFAULT_CHAIN_ID } from '@/app/lib/chains'
+import { CampaignInterface } from '@/../db/models/campaign-model'
+import { formatEther } from 'viem'
+import { fromUnixTime, format } from 'date-fns'
 
-interface Transaction {
-  id: string
-  name: string
-  balance: number
-  time: string
-}
+const dateFormat = 'MMM d, yyyy'
 
-const transactions: Transaction[] = [
-  {
-    id: '0x01',
-    name: 'Campaign 1',
-    balance: 100.5,
-    time: '2023-06-01 10:30 AM',
-  },
-  {
-    id: '0x02',
-    name: 'Campaign 2',
-    balance: 75.2,
-    time: '2023-06-01 11:45 AM',
-  },
-  {
-    id: '0x03',
-    name: 'Campaign 3',
-    balance: 200.0,
-    time: '2023-06-01 1:15 PM',
-  },
-  {
-    id: '0x04',
-    name: 'Campaign 4',
-    balance: 150.3,
-    time: '2023-06-01 4:30 PM',
-  },
-]
-
-const columns: TableColumn<Transaction>[] = [
-  { header: 'Id', accessor: 'id' },
+const columns: TableColumn<CampaignInterface>[] = [
   {
     header: 'Name',
     accessor: 'name',
@@ -53,21 +27,35 @@ const columns: TableColumn<Transaction>[] = [
   {
     header: 'Balance',
     accessor: 'balance',
-    render: (value) => `${(value as number).toFixed(2)}`,
+    render: (value) => formatEther(value as bigint),
   },
-  { header: 'Created at', accessor: 'time' },
+  // TODO: check if this is the correct field
+  {
+    header: 'Created at',
+    accessor: 'updatedAt',
+    render: (value) => format(fromUnixTime(value as number), dateFormat),
+  },
   {
     header: '',
-    accessor: 'id',
-    render: (id) => (
+    accessor: 'campaignId',
+    render: (campaignId) => (
       <Button styling="tertiary">
-        <Link href={`/campaign/${id}`}>Details</Link>
+        <Link href={`/dashboard/campaign/${campaignId}`}>Details</Link>
       </Button>
     ),
   },
 ]
 
 export default function Dashboard() {
+  const { chain, address } = useAccount()
+  const chainId = chain?.id || DEFAULT_CHAIN_ID
+  const { data: campaignData, isLoading: isLoadingCampaigns } = useGetCampaigns(
+    {
+      creator: address || '',
+      chainId,
+    }
+  )
+
   return (
     <div className="flex flex-col gap-6">
       <Card className="flex flex-col">
@@ -106,11 +94,12 @@ export default function Dashboard() {
       <Card className="flex flex-col gap-2">
         <PageTitle>My Campaigns</PageTitle>
         <Table
-          data={transactions}
+          data={campaignData ?? []}
           columns={columns}
           tableClassName=""
           headerClassName="text-foreground text-[14px] border-b"
           rowClassName=""
+          isLoading={isLoadingCampaigns}
         />{' '}
       </Card>
     </div>
