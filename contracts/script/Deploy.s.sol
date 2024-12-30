@@ -10,7 +10,7 @@ contract DeployScript is Script {
     function run() public {
         vm.startBroadcast();
 
-        DeployAll.deploy(DeployParams({usdxInitialSupply: 100000000 ether}));
+        DeployAll.deploy(DeployParams({usdxInitialSupply: 5000 ether}));
 
         vm.stopBroadcast();
     }
