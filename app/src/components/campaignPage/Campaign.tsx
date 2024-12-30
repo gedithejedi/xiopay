@@ -16,6 +16,7 @@ import { DEFAULT_CHAIN_ID } from '@/app/lib/chains'
 import { HiOutlineDocumentDuplicate } from 'react-icons/hi'
 import { toast } from 'react-hot-toast'
 import CampaignGuide from '@/components/organisms/CampaignGuide'
+
 export default function Campaign({ id }: CampaignProps) {
   const { chain } = useAccount()
   const chainId = chain?.id || DEFAULT_CHAIN_ID
