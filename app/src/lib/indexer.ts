@@ -18,15 +18,17 @@ const getEventFunction = (event: string, abi: Abi) => {
 const indexContractEvents = async ({
   contractAddress,
   event,
+  chainId,
   fromBlock = BigInt(0),
   toBlock = 'latest',
 }: {
   contractAddress: string
   event: EventNames
+  chainId: number
   fromBlock?: bigint
   toBlock?: bigint | 'latest'
 }): Promise<GetLogsReturnType | undefined> => {
-  const client = getPublicClient(wagmiProviderConfig)
+  const client = getPublicClient(wagmiProviderConfig, { chainId })
   if (!client) throw new Error('Error retrieving public client')
 
   const logs = await client.getLogs({
@@ -42,11 +44,12 @@ const indexContractEvents = async ({
 const readContract = async (
   contractAddress: string,
   functionName: string,
-  args: (string | number | bigint)[]
+  args: (string | number | bigint)[],
+  chainId: number
 ) => {
   if (!functionName) throw new Error('Invalid event type')
 
-  const client = getPublicClient(wagmiProviderConfig)
+  const client = getPublicClient(wagmiProviderConfig, { chainId })
   if (!client) throw new Error('Error retrieving public client')
 
   const data = await client.readContract({

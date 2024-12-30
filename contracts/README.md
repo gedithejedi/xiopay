@@ -44,6 +44,7 @@ $ forge fmt
 
 ```shell
 $ forge script script/Deploy.s.sol:DeployScript --fork-url neo_x_test
+$ forge script script/Deploy.s.sol:DeployScript --fork-url neo_x
 ```
 
 #### Deploy with broadcast

@@ -10,7 +10,7 @@ import { useAccount } from 'wagmi'
 import campaignAbi from '@/constants/abi/campaign.json'
 import { Abi } from 'viem'
 import { useGetCampaigns } from '@/utils/campaign/getCampaigns'
-import { Chain, DEFAULT_CHAIN_ID } from '@/app/lib/chains'
+import { DEFAULT_CHAIN_ID } from '@/app/lib/chains'
 import Button from '@/components/atoms/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -95,7 +95,7 @@ export default function Home() {
         const campaignId = log.topics[1]
 
         forceReindex({
-          chainId: Chain.NEOX_TESTNET,
+          chainId,
         })
 
         await queryClient.invalidateQueries({

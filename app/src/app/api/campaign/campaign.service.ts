@@ -31,7 +31,7 @@ const indexContract = async ({
   try {
     let latestBlockUpdate = 0
 
-    const client = getPublicClient(wagmiProviderConfig)
+    const client = getPublicClient(wagmiProviderConfig, { chainId })
     if (!client) throw new Error('Error retrieving public client')
 
     const latestBlock = await client.getBlockNumber()
@@ -61,18 +61,21 @@ const indexContract = async ({
         event: EventNames.Create,
         fromBlock: BigInt(latestBlockUpdate),
         toBlock: latestBlock,
+        chainId,
       }),
       indexContractEvents({
         contractAddress,
         event: EventNames.Donate,
         fromBlock: BigInt(latestBlockUpdate),
         toBlock: latestBlock,
+        chainId,
       }),
       indexContractEvents({
         contractAddress,
         event: EventNames.Withdraw,
         fromBlock: BigInt(latestBlockUpdate),
         toBlock: latestBlock,
+        chainId,
       }),
     ])
 
@@ -85,7 +88,12 @@ const indexContract = async ({
         [...fetchedCampaigns].map((log) => {
           // @ts-expect-error: Checking if creator exist below so safe to ignore
           const { campaignId: _campaignId } = log?.args
-          return readContract(contractAddress, 'getBalance', [_campaignId])
+          return readContract(
+            contractAddress,
+            'getBalance',
+            [_campaignId],
+            chainId
+          )
         })
       )
 
@@ -112,7 +120,12 @@ const indexContract = async ({
     // Fetch all balances for the cached campaigns
     const cachedCampaignBalances = await Promise.all(
       [...cachedCampaigns].map(({ campaignId }) => {
-        return readContract(contractAddress, 'getBalance', [campaignId])
+        return readContract(
+          contractAddress,
+          'getBalance',
+          [campaignId],
+          chainId
+        )
       })
     )
 
@@ -125,6 +138,8 @@ const indexContract = async ({
         balance: balance || BigInt(0),
       }
     })
+
+    // TODO: Add db modifications into a transaction
 
     // Delete all existing logs with the same contract address and chainId
     await Campaign.deleteMany()

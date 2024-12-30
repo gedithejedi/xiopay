@@ -17,7 +17,6 @@ export const chainIdToViemChain = (chainId: number): Chain | undefined => {
 export const chains: readonly [Chain, ...Chain[]] = [
   neoxT4 as Chain,
   neoxMainnet as Chain,
-  // sepolia,
 ]
 
 export const wagmiProviderConfig = createConfig({
@@ -28,10 +27,5 @@ export const wagmiProviderConfig = createConfig({
     [neoxMainnet.id]: http('https://mainnet-2.rpc.banelabs.org', {
       batch: true,
     }),
-    // fallback([
-    //   http('https://mainnet-2.rpc.banelabs.org'),
-    //   http(),
-    // ]),
-    // [sepolia.id]: fallback([http()]),
   },
 })
