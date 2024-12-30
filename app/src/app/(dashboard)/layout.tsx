@@ -84,12 +84,6 @@ export default function DashboardLayout({
       toast.error('You are session has expired')
       return
     }
-
-    if (!session.data?.user && authToken) {
-      handleLogOut()
-      toast.error('Not fully authorized!')
-      return
-    }
   }, [authToken])
 
   return (
