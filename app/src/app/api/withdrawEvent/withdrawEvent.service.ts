@@ -29,6 +29,7 @@ async function getWithdrawEventsByUserAddress(chainId: Chain, address: string) {
 
     const contracts = await Campaign.find({
       creator: address,
+      chainId,
     })
 
     const events = await WithdrawEvent.find({
