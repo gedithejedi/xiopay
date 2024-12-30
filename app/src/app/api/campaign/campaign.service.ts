@@ -3,6 +3,7 @@ import { EventNames, indexContractEvents, readContract } from '@/lib/indexer'
 import Campaign, { CampaignInterface } from '@/../db/models/campaign-model'
 import CampaignContract from '@/../db/models/campaignContract-model'
 import DonationEvent from '@/../db/models/donationEvent-model'
+import WithdrawEvent from '@/../db/models/withdrawEvent-model'
 import { getPublicClient } from 'wagmi/actions'
 import { wagmiProviderConfig } from '@/lib/chains'
 
@@ -54,7 +55,7 @@ const indexContract = async ({
     logger.debug(`Latest block: ${latestBlock}`)
     logger.debug(`Cached campaigns: ${cachedCampaigns?.length}`)
 
-    const [fetchedCampaigns, donations] = await Promise.all([
+    const [fetchedCampaigns, donations, withdrawals] = await Promise.all([
       indexContractEvents({
         contractAddress,
         event: EventNames.Create,
@@ -64,6 +65,12 @@ const indexContract = async ({
       indexContractEvents({
         contractAddress,
         event: EventNames.Donate,
+        fromBlock: BigInt(latestBlockUpdate),
+        toBlock: latestBlock,
+      }),
+      indexContractEvents({
+        contractAddress,
+        event: EventNames.Withdraw,
         fromBlock: BigInt(latestBlockUpdate),
         toBlock: latestBlock,
       }),
@@ -154,6 +161,37 @@ const indexContract = async ({
 
       //Add donation events to db
       await DonationEvent.insertMany(donationsToInsert)
+    }
+
+    // Parse withdraw events
+    if (withdrawals && withdrawals.length) {
+      const withdrawalBlocks = await Promise.all(
+        withdrawals.map(({ blockNumber }) => {
+          return client.getBlock({ blockNumber })
+        })
+      )
+
+      const withdrawalTimestampsMap = new Map(
+        withdrawalBlocks.map((b) => [b.number, Number(b.timestamp)])
+      )
+
+      const withdrawalsToInsert = withdrawals.map((log) => {
+        // @ts-expect-error: Checking if creator exist below so safe to ignore
+        const { campaignId, receiver, amount, caller } = log?.args
+        return {
+          contractAddress,
+          chainId,
+          campaignId,
+          byAddress: caller,
+          recipientAddress: receiver,
+          amount: BigInt(amount),
+          timestamp: withdrawalTimestampsMap.get(log.blockNumber),
+          blockNumber: Number(log.blockNumber),
+        }
+      })
+
+      //Add withdrawal events to db
+      await WithdrawEvent.insertMany(withdrawalsToInsert)
     }
 
     if (campaignContract) {

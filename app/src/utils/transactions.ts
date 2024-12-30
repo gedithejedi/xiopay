@@ -249,3 +249,62 @@ export const getPermit = async (data: PermitData) => {
     console.error(error)
   }
 }
+
+export const withdrawCampaign = async ({
+  campaignId,
+  abi,
+  contractAddress,
+  amount,
+}: {
+  contractAddress: string
+  campaignId: string
+  abi: Abi
+  amount: bigint
+}) => {
+  const toastId = toast.loading('Withdrawing funds...')
+
+  if (!contractAddress || !contractAddress.length) {
+    throw new Error('Contract address not found')
+  }
+
+  try {
+    const walletClient = await getWalletClient(wagmiProviderConfig)
+    const account = walletClient.account.address
+    const client = getPublicClient(wagmiProviderConfig)
+    if (!client || !walletClient)
+      throw new Error('Error retrieving public client')
+
+    const withdrawArgs = {
+      account,
+      address: contractAddress as `0x${string}`,
+      abi: abi as Abi,
+      args: [campaignId, amount],
+      functionName: 'withdraw',
+    }
+
+    const res = await client.simulateContract(withdrawArgs)
+    if (!res?.request)
+      throw new Error('Something went wrong while simulating withdrawal.')
+
+    const hash = await walletClient.writeContract(res?.request)
+    const receipt = await waitForTransactionReceipt(wagmiProviderConfig, {
+      hash,
+    })
+
+    toast.success('Successfully withrdrawn from campaign.', { id: toastId })
+
+    return receipt
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error(e)
+      toast.error('Something went wrong in withdrawing execution', {
+        id: toastId,
+      })
+      return
+    }
+
+    console.error(e)
+    toast.error('Something went wrong in withdrawing contract', { id: toastId })
+    return
+  }
+}

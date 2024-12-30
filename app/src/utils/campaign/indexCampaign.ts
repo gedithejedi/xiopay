@@ -47,6 +47,9 @@ const useIndexCampaigns = () => {
     }) => indexCampaigns({ chainId, enableToast }),
     onSuccess: (_, { chainId }) => {
       queryClient.invalidateQueries({
+        queryKey: ['campaign'],
+      })
+      queryClient.invalidateQueries({
         queryKey: ['campaign', chainId],
       })
     },

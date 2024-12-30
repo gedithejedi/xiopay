@@ -26,7 +26,7 @@ export default function Campaigns() {
   const chainId = chain?.id || Chain.NEOX_TESTNET
 
   const { data: campaignData, isLoading } = useQuery({
-    queryKey: ['campaign', creator],
+    queryKey: ['campaign', creator, chainId],
     queryFn: async () => {
       try {
         const campaigns = await getCampaigns({
