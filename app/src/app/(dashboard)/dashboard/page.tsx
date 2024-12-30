@@ -28,7 +28,7 @@ const columns: TableColumn<CampaignInterface>[] = [
   {
     header: 'Balance',
     accessor: 'balance',
-    render: (value) => formatEther(value as bigint),
+    render: (value) => `$ ${formatEther(value as bigint)}`,
   },
   // TODO: check if this is the correct field
   {
