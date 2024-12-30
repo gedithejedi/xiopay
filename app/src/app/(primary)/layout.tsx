@@ -20,7 +20,7 @@ export default function MainLayout({
         </header>
         <div className="py-8 flex-1 w-full h-full">{children}</div>
         <footer className="text-center">
-          <p>Built with 💚 for Neo Hackathon</p>
+          <p>Built with 💚 for NeoX Hackathon</p>
         </footer>
       </div>
     </div>

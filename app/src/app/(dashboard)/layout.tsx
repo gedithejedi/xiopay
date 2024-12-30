@@ -136,7 +136,7 @@ export default function DashboardLayout({
             </div>
             <div className="py-8 flex-1 max-w-3xl w-full">{children}</div>
             <footer className="text-center mb-4">
-              <p>Built with 💚 for Neo Hackathon</p>
+              <p>Built with 💚 for NeoX Hackathon</p>
             </footer>
           </div>
           <div className="drawer-side lg:mt-0">

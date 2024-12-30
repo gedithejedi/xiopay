@@ -18,6 +18,7 @@ import { DEFAULT_CHAIN_ID } from '@/app/lib/chains'
 import { CampaignInterface } from '@/../db/models/campaign-model'
 import { formatEther } from 'viem'
 import { fromUnixTime, format } from 'date-fns'
+import { formatWalletAddress } from '@/helpers'
 
 const dateFormat = 'MMM d, yyyy'
 
@@ -69,6 +70,7 @@ function Empty() {
 export default function Dashboard() {
   const { chain, address } = useAccount()
   const chainId = chain?.id || DEFAULT_CHAIN_ID
+
   const { data: campaignData, isLoading: isLoadingCampaigns } = useGetCampaigns(
     {
       creator: address || '',
@@ -87,14 +89,17 @@ export default function Dashboard() {
           <HiOutlineUserCircle className="text-7xl" />
           <div className="flex gap-2 justify-between w-full items-center">
             <div className="flex flex-col">
-              <p className="text-lg font-bold">Hi, 0x123...456</p>
-              <Link
-                href="xionPay.xyz/gedtest"
+              <p className="text-lg font-bold">
+                Hi, {formatWalletAddress(address || '')}
+              </p>
+              {/* TODO: add link after profile page is created */}
+              {/* <Link
+                href="#"
                 className="text-md hover:underline"
                 target="_blank"
               >
-                buymeacoffee.com/gedtest
-              </Link>
+                xioPay.xyz/profile/test
+              </Link> */}
             </div>
             <div className="flex gap-2">
               <Button styling="tertiary" className="flex gap-2">
