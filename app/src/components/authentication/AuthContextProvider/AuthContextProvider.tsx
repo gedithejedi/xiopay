@@ -63,7 +63,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       return
     }
 
-    // If the path is public, we don't want to authenticate user
+    // If the path is public, we don't want to authentication process
     // This is for the donation widget
     if (isPublicPath(pathname)) {
       toast.success('Successfully logged in')
@@ -86,7 +86,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         if (res.ok && isAuthenticated) {
           toast.success('Successfully logged in')
 
-          //Dynamic user get/ create from the database
+          // Dynamic user get/ create from the database
           if (dynamicUserId) {
             const data = await getUser({ dynamicUserId })
 
@@ -117,6 +117,12 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const onLogout = async () => {
     setIsLoading(true)
+    // If the path is public, we don't want to authentication process
+    // This is for the donation widget
+    if (isPublicPath(pathname)) {
+      toast.success('Successfully logged out')
+      return
+    }
     await signOut()
     toast.success('Successfully logged out')
     if (!isPublicPath(pathname)) {
