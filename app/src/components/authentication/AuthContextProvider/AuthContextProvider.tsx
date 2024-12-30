@@ -73,41 +73,37 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     setIsLoading(true)
     const csrfToken = await getCsrfToken()
 
-    fetch('/api/auth/callback/credentials', {
+    return fetch('/api/auth/callback/credentials', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: `csrfToken=${encodeURIComponent(
-        csrfToken
-      )}&token=${encodeURIComponent(authToken)}`,
+      body: `csrfToken=${encodeURIComponent(csrfToken)}&token=${encodeURIComponent(authToken)}`,
     })
-      .then(async (res) => {
-        if (res.ok && isAuthenticated) {
-          // Dynamic user get/ create from the database
-          if (dynamicUserId) {
-            const data = await getUser({ dynamicUserId })
-
-            if (!data) {
-              try {
-                await postUser({ dynamicUserId })
-                await queryClient.invalidateQueries({ queryKey: ['user'] })
-              } catch {
-                toast.error('Something went wrong')
-                await args.handleLogOut()
-              }
-            }
-          }
-
-          toast.success('Successfully logged in')
-          router.push('/dashboard')
-        } else {
-          toast.error('Something went wrong, please try again!')
-          console.error('Failed to log in')
+      .then((res) => {
+        if (!res.ok || !isAuthenticated) {
+          throw new Error('Authentication failed')
         }
+        return dynamicUserId ? getUser({ dynamicUserId }) : null
+      })
+      .then((userData) => {
+        if (dynamicUserId && !userData) {
+          return postUser({ dynamicUserId }).then(() =>
+            queryClient.invalidateQueries({ queryKey: ['user'] })
+          )
+        }
+        return Promise.resolve()
+      })
+      .then(() => {
+        toast.success('Successfully logged in')
+        return router.push('/dashboard')
       })
       .catch((error) => {
-        console.error('Error logging in', error)
+        console.error('Error logging in:', error)
+        toast.error('Something went wrong, please try again!')
+        if (error.message !== 'Authentication failed') {
+          return args.handleLogOut()
+        }
       })
       .finally(() => {
         setIsLoading(false)
