@@ -13,12 +13,15 @@ import DonationWidget from '@/components/organisms/DonationWidget'
 import { CampaignProps } from './Campaign.types'
 import LoadingPage from '@/app/(dashboard)/loading'
 import { DEFAULT_CHAIN_ID } from '@/app/lib/chains'
-
+import { HiOutlineDocumentDuplicate } from 'react-icons/hi'
+import { toast } from 'react-hot-toast'
+import CampaignGuide from '@/components/organisms/CampaignGuide'
 export default function Campaign({ id }: CampaignProps) {
   const { chain } = useAccount()
   const chainId = chain?.id || DEFAULT_CHAIN_ID
 
   const campaignId = id || ''
+  const campaignUrl = `/donate/${campaignId}`
 
   const { data: campaignData, isLoading } = useGetCampaignById({
     campaignId,
@@ -32,6 +35,11 @@ export default function Campaign({ id }: CampaignProps) {
     return balance
   }, [campaignData])
 
+  async function copyToClipboard(text: string) {
+    await navigator.clipboard.writeText(text)
+    toast.success('Link copied to clipboard')
+  }
+
   if (isLoading) {
     return <LoadingPage />
   }
@@ -42,16 +50,32 @@ export default function Campaign({ id }: CampaignProps) {
         name={campaignData?.name || 'Campaign Name'}
         creator={campaignData?.creator || 'Unknown Creator'}
         balance={contractBalance || '0'}
-      ></CampaignCard>
+      >
+        <div className="mt-6">
+          <CampaignGuide campaignId={campaignId} />
+        </div>
+      </CampaignCard>
 
       <Card className="flex flex-col gap-4">
         <div className="flex justify-between items-center gap-2">
           <h3 className="text-lg font-semibold">Preview:</h3>
-          <Link href={`/donate/${campaignId}`} target="_blank">
-            <Button size="sm" styling={'secondary'}>
-              Open donation page
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              styling="tertiary"
+              className="flex gap-2"
+              onClick={() =>
+                copyToClipboard(`${window.location.origin}${campaignUrl}`)
+              }
+            >
+              <HiOutlineDocumentDuplicate /> Copy link
             </Button>
-          </Link>
+            <Link href={campaignUrl} target="_blank">
+              <Button size="sm" styling={'secondary'}>
+                Open page
+              </Button>
+            </Link>
+          </div>
         </div>
         <div className="bg-base-300 rounded-lg p-4">
           <DonationWidget isDemoMode={true} campaignData={campaignData} />
