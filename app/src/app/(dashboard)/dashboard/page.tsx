@@ -1,4 +1,5 @@
 'use client'
+import currency from 'currency.js'
 import Button from '@/components/atoms/Button'
 import Card from '@/components/atoms/Card'
 import PageTitle from '@/components/atoms/PageTitle'
@@ -55,6 +56,10 @@ export default function Dashboard() {
       chainId,
     }
   )
+  const totalAmount =
+    campaignData?.reduce((acc, campaign) => {
+      return acc.add(formatEther(campaign.balance))
+    }, currency(0)) ?? currency(0)
 
   return (
     <div className="flex flex-col gap-6">
@@ -87,7 +92,7 @@ export default function Dashboard() {
 
         <div className="flex flex-col gap-2">
           <p className="text-2xl font-bold">Total earnings</p>
-          <p className="text-5xl font-extrabold">$0</p>
+          <p className="text-5xl font-extrabold">{totalAmount.format()}</p>
         </div>
       </Card>
 
