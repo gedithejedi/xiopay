@@ -16,38 +16,37 @@ import CampaignAbi from '@/constants/abi/campaign.json'
 import { withdrawCampaign } from '@/utils/transactions'
 import useIndexCampaigns from '@/utils/campaign/indexCampaign'
 import { DEFAULT_CHAIN_ID } from '@/app/lib/chains'
+import { useGetWithdrawEventByUserAddress } from '@/utils/withdrawEvent/getWithdrawEventByUserAddress'
+import { WithdrawEventInterface } from '../../../../../db/models/withdrawEvent-model'
+import dayjs from 'dayjs'
+import { formatHash } from '@/app/lib/string'
+import { queryClient } from '@/components/authentication/AuthContextProvider/AuthContextProvider'
 
 interface PayoutFormData {
   amount: number
 }
 
-// TODO: get actual withdrawal history
-const payoutHistory = [
+const columns: TableColumn<WithdrawEventInterface>[] = [
   {
-    id: 1,
-    amount: 100,
-    withdrawer: '0x123',
-    receiver: '0x123',
-    time: '2023-06-01 10:30 AM',
+    header: 'Called by',
+    accessor: 'byAddress',
+    render: (value) => formatHash(value as string),
   },
   {
-    id: 2,
-    amount: 100,
-    withdrawer: '0x123',
-    receiver: '0x123',
-    time: '2024-06-01 12:30 AM',
+    header: 'To',
+    accessor: 'recipientAddress',
+    render: (value) => formatHash(value as string),
   },
-]
-
-const columns: TableColumn<(typeof payoutHistory)[number]>[] = [
-  { header: 'Called by', accessor: 'withdrawer' },
-  { header: 'To', accessor: 'receiver' },
   {
     header: 'Amount',
     accessor: 'amount',
-    render: (value) => `$${(value as number).toFixed(2)}`,
+    render: (value) => `$ ${formatEther(BigInt(value as number) || BigInt(0))}`,
   },
-  { header: 'Time', accessor: 'time' },
+  {
+    header: 'Time',
+    accessor: 'timestamp',
+    render: (value) => dayjs.unix(Number(value)).format('DD/MM/YYYY'),
+  },
 ]
 
 export default function StatisticsPage() {
@@ -58,6 +57,12 @@ export default function StatisticsPage() {
   const [selectedCampaign, setSelectedCampaign] = useState<string>('')
 
   const { mutate: forceReindex, isPending: isReindexing } = useIndexCampaigns()
+
+  const { data: withdrawEvents, isLoading: isLoadingWithdrawEvents } =
+    useGetWithdrawEventByUserAddress({
+      chainId,
+      address: creator,
+    })
 
   const { data: campaignData, isLoading } = useQuery({
     queryKey: ['campaign', creator, chainId],
@@ -145,6 +150,10 @@ export default function StatisticsPage() {
 
         forceReindex({
           chainId: campaign.chainId,
+        })
+
+        await queryClient.invalidateQueries({
+          queryKey: ['withdraw', chainId, address],
         })
 
         reset({
@@ -237,13 +246,18 @@ export default function StatisticsPage() {
 
           <div>
             <h2 className="text-xl font-bold">Payout History</h2>
-            <Table
-              data={payoutHistory}
-              columns={columns}
-              tableClassName=""
-              headerClassName="text-foreground text-[14px] border-b"
-              rowClassName=""
-            />
+            {withdrawEvents && withdrawEvents.length ? (
+              <Table
+                isLoading={isLoadingWithdrawEvents}
+                data={withdrawEvents}
+                columns={columns}
+                tableClassName=""
+                headerClassName="text-foreground text-[14px] border-b"
+                rowClassName=""
+              />
+            ) : (
+              <p>No withdraw events found</p>
+            )}
           </div>
         </Card>
       </div>
