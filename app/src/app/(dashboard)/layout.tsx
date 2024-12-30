@@ -120,7 +120,7 @@ export default function DashboardLayout({
             <div className="w-full flex sticky justify-end p-2 items-center gap-4">
               <Button
                 loading={isReindexing}
-                styling="primary"
+                styling="tertiary"
                 size="sm"
                 onClick={() =>
                   forceReindex({
