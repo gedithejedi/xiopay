@@ -27,7 +27,7 @@ import Loading from '@/components/atoms/Loading'
 import { neoxT4, neoxMainnet } from 'viem/chains'
 import { postUser } from '@/utils/user/postUser'
 import { getUser } from '@/utils/user/getUser'
-import { GenericNetwork } from '@dynamic-labs/types'
+import { EvmNetwork } from '@dynamic-labs/sdk-react-core'
 
 const queryConfig: DefaultOptions = {
   queries: {
@@ -126,7 +126,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     setIsLoading(false)
   }
 
-  const evmNetworks: GenericNetwork[] = [
+  const evmNetworks: EvmNetwork[] = [
     {
       blockExplorerUrls: [neoxMainnet.blockExplorers.default.url],
       chainId: neoxMainnet.id,
