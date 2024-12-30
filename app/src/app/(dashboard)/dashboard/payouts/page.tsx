@@ -10,12 +10,12 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { getCampaigns } from '@/utils/campaign/getCampaigns'
 import { Abi, formatEther, parseEther } from 'viem'
 import { useAccount } from 'wagmi'
-import { Chain } from '@/app/lib/chains'
 import classNames from 'classnames'
 import toast from 'react-hot-toast'
 import CampaignAbi from '@/constants/abi/campaign.json'
 import { withdrawCampaign } from '@/utils/transactions'
 import useIndexCampaigns from '@/utils/campaign/indexCampaign'
+import { DEFAULT_CHAIN_ID } from '@/app/lib/chains'
 
 interface PayoutFormData {
   amount: number
@@ -53,7 +53,7 @@ const columns: TableColumn<(typeof payoutHistory)[number]>[] = [
 export default function StatisticsPage() {
   const { address, chain } = useAccount()
   const creator = address || ''
-  const chainId = chain?.id || Chain.NEOX_TESTNET
+  const chainId = chain?.id || DEFAULT_CHAIN_ID
 
   const [selectedCampaign, setSelectedCampaign] = useState<string>('')
 

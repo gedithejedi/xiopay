@@ -10,13 +10,13 @@ import Button from '@/components/atoms/Button'
 import { useAccount } from 'wagmi'
 import Card from '@/components/atoms/Card'
 import DonationWidget from '@/components/organisms/DonationWidget'
-import { Chain } from '@/app/lib/chains'
 import { CampaignProps } from './Campaign.types'
 import LoadingPage from '@/app/(dashboard)/loading'
+import { DEFAULT_CHAIN_ID } from '@/app/lib/chains'
 
 export default function Campaign({ id }: CampaignProps) {
   const { chain } = useAccount()
-  const chainId = chain?.id || Chain.NEOX_TESTNET
+  const chainId = chain?.id || DEFAULT_CHAIN_ID
 
   const campaignId = id || ''
 

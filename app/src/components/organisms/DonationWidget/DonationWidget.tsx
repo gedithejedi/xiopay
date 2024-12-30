@@ -15,6 +15,7 @@ import Button from '@/components/atoms/Button'
 import CampaignAbi from '@/constants/abi/campaign.json'
 import { CampaignInterface } from '@/../db/models/campaign-model'
 import useIndexCampaigns from '@/utils/campaign/indexCampaign'
+import { DEFAULT_CHAIN_ID } from '@/app/lib/chains'
 
 function DonationWidget({
   isDemoMode = false,
@@ -24,7 +25,7 @@ function DonationWidget({
   campaignData?: CampaignInterface | null
 }) {
   const { chain, address } = useAccount()
-  const chainId = chain?.id || ''
+  const chainId = chain?.id || DEFAULT_CHAIN_ID
 
   const {
     register,

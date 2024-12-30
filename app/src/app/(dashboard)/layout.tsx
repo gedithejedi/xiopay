@@ -16,7 +16,7 @@ import { getAuthToken } from '@dynamic-labs/sdk-react-core'
 import { useSession, signOut } from 'next-auth/react'
 import toast from 'react-hot-toast'
 import useIndexCampaigns from '@/utils/campaign/indexCampaign'
-import { Chain } from '../lib/chains'
+import { DEFAULT_CHAIN_ID } from '../lib/chains'
 import { useAccount } from 'wagmi'
 
 interface MenuConfig {
@@ -59,7 +59,7 @@ export default function DashboardLayout({
   children: React.ReactNode
 }>) {
   const { chain } = useAccount()
-  const chainId = chain?.id || Chain.NEOX_TESTNET
+  const chainId = chain?.id || DEFAULT_CHAIN_ID
 
   const path = usePathname()
   const authToken = getAuthToken()

@@ -1,6 +1,5 @@
 'use client'
 
-import { Chain } from '@/app/lib/chains'
 import Button from '@/components/atoms/Button'
 import Card from '@/components/atoms/Card'
 import CampaignCard from '@/components/organisms/CampaignCard'
@@ -11,6 +10,7 @@ import Link from 'next/link'
 import { HiOutlineFolder } from 'react-icons/hi'
 import { formatEther } from 'viem'
 import { useAccount } from 'wagmi'
+import { DEFAULT_CHAIN_ID } from '@/app/lib/chains'
 
 function CampaignsHeaderButton() {
   return (
@@ -23,7 +23,7 @@ function CampaignsHeaderButton() {
 export default function Campaigns() {
   const { address, isConnected, chain } = useAccount()
   const creator = address || ''
-  const chainId = chain?.id || Chain.NEOX_TESTNET
+  const chainId = chain?.id || DEFAULT_CHAIN_ID
 
   const { data: campaignData, isLoading } = useQuery({
     queryKey: ['campaign', creator, chainId],
