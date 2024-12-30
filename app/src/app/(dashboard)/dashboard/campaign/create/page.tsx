@@ -10,7 +10,7 @@ import { useAccount } from 'wagmi'
 import campaignAbi from '@/constants/abi/campaign.json'
 import { Abi } from 'viem'
 import { useGetCampaigns } from '@/utils/campaign/getCampaigns'
-import { Chain } from '@/app/lib/chains'
+import { Chain, DEFAULT_CHAIN_ID } from '@/app/lib/chains'
 import Button from '@/components/atoms/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -24,13 +24,13 @@ interface CreateWidgetFormData {
 
 export default function Home() {
   const { chain, address } = useAccount()
-  const chainId = chain?.id
+  const chainId = chain?.id || DEFAULT_CHAIN_ID
 
   const [isDeployed, setIsDeployed] = useState(false)
 
   const { data: campaignData } = useGetCampaigns({
     creator: address || '',
-    chainId: chainId || Chain.NEOX_TESTNET,
+    chainId,
   })
 
   const router = useRouter()

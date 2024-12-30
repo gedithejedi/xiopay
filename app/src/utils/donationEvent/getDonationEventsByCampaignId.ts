@@ -1,21 +1,23 @@
 import { UseQueryOptions, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { DonationEventInterface } from '@/../db/models/donationEvent-model'
-import { DonationFilterByCampaignId } from '@/app/api/donationEvent/donationEvent.service'
+import { DonationFilter } from '@/app/api/donationEvent/donationEvent.service'
 
-type GetDonationEventsByCampaignIdResult = DonationEventInterface | null
+type GetDonationEventsByCampaignIdResult = DonationEventInterface[] | null
 
 export const getDonationEventsByCampaignId = async ({
   chainId,
+  campaignId,
   filters,
 }: {
   chainId: number
-  filters: DonationFilterByCampaignId
+  campaignId: string
+  filters: DonationFilter
 }): Promise<GetDonationEventsByCampaignIdResult> => {
   try {
-    const apiUrl = `/api/donationEvent/${chainId}/getByCampaignId`
+    const apiUrl = `/api/donationEvent/${chainId}/getByCampaignId/${campaignId}`
     const { data } = await axios.get(apiUrl, {
-      data: filters,
+      params: filters,
     })
 
     return data.data
@@ -27,11 +29,13 @@ export const getDonationEventsByCampaignId = async ({
 
 export const useGetDonationEventsByCampaignId = ({
   chainId,
+  campaignId,
   filters,
   config = {},
 }: {
   chainId: number
-  filters: DonationFilterByCampaignId
+  campaignId?: string
+  filters?: DonationFilter
   config?: Omit<
     UseQueryOptions<
       GetDonationEventsByCampaignIdResult,
@@ -42,8 +46,12 @@ export const useGetDonationEventsByCampaignId = ({
   >
 }) => {
   return useQuery<GetDonationEventsByCampaignIdResult, Error>({
-    queryKey: ['campaign', chainId],
-    queryFn: () => getDonationEventsByCampaignId({ chainId, filters }),
+    queryKey: ['campaign', campaignId, chainId],
+    queryFn: () =>
+      filters && campaignId
+        ? getDonationEventsByCampaignId({ chainId, campaignId, filters })
+        : null,
+    enabled: !!filters && !!campaignId,
     ...config,
   })
 }

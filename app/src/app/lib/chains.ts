@@ -5,3 +5,5 @@ export enum Chain {
 }
 
 export const chainsInString = ['47763', '12227332', '11155111'] as const
+
+export const DEFAULT_CHAIN_ID = Chain.NEOX_TESTNET

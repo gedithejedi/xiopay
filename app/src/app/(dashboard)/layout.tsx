@@ -82,7 +82,7 @@ export default function DashboardLayout({
       signOut({ callbackUrl: 'http://localhost:3000' })
       toast.error('You are session has expired')
     }
-  }, [session.data?.user, authToken])
+  }, [authToken])
 
   const { handleLogOut } = useDynamicContext()
 

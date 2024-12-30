@@ -65,6 +65,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
     const csrfToken = await getCsrfToken()
 
+    console.log('csrfToken', csrfToken)
     fetch('/api/auth/callback/credentials', {
       method: 'POST',
       headers: {
