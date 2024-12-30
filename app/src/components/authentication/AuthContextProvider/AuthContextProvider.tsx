@@ -63,51 +63,60 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       return
     }
 
-    // If the path is public, we don't want to authentication process
-    // This is for the donation widget
+    // If the path is public, skip the authentication process
     if (isPublicPath(pathname)) {
       toast.success('Successfully logged in')
       return
     }
 
     setIsLoading(true)
-    const csrfToken = await getCsrfToken()
 
-    return fetch('/api/auth/callback/credentials', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: `csrfToken=${encodeURIComponent(csrfToken)}&token=${encodeURIComponent(authToken)}`,
-    })
-      .then((res) => {
-        if (!res.ok || !isAuthenticated) {
-          throw new Error('Authentication failed')
-        }
-        return dynamicUserId ? getUser({ dynamicUserId }) : null
+    try {
+      const csrfToken = await getCsrfToken()
+
+      const res = await fetch('/api/auth/callback/credentials', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `csrfToken=${encodeURIComponent(csrfToken)}&token=${encodeURIComponent(authToken)}`,
       })
-      .then((userData) => {
-        if (dynamicUserId && !userData) {
-          return postUser({ dynamicUserId }).then(() =>
-            queryClient.invalidateQueries({ queryKey: ['user'] })
-          )
-        }
-        return Promise.resolve()
-      })
-      .then(() => {
-        toast.success('Successfully logged in')
-        return router.push('/dashboard')
-      })
-      .catch((error) => {
-        console.error('Error logging in:', error)
+
+      if (!res.ok || !isAuthenticated) {
         toast.error('Something went wrong, please try again!')
-        if (error.message !== 'Authentication failed') {
-          return args.handleLogOut()
+        console.error('Failed to log in')
+        return
+      }
+
+      toast.success('Successfully logged in')
+
+      // Proceed to handle dynamic user creation/retrieval
+      let data
+      if (dynamicUserId) {
+        data = await getUser({ dynamicUserId })
+
+        if (!data) {
+          try {
+            data = await postUser({ dynamicUserId })
+            await queryClient.invalidateQueries({ queryKey: ['user'] })
+          } catch {
+            toast.error('Something went wrong')
+            await args.handleLogOut()
+            return
+          }
         }
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
+      }
+
+      // Redirect to dashboard
+      if (data) {
+        router.push('/dashboard')
+      }
+    } catch (error: unknown) {
+      console.error('Error logging in', error)
+      toast.error('Something went wrong, please try again!')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const onLogout = async () => {
