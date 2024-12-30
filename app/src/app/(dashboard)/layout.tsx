@@ -64,6 +64,7 @@ export default function DashboardLayout({
   const path = usePathname()
   const authToken = getAuthToken()
   const session = useSession()
+  const { handleLogOut } = useDynamicContext()
 
   const [selectedConfig, setSelectedConfig] = useState(
     menuConfig.find((config) => {
@@ -81,10 +82,15 @@ export default function DashboardLayout({
     if (session.data?.user && !authToken) {
       signOut({ callbackUrl: 'http://localhost:3000' })
       toast.error('You are session has expired')
+      return
+    }
+
+    if (!session.data?.user && authToken) {
+      handleLogOut()
+      toast.error('Not fully authorized!')
+      return
     }
   }, [authToken])
-
-  const { handleLogOut } = useDynamicContext()
 
   return (
     <main>

@@ -39,9 +39,9 @@ const queryConfig: DefaultOptions = {
 
 export const queryClient = new QueryClient({ defaultOptions: queryConfig })
 
-const pathToDisableRedirect = ['/donate']
-function shouldRedirect(pathname: string) {
-  return pathToDisableRedirect.every((p) => !pathname.startsWith(p))
+const publicPaths = ['/donate']
+function isPublicPath(pathname: string) {
+  return publicPaths.some((p) => pathname.startsWith(p))
 }
 
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
@@ -55,7 +55,6 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const onAuthSuccess: OnAuthSuccess = async (args) => {
     const dynamicUserId = args.user.userId
     const isAuthenticated = args.isAuthenticated
-    setIsLoading(true)
 
     const authToken = getAuthToken()
     if (!authToken) {
@@ -63,9 +62,16 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       return
     }
 
+    // If the path is public, we don't want to authenticate user
+    // This is for the donation widget
+    if (isPublicPath(pathname)) {
+      toast.success('Successfully logged in')
+      return
+    }
+
+    setIsLoading(true)
     const csrfToken = await getCsrfToken()
 
-    console.log('csrfToken', csrfToken)
     fetch('/api/auth/callback/credentials', {
       method: 'POST',
       headers: {
@@ -94,9 +100,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
             }
           }
 
-          if (shouldRedirect(pathname)) {
-            router.push('/dashboard')
-          }
+          router.push('/dashboard')
         } else {
           toast.error('Something went wrong, please try again!')
           console.error('Failed to log in')
@@ -114,7 +118,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     setIsLoading(true)
     await signOut()
     toast.success('Successfully logged out')
-    if (shouldRedirect(pathname)) {
+    if (!isPublicPath(pathname)) {
       router.push('/')
     }
 
