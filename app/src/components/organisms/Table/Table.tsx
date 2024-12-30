@@ -2,6 +2,14 @@ import React from 'react'
 import { TableProps } from './Table.types'
 import Spinner from '@/components/atoms/Spinner'
 
+function Loading() {
+  return (
+    <div className="flex justify-center items-center w-full h-full">
+      <Spinner className="w-10 h-10" />
+    </div>
+  )
+}
+
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export function Table<T extends Record<string, any>>({
   data,
@@ -15,9 +23,7 @@ export function Table<T extends Record<string, any>>({
   return (
     <div className={`container mx-auto ${className}`}>
       {isLoading ? (
-        <div className="flex justify-center items-center w-full h-full">
-          <Spinner className="w-10 h-10" />
-        </div>
+        <Loading />
       ) : (
         <table className={`table w-full ${tableClassName}`}>
           <thead className={headerClassName}>

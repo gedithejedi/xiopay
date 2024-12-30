@@ -10,6 +10,7 @@ import {
   HiOutlineUser,
   HiOutlineUserCircle,
   HiOutlineDocumentDuplicate,
+  HiOutlinePencil,
 } from 'react-icons/hi'
 import { useGetCampaigns } from '@/utils/campaign/getCampaigns'
 import { useAccount } from 'wagmi'
@@ -46,6 +47,24 @@ const columns: TableColumn<CampaignInterface>[] = [
     ),
   },
 ]
+
+function Empty() {
+  return (
+    <div className="flex flex-col justify-center items-center w-full h-full">
+      <div className="flex items-center gap-2">
+        <p className="font-semibold">
+          GM! Let&apos;s create your first campaign today
+        </p>
+        <HiOutlinePencil className="text-lg" />
+      </div>
+      <Link href="/dashboard/campaign/create">
+        <Button styling="primary" className="mt-4">
+          Create Campaign
+        </Button>
+      </Link>
+    </div>
+  )
+}
 
 export default function Dashboard() {
   const { chain, address } = useAccount()
@@ -98,14 +117,18 @@ export default function Dashboard() {
 
       <Card className="flex flex-col gap-2">
         <PageTitle>My Campaigns</PageTitle>
-        <Table
-          data={campaignData ?? []}
-          columns={columns}
-          tableClassName=""
-          headerClassName="text-foreground text-[14px] border-b"
-          rowClassName=""
-          isLoading={isLoadingCampaigns}
-        />{' '}
+        {!isLoadingCampaigns && !campaignData?.length ? (
+          <Empty />
+        ) : (
+          <Table
+            data={campaignData ?? []}
+            columns={columns}
+            tableClassName=""
+            headerClassName="text-foreground text-[14px] border-b"
+            rowClassName=""
+            isLoading={isLoadingCampaigns}
+          />
+        )}
       </Card>
     </div>
   )
