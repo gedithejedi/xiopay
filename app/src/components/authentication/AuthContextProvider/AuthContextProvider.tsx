@@ -27,6 +27,7 @@ import Loading from '@/components/atoms/Loading'
 import { neoxT4, neoxMainnet } from 'viem/chains'
 import { postUser } from '@/utils/user/postUser'
 import { getUser } from '@/utils/user/getUser'
+import { GenericNetwork } from '@dynamic-labs/types'
 
 const queryConfig: DefaultOptions = {
   queries: {
@@ -125,7 +126,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     setIsLoading(false)
   }
 
-  const evmNetworks = [
+  const evmNetworks: GenericNetwork[] = [
     {
       blockExplorerUrls: [neoxMainnet.blockExplorers.default.url],
       chainId: neoxMainnet.id,
@@ -140,10 +141,11 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       networkId: neoxMainnet.id,
       rpcUrls: [neoxMainnet.rpcUrls.default.http[0]],
       vanityName: neoxMainnet.name,
-      shortName: neoxMainnet.nativeCurrency.symbol,
-      chain: neoxMainnet.nativeCurrency.symbol,
     },
-    {
+  ]
+
+  if (process.env.NODE_ENV === 'development') {
+    evmNetworks.push({
       blockExplorerUrls: [neoxT4.blockExplorers.default.url],
       chainId: neoxT4.id,
       chainName: neoxT4.name,
@@ -157,10 +159,8 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       networkId: neoxT4.id,
       rpcUrls: [neoxT4.rpcUrls.default.http[0]],
       vanityName: neoxT4.name,
-      shortName: neoxT4.nativeCurrency.name,
-      chain: neoxT4.nativeCurrency.symbol,
-    },
-  ]
+    })
+  }
 
   useEffect(() => {
     if (!!isHydrated) return
