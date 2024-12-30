@@ -2,7 +2,6 @@ import { auth } from '@/auth'
 import { NextResponse } from 'next/server'
 
 export default auth((req) => {
-  console.log('middleware', req.nextUrl.pathname)
   if (req.nextUrl.pathname.startsWith('/dashboard') && !req.auth?.user) {
     return NextResponse.redirect(new URL('/', req.url))
   }
