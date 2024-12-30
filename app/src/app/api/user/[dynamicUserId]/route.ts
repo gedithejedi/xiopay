@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import UserService from '../user.service'
 import dbConnect from '@/app/lib/mongo'
-import { UserInterface } from '@/../../db/models/user-model'
 
 interface GetParams {
   dynamicUserId: string
@@ -39,20 +38,17 @@ export async function GET(
 
 interface PostParams {
   dynamicUserId: string
-  body: UserInterface
 }
 
 export async function POST(
   _: NextRequest,
   context: { params: Promise<PostParams> }
 ) {
-  const { dynamicUserId, body } = await context.params
+  const { dynamicUserId } = await context.params
 
   await dbConnect()
 
-  const { error, status } = await UserService.post(dynamicUserId, {
-    body: body,
-  })
+  const { error, status } = await UserService.post(dynamicUserId)
 
   if (error) {
     return NextResponse.json({

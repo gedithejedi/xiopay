@@ -84,8 +84,6 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     })
       .then(async (res) => {
         if (res.ok && isAuthenticated) {
-          toast.success('Successfully logged in')
-
           // Dynamic user get/ create from the database
           if (dynamicUserId) {
             const data = await getUser({ dynamicUserId })
@@ -101,6 +99,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
             }
           }
 
+          toast.success('Successfully logged in')
           router.push('/dashboard')
         } else {
           toast.error('Something went wrong, please try again!')

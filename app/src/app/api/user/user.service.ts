@@ -33,18 +33,13 @@ export const get = async ({
   }
 }
 
-interface UserPostRequest {
-  body: UserInterface
-}
-
 interface UserPostResponse {
   error?: string
   status: number
 }
 
 export const post = async (
-  dynamicUserId: string,
-  { body }: UserPostRequest
+  dynamicUserId: string
 ): Promise<UserPostResponse> => {
   try {
     const doesExist = await User.find({ dynamicUserId })
@@ -56,7 +51,6 @@ export const post = async (
     const publicId = uuid()
 
     await User.create({
-      ...body,
       dynamicUserId,
       publicId,
     })

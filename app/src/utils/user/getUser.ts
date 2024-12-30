@@ -21,6 +21,8 @@ export const getUser = async ({
     const apiUrl = `/api/user/${dynamicUserId}`
     const { data } = await axios.get(apiUrl)
 
+    if (data?.status === 404) return null
+
     return data
   } catch (error: unknown) {
     console.error(error)
