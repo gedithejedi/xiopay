@@ -13,7 +13,7 @@ Owning asset never been this simpler without Web3. We implement this with Quick 
 On top of this simplicity, Smart contract is stand-alone server that will never go down. User have freedom to use different app or even create their own UI for managing their donation campaigns.  
 ## Demo Video
 
-Demo can be found [here](https://youtu.be/C1KcmnsuRKw)
+Demo can be found [here](https://youtu.be/DStZ7V3yadY)
 
 ## Components
 
