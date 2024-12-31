@@ -11,7 +11,9 @@ The traditional way of online payment is always tricky. When do you truly own th
 Owning asset never been this simpler without Web3. We implement this with Quick & Stable layer 1 NeoX. 
 
 On top of this simplicity, Smart contract is stand-alone server that will never go down. User have freedom to use different app or even create their own UI for managing their donation campaigns.  
+## Demo Video
 
+Demo can be found [here](https://youtu.be/SMbO6nFqKDY)
 
 ## Components
 
