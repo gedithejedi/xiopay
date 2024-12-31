@@ -91,13 +91,12 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       toast.success('Successfully logged in')
 
       // Proceed to handle dynamic user creation/retrieval
-      let data
       if (dynamicUserId) {
-        data = await getUser({ dynamicUserId })
+        const data = await getUser({ dynamicUserId })
 
         if (!data) {
           try {
-            data = await postUser({ dynamicUserId })
+            await postUser({ dynamicUserId })
             await queryClient.invalidateQueries({ queryKey: ['user'] })
           } catch {
             toast.error('Something went wrong')
@@ -108,7 +107,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       }
 
       // Redirect to dashboard
-      if (data) {
+      if (res.ok) {
         router.push('/dashboard')
       }
     } catch (error: unknown) {
